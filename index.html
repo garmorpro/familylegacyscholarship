@@ -9,24 +9,225 @@
     <title>Morgan Legacy Scholarhip</title>
 </head>
 <body>
-    
-    <div class="container">
-        <!-- Hero -->
-        <div class="p-5 text-center bg-image rounded-3" style="
-            background-image: url('https://mdbcdn.b-cdn.net/img/new/slides/041.webp');
-            height: 400px;
-          ">
-          <div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
-            <div class="d-flex justify-content-center align-items-center h-100">
-              <div class="text-white">
-                <h1 class="mb-3">Heading</h1>
-                <h4 class="mb-3">Subheading</h4>
-                <a data-mdb-ripple-init class="btn btn-outline-light btn-lg" href="#!" role="button">Call to action</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Hero -->
+
+    <header>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-white">
+    <div class="container-fluid">
+      <button data-mdb-button-init class="navbar-toggler" type="button" data-mdb-collapse-init
+        data-mdb-target="#navbarExample01" aria-controls="navbarExample01" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarExample01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
+  <!-- Navbar -->
+
+  <!-- Hurricane banner -->
+  <div id="hurricane-banner" class="d-flex flex-column flex-md-row justify-content-center align-items-center text-white py-3 w-100" style="background-color: rgb(196,180,133);">
+    <div class="d-flex align-items-center mb-2 mb-md-0">
+      <!-- <i class="bi bi-exclamation-triangle me-2"></i> -->
+      <i class="bi bi-mortarboard me-2"></i>
+      <span class="fw-bold">Scholarhip Application is open
+        <!-- &nbsp;<span id="season-year"></span>&nbsp; -->
+    </span>
+    </div>
+
+    <div class="d-flex align-items-center mb-2 mb-md-0 ms-2 me-2">
+      <span class="fw-lighter" style="font-size: 14px;"><span id="season-year"></span></span>
+    </div>
+
+    <div class="d-flex align-items-center ms-2">
+      <i class="bi bi-calendar4 me-2"></i>
+      <span class="me-2">Application closes in:</span>
+      <div id="countdown" class="d-flex align-items-center"></div>
+    </div>
+  </div>
+</div>
+
+  <!-- Background image -->
+<div class="p-5 text-center bg-image d-flex justify-content-center" style="
+  background-image: url('assets/images/family_photo.JPG');
+  height: 500px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+">
+  <div class="mask w-50 d-flex justify-content-center align-items-center"
+       style="background-color: rgba(0, 0, 0, 0.6); border-radius: 15px;">
+    <div class="text-white">
+      <h1 class="mb-3 mt-2">Morgan Legacy Scholarship</h1>
+      <h4 class="mb-3">Honoring Legacy. Supporting the Future.</h4>
+      <a class="btn btn-outline-light btn-lg mb-4 mt-5" href="#!" role="button">
+        Apply here
+      </a>
+    </div>
+  </div>
+</div>
+<!-- Background image -->
+
+</header>
+
+<div class="container mt-3">
+    <h2>
+        Mission
+    </h2>
+    <p>
+        The Morgan Legacy Scholarship was established by the Morgan Family to honor our family’s legacy by supporting graduating seniors of Battery Creek High School who demonstrate strong character, perseverance, and a commitment to building a better future.
+    </p>
+
+    <div class="scholarship-section justify-content-center mb-4">
+
+        <h2 class="text-center mt-5 mb-4">
+        Scholarship Overview
+    </h2>
+
+    <div class="d-flex justify-content-evenly">
+  <div class="card text-center" style="width: 18rem;">
+  <div class="card-body">
+    <img
+      src="assets/images/scholarship.jpg"
+      alt="Eligibility"
+      class="rounded-circle border border-3 border-primary mb-3"
+      style="width: 100px; height: 100px; object-fit: cover;"
+    >
+      <h5 class="card-title text-center">Award Amount</h5>
+      <p class="card-text">$1000 awarded to one graduating senior</p>
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+  </div>
+
+  <div class="card text-center" style="width: 18rem;">
+  <div class="card-body">
+    <img
+      src="assets/images/scholarship.jpg"
+      alt="Eligibility"
+      class="rounded-circle border border-3 border-primary mb-3"
+      style="width: 100px; height: 100px; object-fit: cover;"
+    >
+
+    <h5 class="card-title">Eligibility</h5>
+    <p class="card-text">Open to graduating seniors of Battery Creek High School</p>
+    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+  </div>
+</div>
+
+
+  <div class="card text-center" style="width: 18rem;">
+  <div class="card-body">
+    <img
+      src="assets/images/scholarship.jpg"
+      alt="Eligibility"
+      class="rounded-circle border border-3 border-primary mb-3"
+      style="width: 100px; height: 100px; object-fit: cover;"
+    >
+      <h5 class="card-title text-center">Application Deadline</h5>
+      <p class="card-text">[Month Day, Year]</p>
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+  </div>
+
+  <div class="card text-center" style="width: 18rem;">
+  <div class="card-body">
+    <img
+      src="assets/images/scholarship.jpg"
+      alt="Eligibility"
+      class="rounded-circle border border-3 border-primary mb-3"
+      style="width: 100px; height: 100px; object-fit: cover;"
+    >
+      <h5 class="card-title text-center">Award Announcement</h5>
+      <p class="card-text">Recipient will be announced [Month/Timeframe]</p>
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+  </div>
+
+</div>
+
+    </div>
+    
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+<script>
+function updateCountdown() {
+  const now = new Date();
+  let startYear = now.getFullYear();
+  let endYear = now.getFullYear();
+
+  // Determine the season based on current month
+  if (now.getMonth() + 1 <= 3) { // Jan-Mar
+    startYear = now.getFullYear() - 1;
+    endYear = now.getFullYear();
+  } else { // Apr-Dec
+    startYear = now.getFullYear();
+    endYear = now.getFullYear() + 1;
+  }
+
+  const seasonStart = new Date(`${startYear}-10-01T00:00:00`);
+  const seasonEnd = new Date(`${endYear}-03-31T23:59:59`);
+
+  // Format display
+const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+  // Update season display
+//   document.getElementById("season-year").textContent = `October ${seasonStart.getFullYear()} - March ${seasonEnd.getFullYear()}`;
+
+  document.getElementById("season-year").textContent = 
+    `${seasonStart.toLocaleDateString('en-US', options)} - ${seasonEnd.toLocaleDateString('en-US', options)}`;
+
+  // Show or hide the banner
+  const banner = document.getElementById("hurricane-banner");
+  if (now < seasonStart || now > seasonEnd) {
+    banner.classList.add("d-none");
+    return;
+  } else {
+    banner.classList.remove("d-none");
+  }
+
+  // Countdown calculation
+  const distance = seasonEnd.getTime() - now.getTime();
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerHTML = `
+    <span style="background:rgb(0,0,48); padding:6px 10px; border-radius:4px; margin-right:4px; font-weight:bold; color:white;">${days}d</span>
+    <span style="background:rgb(0,0,48); padding:6px 10px; border-radius:4px; margin-right:4px; font-weight:bold; color:white;">${hours}h</span>
+    <span style="background:rgb(0,0,48); padding:6px 10px; border-radius:4px; margin-right:4px; font-weight:bold; color:white;">${minutes}m</span>
+    <span style="background:rgb(0,0,48); padding:6px 10px; border-radius:4px; font-weight:bold; color:white;">${seconds}s</span>
+  `;
+}
+
+// Update every second
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+
+
+    
+   
+    
 </body>
 </html>
