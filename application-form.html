@@ -68,7 +68,257 @@
 
   <!-- Text with padding preserved -->
   <div class="card-body">
-    
+    <h4>
+        Scholarship Application
+    </h4>
+
+    <form action="" class="container py-4">
+
+  <!-- Section: Personal Information -->
+  <h5>Personal Information</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="firstName" class="form-label">First Name</label>
+      <input type="text" class="form-control" id="firstName" placeholder="John">
+    </div>
+    <div class="col-md-6">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input type="text" class="form-control" id="lastName" placeholder="Doe">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="email" placeholder="john@example.com">
+    </div>
+    <div class="col-md-6">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="tel" class="form-control" id="phone" placeholder="(123) 456-7890">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="street" class="form-label">Street Address</label>
+      <input type="text" class="form-control" id="street" placeholder="123 Main St">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="city" class="form-label">City</label>
+      <input type="text" class="form-control" id="city" placeholder="Beaufort">
+    </div>
+    <div class="col-md-3">
+      <label for="state" class="form-label">State</label>
+      <select id="state" class="form-select">
+        <option value="">Select State</option>
+        <option value="SC" selected>SC</option>
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="IA">IA</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WI">WI</option>
+        <option value="WY">WY</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="zip" class="form-label">Zip Code</label>
+      <input type="text" class="form-control" id="zip" placeholder="29906">
+    </div>
+  </div>
+
+  <!-- Section: School Information -->
+  <h5>School Information</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="gradYear" class="form-label">Expected Graduation Year</label>
+      <input type="number" class="form-control" id="gradYear" value="<?php echo date('Y')+3; ?>">
+    </div>
+    <div class="col-md-6">
+      <label for="gpa" class="form-label">Current GPA</label>
+      <input type="text" class="form-control" id="gpa" placeholder="4.0">
+    </div>
+  </div>
+
+  <!-- Section: Post-Secondary Education Plans -->
+  <h5>Post-Secondary Education Plans</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="institutionType" class="form-label">Type of Institution</label>
+      <select class="form-select" id="institutionType">
+        <option value="">Select...</option>
+        <option value="4-Year College/University">4-Year College/University</option>
+        <option value="2-Year College/Community College">2-Year College/Community College</option>
+        <option value="Trade School">Trade School</option>
+        <option value="Technical College">Technical College</option>
+        <option value="Vocational Training Program">Vocational Training Program</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="intendedSchool" class="form-label">Intended School/Institution Name</label>
+      <input type="text" class="form-control" id="intendedSchool" placeholder="School Name">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="intendedMajor" class="form-label">Intended Major/Program of Study</label>
+      <input type="text" class="form-control" id="intendedMajor" placeholder="Major/Program">
+    </div>
+  </div>
+
+  <!-- Section: Activities & Leadership -->
+  <h5>Activities & Leadership</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="extracurricular" class="form-label">Extracurricular Activities, Clubs, Sports</label>
+      <textarea class="form-control" id="extracurricular" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="leadership" class="form-label">Leadership Roles & Responsibilities</label>
+      <textarea class="form-control" id="leadership" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="communityService" class="form-label">Community Service & Volunteer Work</label>
+      <textarea class="form-control" id="communityService" rows="2"></textarea>
+    </div>
+  </div>
+
+  <!-- Section: Essay -->
+  <h5>Essay</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="essay" class="form-label">Essay Question</label>
+      <textarea class="form-control" id="essay" rows="6" placeholder="In 500-750 words, please tell us about yourself..."></textarea>
+      <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0</span> words</div>
+    </div>
+  </div>
+
+  <!-- Section: Letter of Recommendation -->
+  <h5>Letter of Recommendation</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <p>Please provide contact information for one person who can speak to your character and potential (teacher, counselor, coach, employer, or community leader). We will contact them directly.</p>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="recommenderName" class="form-label">Recommender's Name</label>
+      <input type="text" class="form-control" id="recommenderName">
+    </div>
+    <div class="col-md-6">
+      <label for="recommenderEmail" class="form-label">Recommender's Email</label>
+      <input type="email" class="form-control" id="recommenderEmail">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="relationship" class="form-label">Relationship to You</label>
+      <input type="text" class="form-control" id="relationship">
+    </div>
+  </div>
+
+  <!-- Section: Additional Information -->
+  <h5>Additional Information</h5>
+  <hr style="color: rgb(45,92,242) !important; border: 2px solid rgb(45,92,242);">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="financialNeed" class="form-label">Financial Need</label>
+      <textarea class="form-control" id="financialNeed" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="additionalInfo" class="form-label">Anything Else We Should Know?</label>
+      <textarea class="form-control" id="additionalInfo" rows="2"></textarea>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+    <p class="mt-2" style="font-size: 12px;">By submitting this application, you confirm that all information provided is accurate and complete.</p>
+  </div>
+
+</form>
+
+<script>
+  // Word count for essay
+  const essay = document.getElementById('essay');
+  const wordCount = document.getElementById('wordCount');
+
+  essay.addEventListener('input', () => {
+    const words = essay.value.trim().split(/\s+/).filter(Boolean).length;
+    wordCount.textContent = words;
+  });
+</script>
+
     
   </div>
 </div>
