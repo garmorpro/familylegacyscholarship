@@ -38,6 +38,9 @@ body {
     height: 400px !important;
     object-fit: cover;
   }
+  .countdown-card {
+    width: 30rem !important;
+  }
 }
 
 
