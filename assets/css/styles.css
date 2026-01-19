@@ -46,7 +46,7 @@ body {
   }
   .about-main-img {
     height: 400px !important;
-    padding-top: -50px !important
+    top: -150px !important
   }
   .countdown-card {
     width: 30rem !important;
