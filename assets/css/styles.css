@@ -1,5 +1,37 @@
-* {
-    box-sizing: border-box;
-    margin: none !important;
-    padding: none !important;
+/* =====================
+   Base styles (MOBILE)
+   ===================== */
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.container {
+  padding: 1rem;
+}
+
+.card {
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* =====================
+   Tablet and up
+   ===================== */
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+    margin: auto;
+  }
+}
+
+/* =====================
+   Desktop and up
+   ===================== */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1100px;
+  }
 }
