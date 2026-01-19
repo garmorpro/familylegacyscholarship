@@ -25,6 +25,9 @@ body {
     max-width: 720px;
     margin: auto;
   }
+  .countdown-card {
+    width: 30rem !important;
+  }
 }
 
 /* =====================
