@@ -50,3 +50,8 @@ header .navbar-toggler {
   border-radius: 8px;
   font-weight: 500;
 }
+
+.card-img-top {
+  height: 200px;       /* adjust as needed */
+  object-fit: cover;   /* fills the area without distortion */
+}
