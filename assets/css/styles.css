@@ -35,3 +35,9 @@ body {
     max-width: 1100px;
   }
 }
+
+
+.nav-link.active {
+  background-color: #e7f0ff;
+  border-radius: 8px;
+}
