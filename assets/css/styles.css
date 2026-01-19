@@ -92,3 +92,11 @@ header .navbar-toggler {
       font-size: 16px;
     }
   }
+
+  .top-shadow {
+    /* Remove default Bootstrap shadow */
+    box-shadow: none !important;
+
+    /* Add custom top-only shadow */
+    box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
+  }
