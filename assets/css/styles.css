@@ -98,7 +98,7 @@ header .navbar-toggler {
   }
 
   .footer-link:hover {
-    color: #0d6efd; /* Bootstrap primary hover */
+    color: #0d6efd !important; /* Bootstrap primary hover */
   }
 
   footer hr {
