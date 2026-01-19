@@ -93,10 +93,14 @@ header .navbar-toggler {
     }
   }
 
-  .top-shadow {
-    /* Remove default Bootstrap shadow */
-    box-shadow: none !important;
+  footer {
+    box-shadow: 0 -3px 6px rgba(0,0,0,0.05); /* subtle top shadow */
+  }
 
-    /* Add custom top-only shadow */
-    box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.1);
+  footer a:hover {
+    color: #0d6efd; /* Bootstrap primary hover */
+  }
+
+  footer hr {
+    margin: .5rem 0;
   }
