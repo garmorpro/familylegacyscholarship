@@ -82,10 +82,32 @@
     </div>
 
     <div class="card" style="background-color: pink; border: none; padding: .5rem !important;">
-      <div class="card-body">
-        <p class="" style="font-size: 14px;"><i class="bi bi-clock"></i> Time remaining to submit your application:</p>
+  <div class="card-body">
+    <p style="font-size: 14px;">
+      <i class="bi bi-clock"></i> Time remaining to submit your application:
+    </p>
+
+    <!-- Countdown display -->
+    <div id="countdown" class="d-flex gap-3 flex-wrap">
+      <div class="text-center">
+        <div id="months" style="font-weight: bold; font-size: 18px;">0</div>
+        <div style="font-size: 12px;">Months</div>
+      </div>
+      <div class="text-center">
+        <div id="days" style="font-weight: bold; font-size: 18px;">0</div>
+        <div style="font-size: 12px;">Days</div>
+      </div>
+      <div class="text-center">
+        <div id="hours" style="font-weight: bold; font-size: 18px;">0</div>
+        <div style="font-size: 12px;">Hours</div>
+      </div>
+      <div class="text-center">
+        <div id="minutes" style="font-weight: bold; font-size: 18px;">0</div>
+        <div style="font-size: 12px;">Minutes</div>
       </div>
     </div>
+  </div>
+</div>
     
     <a href="#" class="btn btn-primary">Start Your Application</a>
   </div>
@@ -103,6 +125,37 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+  // Set the deadline
+  const deadline = new Date("2026-12-31T23:59:59").getTime();
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    let distance = deadline - now;
+
+    if(distance < 0){
+      // Countdown expired
+      document.getElementById("countdown").innerHTML = "Application closed";
+      return;
+    }
+
+    // Calculate months, days, hours, minutes
+    const months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
+    const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+    // Update HTML
+    document.getElementById("months").innerText = months;
+    document.getElementById("days").innerText = days;
+    document.getElementById("hours").innerText = hours;
+    document.getElementById("minutes").innerText = minutes;
+  }
+
+  // Update every minute
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+</script>
 
 </body>
 </html>
