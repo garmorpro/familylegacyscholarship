@@ -37,7 +37,12 @@ body {
 }
 
 
+.nav-link {
+  color: #1f2937;
+}
+
 .nav-link.active {
   background-color: #e7f0ff;
   border-radius: 8px;
+  font-weight: 500;
 }
