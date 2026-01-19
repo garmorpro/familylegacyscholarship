@@ -28,6 +28,9 @@ body {
   .countdown-card {
     width: 30rem !important;
   }
+  .card-body {
+    padding: 2rem;
+  }
 }
 
 /* =====================
