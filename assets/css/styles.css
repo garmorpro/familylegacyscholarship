@@ -46,22 +46,11 @@ body {
   }
   .about-main-img {
     height: 400px !important;
-    top: -150px !important
   }
   .countdown-card {
     width: 30rem !important;
   }
 }
-
-.about-main-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  object-position: top;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
 
 
 header .navbar-toggler {
