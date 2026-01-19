@@ -37,7 +37,7 @@ body {
 }
 
 
-.navbar-toggler {
+header .navbar-toggler {
   display: block;
 }
 
