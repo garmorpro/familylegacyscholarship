@@ -37,6 +37,10 @@ body {
 }
 
 
+.navbar-toggler {
+  display: block;
+}
+
 .nav-link {
   color: #1f2937;
 }
