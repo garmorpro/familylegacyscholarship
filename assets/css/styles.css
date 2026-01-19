@@ -73,7 +73,7 @@ header .navbar-toggler {
 
 
 .count-box {
-    background-color: #ff6b81; /* a nice red/pink */
+    background-color: rgb(98,75,26); /* a nice red/pink */
     color: white;
     font-weight: bold;
     font-size: 18px;
