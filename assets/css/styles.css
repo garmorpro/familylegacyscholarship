@@ -41,6 +41,7 @@ body {
 }
 
 
+
 header .navbar-toggler {
   display: block;
 }
@@ -59,3 +60,25 @@ header .navbar-toggler {
   height: 200px;       /* adjust as needed */
   object-fit: cover;   /* fills the area without distortion */
 }
+
+
+.count-box {
+    background-color: #ff6b81; /* a nice red/pink */
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 576px) {
+    .count-box {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+  }
