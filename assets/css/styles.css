@@ -44,6 +44,10 @@ body {
   .home-main-img {
     height: 400px !important;
   }
+  .about-main-img {
+    height: 400px !important;
+    margin-bottom: 15px !important
+  }
   .countdown-card {
     width: 30rem !important;
   }
@@ -57,13 +61,6 @@ body {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
-
-@media(min-width: 992px) { /* desktop */
-  .about-main-img {
-    height: 400px; /* taller on desktop */
-  }
-}
-
 
 
 
