@@ -16,29 +16,32 @@
   <nav class="navbar navbar-expand-lg navbar-light border-bottom">
     <div class="container py-3">
 
-      <!-- Brand / Title -->
-      <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between w-100">
-        <div>
+      <!-- Title + Hamburger -->
+      <div class="d-flex flex-column w-100">
+        <!-- Top row: h1 + hamburger -->
+        <div class="d-flex align-items-center justify-content-between w-100">
           <h1 class="h4 fw-semibold mb-1">
             Morgan Family Legacy Scholarship
           </h1>
-          <p class="text-muted mb-0">
-            Battery Creek High School, Beaufort, SC
-          </p>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            class="navbar-toggler d-lg-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
 
-        <!-- Hamburger (mobile only) -->
-        <button
-          class="navbar-toggler mt-2 mt-lg-0"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNav"
-          aria-controls="mainNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <!-- Subtitle -->
+        <p class="text-muted mb-0">
+          Battery Creek High School, Beaufort, SC
+        </p>
       </div>
 
       <!-- Navigation Links -->
@@ -55,6 +58,7 @@
     </div>
   </nav>
 </header>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
