@@ -428,7 +428,7 @@ function performBulkAction(action) {
         return;
     }
 
-    fetch('app/bulk_action.php', {
+    fetch('/app/bulk_action.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action, ids: selected})
