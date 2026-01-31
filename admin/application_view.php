@@ -322,10 +322,10 @@ try {
         </div>
         <div class="card-body">
             <div class="mb-2">
-                <span class="fw-semibold">Intended School:</span> <?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?>
+                <span class="text-muted">Intended School</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?></span>
             </div>
             <div class="mb-0">
-                <span class="fw-semibold">Intended Major:</span> <?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?>
+                <span class="fw-semibold">Intended Major:</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?></span>
             </div>
         </div>
     </div>
