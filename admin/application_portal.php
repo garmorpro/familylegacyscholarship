@@ -428,25 +428,32 @@ function performBulkAction(action) {
         return;
     }
 
-    fetch('/app/bulk_action.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action, ids: selected})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            // Reload page to update table
+    fetch('app/bulk_action.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({action, ids: selected})
+})
+.then(res => res.text()) // <-- get raw text
+.then(data => {
+    console.log('Raw PHP response:', data);
+    // Now try parsing manually
+    try {
+        const json = JSON.parse(data);
+        if (json.success) {
+            alert(json.message);
             location.reload();
         } else {
-            alert('Error: ' + data.message);
+            alert('Error: ' + json.message);
         }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('An error occurred while performing bulk action.');
-    });
+    } catch (err) {
+        console.error('JSON parse error:', err, data);
+        alert('Bulk action failed: invalid response from server.');
+    }
+})
+.catch(err => {
+    console.error(err);
+    alert('An error occurred while performing bulk action.');
+});
 }
 </script>
 
