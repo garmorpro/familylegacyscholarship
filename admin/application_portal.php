@@ -93,10 +93,7 @@ try {
     </h5>
     
 
-    <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-white shadow-sm"
-     style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
-    <<div class="d-inline-flex align-items-center gap-3 px-4 py-3 mb-4
+    <div class="d-inline-flex align-items-center gap-3 px-4 py-3 mb-4
             border rounded-3 shadow-sm bg-white">
     <div class="d-flex align-items-center justify-content-center
                 rounded-circle bg-primary bg-opacity-10"
