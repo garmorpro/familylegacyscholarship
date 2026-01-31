@@ -236,7 +236,7 @@ try {
         </div>
 
         <!-- Academic Profile Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Academic Profile</h5>
 
@@ -253,7 +253,7 @@ try {
         </div>
 
         <!-- Recommendation Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
