@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php';
+require_once '../app/db.php';
 
 /**
  * Status counts + total
