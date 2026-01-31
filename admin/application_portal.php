@@ -3,7 +3,7 @@ require_once '../app/functions.php';
 
 try {
     $countsStmt = $pdo->query("
-        SELECT status, COUNT(*) AS total
+        SELECT application_status, COUNT(*) AS total
         FROM scholarship_applications
         GROUP BY application_status
     ");
