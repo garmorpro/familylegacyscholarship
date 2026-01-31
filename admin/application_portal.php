@@ -72,6 +72,9 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
 </head>
@@ -302,8 +305,10 @@ try {
                             type="checkbox"
                             class="form-check-input app-checkbox"
                             data-id="<?= (int)$app['id'] ?>"
+                            data-name="<?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>"
                             onclick="event.stopPropagation()"
                         >
+
                     </td>
 
 
@@ -415,48 +420,79 @@ try {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function performBulkAction(action) {
-    const selected = Array.from(document.querySelectorAll('.app-checkbox:checked'))
-                      .map(cb => parseInt(cb.dataset.id))
-                      .filter(id => !isNaN(id) && id > 0);
+    function performBulkAction(action) {
+    // Collect selected applications
+    const selectedCheckboxes = Array.from(document.querySelectorAll('.app-checkbox:checked'));
+    const selectedIds = selectedCheckboxes.map(cb => cb.dataset.id);
+    const selectedNames = selectedCheckboxes.map(cb => cb.dataset.name); // see step 3
 
-
-    if (selected.length === 0) {
-        alert('Please select at least one application.');
+    if (selectedIds.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'No applications selected',
+            text: 'Please select at least one application to continue.'
+        });
         return;
     }
 
-    if (!confirm(`Are you sure you want to ${action} ${selected.length} application(s)?`)) {
-        return;
+    // Build HTML list of names
+    const nameList = selectedNames.map(name => `<li>${name}</li>`).join('');
+
+    // Build title/message based on action
+    let title, htmlMessage;
+    if (action === 'delete') {
+        title = 'Delete Applications';
+        htmlMessage = `<p>Are you sure you want to delete the following applications?</p><ul>${nameList}</ul>`;
+    } else if (action === 'select') {
+        title = 'Mark Applications as Selected';
+        htmlMessage = `<p>Are you sure you want to mark the following applications as selected?</p><ul>${nameList}</ul>`;
     }
 
-    fetch('/app/bulk_action.php', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({action, ids: selected})
-})
-.then(res => res.text()) // <-- get raw text
-.then(data => {
-    console.log('Raw PHP response:', data);
-    // Now try parsing manually
-    try {
-        const json = JSON.parse(data);
-        if (json.success) {
-            alert(json.message);
-            location.reload();
-        } else {
-            alert('Error: ' + json.message);
+    // Show SweetAlert2 confirmation
+    Swal.fire({
+        title: title,
+        html: htmlMessage,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, proceed',
+        cancelButtonText: 'Cancel',
+        focusConfirm: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send AJAX request
+            fetch('app/bulk_action.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({action, ids: selectedIds})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        html: data.message
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        html: data.message
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while performing bulk action.'
+                });
+            });
         }
-    } catch (err) {
-        console.error('JSON parse error:', err, data);
-        alert('Bulk action failed: invalid response from server.');
-    }
-})
-.catch(err => {
-    console.error(err);
-    alert('An error occurred while performing bulk action.');
-});
+    });
 }
+
 </script>
 
 
