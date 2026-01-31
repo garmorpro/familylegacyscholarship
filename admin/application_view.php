@@ -325,7 +325,7 @@ try {
                 <span class="text-muted">Intended School</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?></span>
             </div>
             <div class="mb-0">
-                <span class="fw-semibold">Intended Major</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?></span>
+                <span class="fw-muted">Intended Major</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?></span>
             </div>
         </div>
     </div>
