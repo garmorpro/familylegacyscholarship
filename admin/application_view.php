@@ -277,14 +277,90 @@ try {
     </div>
 
     <!-- RIGHT COLUMN: 75% -->
-    <div class="col-lg-8">
-        <!-- Placeholder for now -->
-        <div class="card shadow-sm" style="border-radius: 12px; min-height: 400px;">
-            <div class="card-body d-flex align-items-center justify-content-center text-muted">
-                Details placeholder (75% column)
+<div class="col-lg-9">
+
+    <!-- Post-Secondary Plans Card -->
+    <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+            <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
+                <i class="bi bi-mortarboard text-white"></i>
+            </div>
+            <h5 class="mb-0 fw-semibold">Post-Secondary Plans</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-2">
+                <span class="fw-semibold">Intended School:</span> <?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?>
+            </div>
+            <div class="mb-0">
+                <span class="fw-semibold">Intended Major:</span> <?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?>
             </div>
         </div>
     </div>
+
+    <!-- Activities & Leadership Card -->
+    <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+            <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #198754; border-radius: 4px;">
+                <i class="bi bi-award text-white"></i>
+            </div>
+            <h5 class="mb-0 fw-semibold">Activities & Leadership</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="fw-semibold mb-1">Extracurricular Activities:</div>
+                <div><?= nl2br(htmlspecialchars($application['extracurricular_activities'] ?? 'N/A')) ?></div>
+            </div>
+            <div class="mb-3">
+                <div class="fw-semibold mb-1">Leadership Roles:</div>
+                <div><?= nl2br(htmlspecialchars($application['leadership_roles'] ?? 'N/A')) ?></div>
+            </div>
+            <div>
+                <div class="fw-semibold mb-1">Community Service:</div>
+                <div><?= nl2br(htmlspecialchars($application['community_service'] ?? 'N/A')) ?></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Essay Card -->
+    <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+            <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 4px;">
+                <i class="bi bi-file-earmark-text text-white"></i>
+            </div>
+            <h5 class="mb-0 fw-semibold">Essay</h5>
+        </div>
+        <div class="card-body">
+            <?php
+                $essayText = $application['essay'] ?? '';
+                $wordCount = str_word_count($essayText);
+            ?>
+            <div class="mb-2"><span class="fw-semibold">Word Count:</span> <?= $wordCount ?></div>
+            <div><?= nl2br(htmlspecialchars($essayText)) ?></div>
+        </div>
+    </div>
+
+    <!-- Additional Details Card -->
+    <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+            <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
+                <i class="bi bi-info-circle text-white"></i>
+            </div>
+            <h5 class="mb-0 fw-semibold">Additional Details</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="fw-semibold mb-1">Financial Need:</div>
+                <div><?= nl2br(htmlspecialchars($application['financial_need'] ?? 'N/A')) ?></div>
+            </div>
+            <div>
+                <div class="fw-semibold mb-1">Additional Notes:</div>
+                <div><?= nl2br(htmlspecialchars($application['additional_notes'] ?? 'N/A')) ?></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 </div>
 
