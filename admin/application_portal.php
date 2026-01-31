@@ -437,7 +437,7 @@ try {
     }
 
     // Build HTML list of names
-const nameList = selectedNames.map(name => `<div>${name}</div>`).join('');
+const nameList = selectedNames.map(name => `<li>${name}</li>`).join('');
 
 let title, htmlMessage;
 if (action === 'delete') {
