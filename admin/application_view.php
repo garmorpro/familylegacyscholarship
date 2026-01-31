@@ -310,10 +310,12 @@ try {
                 <div class="fw-semibold mb-1">Extracurricular Activities:</div>
                 <div><?= nl2br(htmlspecialchars($application['extracurricular_activities'] ?? 'N/A')) ?></div>
             </div>
+            <hr>
             <div class="mb-3">
                 <div class="fw-semibold mb-1">Leadership Roles:</div>
                 <div><?= nl2br(htmlspecialchars($application['leadership_roles'] ?? 'N/A')) ?></div>
             </div>
+            <hr>
             <div>
                 <div class="fw-semibold mb-1">Community Service:</div>
                 <div><?= nl2br(htmlspecialchars($application['community_service'] ?? 'N/A')) ?></div>
@@ -352,6 +354,7 @@ try {
                 <div class="fw-semibold mb-1">Financial Need:</div>
                 <div><?= nl2br(htmlspecialchars($application['financial_need'] ?? 'N/A')) ?></div>
             </div>
+            <hr>
             <div>
                 <div class="fw-semibold mb-1">Additional Notes:</div>
                 <div><?= nl2br(htmlspecialchars($application['additional_notes'] ?? 'N/A')) ?></div>
