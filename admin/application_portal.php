@@ -436,28 +436,30 @@ try {
         return;
     }
 
-    // Build HTML list of names
-    const nameList = selectedNames.map(name => `- ${name}<br>`).join('');
+    // Build HTML list of names using proper <li>
+const nameList = selectedNames.map(name => `<li>${name}</li>`).join('');
 
-    // Build title/message based on action
 let title, htmlMessage;
 if (action === 'delete') {
     title = 'Delete Applications';
     htmlMessage = `
         <p>Are you sure you want to delete the following applications?</p>
-        <ul>${nameList}</ul>
-        <br>
-        <p style="color: red; font-weight: bold; font-size: 16px;">This action <u>cannot</u> be undone.</p>
+        <ul style="padding-left: 20px; margin-top: 10px;">${nameList}</ul>
+        <p style="color: red; font-weight: bold; font-size: 16px; margin-top: 15px;">
+            This action <u>cannot</u> be undone.
+        </p>
     `;
 } else if (action === 'select') {
     title = 'Mark Applications as Selected';
     htmlMessage = `
         <p>Are you sure you want to mark the following applications as selected?</p>
-        <ul>${nameList}</ul>
-        <br>
-        <p style="color: red; font-weight: bold; font-size: 16px;">This action <u>cannot</u> be undone.</p>
+        <ul style="padding-left: 20px; margin-top: 10px;">${nameList}</ul>
+        <p style="color: orange; font-weight: bold; font-size: 16px; margin-top: 15px;">
+            This action is permanent.
+        </p>
     `;
 }
+
 
     // Show SweetAlert2 confirmation
     Swal.fire({
