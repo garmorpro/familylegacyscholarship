@@ -416,7 +416,6 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function performBulkAction(action) {
-    // Collect selected application IDs
     const selected = Array.from(document.querySelectorAll('.app-checkbox:checked'))
                           .map(cb => cb.dataset.id);
 
@@ -425,32 +424,32 @@ function performBulkAction(action) {
         return;
     }
 
-    // Confirm action
     if (!confirm(`Are you sure you want to ${action} ${selected.length} application(s)?`)) {
         return;
     }
 
-    // Example: send AJAX request (or redirect) to handle bulk action
-    // For now, just log to console
-    console.log('Performing bulk action:', action, selected);
-
-    // TODO: Replace with real AJAX call
-    /*
-    fetch('/bulk_action.php', {
+    fetch('app/bulk_action.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({action, ids: selected})
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data);
-        // optionally reload page
-        location.reload();
+        if (data.success) {
+            alert(data.message);
+            // Reload page to update table
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
     })
-    .catch(err => console.error(err));
-    */
+    .catch(err => {
+        console.error(err);
+        alert('An error occurred while performing bulk action.');
+    });
 }
 </script>
+
 
 <script>
   // Get current page path
