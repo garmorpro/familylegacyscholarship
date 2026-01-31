@@ -235,13 +235,15 @@ try {
                 <h5 class="card-title fw-semibold mb-3">Academic Profile</h5>
 
                 <div class="mb-2">
-                    <span class="fw-semibold">GPA:</span> <?= htmlspecialchars($application['gpa'] ?? 'N/A') ?>
+                    <span class="fw-semibold">GPA</span> <br> <?= htmlspecialchars($application['gpa'] ?? 'N/A') ?>
                 </div>
+                <hr>
                 <div class="mb-2">
-                    <span class="fw-semibold">Expected Graduation Year:</span> <?= htmlspecialchars($application['expected_graduation_year'] ?? 'N/A') ?>
+                    <span class="fw-semibold">Expected Graduation Year</span><br> <?= htmlspecialchars($application['expected_graduation_year'] ?? 'N/A') ?>
                 </div>
+                <hr>
                 <div class="mb-0">
-                    <span class="fw-semibold">Institution Type:</span> <?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?>
+                    <span class="fw-semibold">Institution Type</span> <br> <?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?>
                 </div>
             </div>
         </div>
