@@ -444,7 +444,7 @@ if (action === 'delete') {
     title = 'Delete Applications';
     htmlMessage = `
         <p>Are you sure you want to delete the following applications?</p>
-        <div style="
+        <ul style="
             text-align: left;
             max-height: 200px;
             overflow-y: auto;
@@ -455,7 +455,7 @@ if (action === 'delete') {
             margin-bottom: 15px;
         ">
             ${nameList}
-        </div>
+        </ul>
         <p style="color: red; font-weight: bold; font-size: 16px; text-align: left;">
             This action <u>cannot</u> be undone.
         </p>
@@ -464,7 +464,7 @@ if (action === 'delete') {
     title = 'Mark Applications as Selected';
     htmlMessage = `
         <p>Are you sure you want to mark the following applications as selected?</p>
-        <div style="
+        <ul style="
             text-align: left;
             max-height: 200px;
             overflow-y: auto;
@@ -475,7 +475,7 @@ if (action === 'delete') {
             margin-bottom: 15px;
         ">
             ${nameList}
-        </div>
+        </ul>
         <p style="color: orange; font-weight: bold; font-size: 16px; text-align: left;">
             This action is permanent.
         </p>
