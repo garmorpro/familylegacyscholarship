@@ -447,7 +447,7 @@ if (action === 'delete') {
         <p>Are you sure you want to delete the following applications?</p>
         <ul>${nameList}</ul>
         <br>
-        <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
+        <p style="color: red; font-weight: bold; font-size: 14px;">This action <u>cannot</u> be undone.</p>
     `;
 } else if (action === 'select') {
     title = 'Mark Applications as Selected';
@@ -455,7 +455,7 @@ if (action === 'delete') {
         <p>Are you sure you want to mark the following applications as selected?</p>
         <ul>${nameList}</ul>
         <br>
-        <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
+        <p style="color: red; font-weight: bold; font-size: 14px;">This action <u>cannot</u> be undone.</p>
     `;
 }
 
