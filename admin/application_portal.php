@@ -144,18 +144,18 @@ try {
 <!-- STATUS ROW -->
 
     <div class="row g-3 mb-4">
-
+    
         <!-- Open Applications -->
         <div class="col-md-4 col-lg-3">
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
+    
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
                         <i class="bi bi-inbox-fill text-primary"></i>
                     </div>
-
+    
                     <div>
                         <div class="fw-semibold">Open</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -163,24 +163,24 @@ try {
                         </div>
                     </div>
                 </div>
-
+    
                 <div class="fs-4 fw-bold text-primary">
                     <?= $statusCounts['submitted'] ?>
                 </div>
             </div>
         </div>
-
+    
         <!-- Reviewed Applications -->
         <div class="col-md-4 col-lg-3">
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
+    
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(108,117,125,0.15);">
                         <i class="bi bi-eye-fill text-secondary"></i>
                     </div>
-
+    
                     <div>
                         <div class="fw-semibold">Reviewed</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -188,24 +188,24 @@ try {
                         </div>
                     </div>
                 </div>
-
+    
                 <div class="fs-4 fw-bold text-secondary">
                     <?= $statusCounts['reviewed'] ?>
                 </div>
             </div>
         </div>
-
+    
         <!-- Selected Applications -->
         <div class="col-md-4 col-lg-3">
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
+    
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(25,135,84,0.15);">
                         <i class="bi bi-check-circle-fill text-success"></i>
                     </div>
-
+    
                     <div>
                         <div class="fw-semibold">Selected</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -213,24 +213,24 @@ try {
                         </div>
                     </div>
                 </div>
-
+    
                 <div class="fs-4 fw-bold text-success">
                     <?= $statusCounts['selected'] ?>
                 </div>
             </div>
         </div>
-
+    
         <!-- Total Applications -->
         <div class="col-md-4 col-lg-3">
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
+    
             <div class="d-flex align-items-center">
                 <div class="me-3 d-flex align-items-center justify-content-center"
                      style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(255,159,67,0.15);">
                     <i class="bi bi-collection-fill" style="color: rgb(255,159,67);"></i>
                 </div>
-
+    
                 <div>
                     <div class="fw-semibold">Total</div>
                     <div class="text-muted" style="font-size: 13px;">
@@ -238,14 +238,14 @@ try {
                     </div>
                 </div>
             </div>
-
+    
             <div class="fs-4 fw-bold" style="color: rgb(255,159,67);">
                 <?= $totalApplications ?>
             </div>
         </div>
     </div>
-
-
+    
+    
     </div>
 
 
@@ -253,18 +253,22 @@ try {
 
 
 <!-- TABLE -->
-    
+    <div class="mt-4 bg-white shadow-sm"
+     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
-<!-- BULK ACTIONS BUTTON -->
+     <!-- Bulk Actions Button -->
 <div class="d-flex justify-content-end mb-2">
-    <button id="bulkActionsBtn" class="btn btn-outline-warning">
-        <i class="bi bi-lightning-fill"></i> Bulk Actions
-    </button>
+    <div class="dropdown">
+        <button class="btn btn-light shadow-sm" type="button" id="bulkActionsBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-lightning-fill"></i> Bulk Actions
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bulkActionsBtn">
+            <li><a class="dropdown-item" href="#" onclick="performBulkAction('delete'); return false;">Delete Selected</a></li>
+            <li><a class="dropdown-item" href="#" onclick="performBulkAction('select'); return false;">Select Selected</a></li>
+        </ul>
+    </div>
 </div>
 
-<!-- TABLE WRAPPER (position relative for sidebar) -->
-<div class="position-relative mt-4 bg-white shadow-sm"
-     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
     <table class="table table-hover mb-0 align-middle">
         <thead class="table-light">
@@ -295,10 +299,13 @@ try {
                     <td>
                         <input
                             type="checkbox"
-                            class="form-check-input row-checkbox"
+                            class="form-check-input app-checkbox"
+                            data-id="<?= $app['id'] ?>"
                             onclick="event.stopPropagation()"
                         >
                     </td>
+
+
 
                     <!-- Name + GPA -->
                     <td>
@@ -355,18 +362,7 @@ try {
         <?php endif; ?>
         </tbody>
     </table>
-
-    <!-- BULK ACTIONS SIDEBAR -->
-    <div id="bulkSidebar" class="position-absolute top-0 end-0 h-100 bg-white shadow p-3"
-         style="width: 250px; transform: translateX(100%); transition: transform 0.3s; z-index: 10; border-left: 1px solid #dee2e6;">
-        <h5>Bulk Actions</h5>
-        <hr>
-        <button class="btn btn-danger w-100 mb-2" id="bulkDeleteBtn">Delete Selected</button>
-        <button class="btn btn-success w-100 mb-2" id="bulkSelectBtn">Mark Selected</button>
-        <button class="btn btn-secondary w-100" id="closeSidebarBtn">Close</button>
-    </div>
 </div>
-
 
 
 
@@ -418,17 +414,41 @@ try {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const bulkBtn = document.getElementById('bulkActionsBtn');
-const bulkSidebar = document.getElementById('bulkSidebar');
-const closeSidebar = document.getElementById('closeSidebarBtn');
+function performBulkAction(action) {
+    // Collect selected application IDs
+    const selected = Array.from(document.querySelectorAll('.app-checkbox:checked'))
+                          .map(cb => cb.dataset.id);
 
-bulkBtn.addEventListener('click', () => {
-    bulkSidebar.style.transform = 'translateX(0)';
-});
+    if (selected.length === 0) {
+        alert('Please select at least one application.');
+        return;
+    }
 
-closeSidebar.addEventListener('click', () => {
-    bulkSidebar.style.transform = 'translateX(100%)';
-});
+    // Confirm action
+    if (!confirm(`Are you sure you want to ${action} ${selected.length} application(s)?`)) {
+        return;
+    }
+
+    // Example: send AJAX request (or redirect) to handle bulk action
+    // For now, just log to console
+    console.log('Performing bulk action:', action, selected);
+
+    // TODO: Replace with real AJAX call
+    /*
+    fetch('/bulk_action.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action, ids: selected})
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        // optionally reload page
+        location.reload();
+    })
+    .catch(err => console.error(err));
+    */
+}
 </script>
 
 <script>
