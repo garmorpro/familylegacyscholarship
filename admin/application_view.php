@@ -299,7 +299,7 @@ try {
 
     <!-- Activities & Leadership Card -->
     <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
-        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+        <div class="header d-flex align-items-center gap-2" style="">
             <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #198754; border-radius: 4px;">
                 <i class="bi bi-award text-white"></i>
             </div>
@@ -323,7 +323,7 @@ try {
 
     <!-- Essay Card -->
     <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
-        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+        <div class="header d-flex align-items-center gap-2" style="">
             <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 4px;">
                 <i class="bi bi-file-earmark-text text-white"></i>
             </div>
@@ -341,7 +341,7 @@ try {
 
     <!-- Additional Details Card -->
     <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
-        <div class="card-header d-flex align-items-center gap-2" style="background-color: #f0f0f0;">
+        <div class="header d-flex align-items-center gap-2" style="">
             <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
                 <i class="bi bi-info-circle text-white"></i>
             </div>
