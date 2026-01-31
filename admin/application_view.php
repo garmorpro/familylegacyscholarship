@@ -210,7 +210,7 @@ try {
 <div class="row mt-4">
 
     <!-- LEFT COLUMN: 25% -->
-    <div class="col-lg-3">
+    <div class="col-lg-4">
 
         <!-- Contact Information Card -->
         <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
@@ -283,7 +283,7 @@ try {
     </div>
 
     <!-- RIGHT COLUMN: 75% -->
-    <div class="col-lg-9">
+    <div class="col-lg-8">
         <!-- Placeholder for now -->
         <div class="card shadow-sm" style="border-radius: 12px; min-height: 400px;">
             <div class="card-body d-flex align-items-center justify-content-center text-muted">
