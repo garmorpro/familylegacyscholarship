@@ -277,7 +277,7 @@ try {
 
                     <!-- Date Submitted -->
                     <td>
-                        <?= date('M j, Y', strtotime($app['created_at'])) ?>
+                        <?= date('M j, Y', strtotime($app['submitted_at'])) ?>
                     </td>
 
                     <!-- Status -->
