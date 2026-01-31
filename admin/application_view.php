@@ -203,7 +203,7 @@ try {
 <div class="row mt-4">
 
     <!-- LEFT COLUMN: 25% -->
-    <div class="col-lg-3">
+    <div class="col-lg-4">
 
         <!-- Contact Card -->
         <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
@@ -289,7 +289,7 @@ try {
     </div>
 
     <!-- RIGHT COLUMN: 75% -->
-    <div class="col-lg-9">
+    <div class="col-lg-8">
 
         <!-- Post-Secondary Plans Card -->
         <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
