@@ -24,7 +24,8 @@ try {
     }
 
     // Sanitize IDs
-    $ids = array_map('intval', $ids);
+    $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
+
     $idsPlaceholders = implode(',', array_fill(0, count($ids), '?'));
 
     if ($action === 'delete') {
