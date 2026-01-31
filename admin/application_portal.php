@@ -128,7 +128,7 @@ try {
             </div>
 
             <div class="fs-4 fw-bold text-primary">
-                <?= $statusCounts['open'] ?>
+                <?= $statusCounts['submitted'] ?>
             </div>
         </div>
     </div>
