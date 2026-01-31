@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../app/functions.php'; // adjust if needed for $pdo
+require_once '../app/db.php'; // adjust if needed for $pdo
 
 header('Content-Type: application/json');
 
