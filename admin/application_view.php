@@ -244,7 +244,7 @@ try {
                     <span class="fw-semibold">GPA:</span> <?= htmlspecialchars($application['gpa'] ?? 'N/A') ?>
                 </div>
                 <div class="mb-2">
-                    <span class="fw-semibold">Expected Graduation Year:</span> <?= htmlspecialchars($application['expected_grad_year'] ?? 'N/A') ?>
+                    <span class="fw-semibold">Expected Graduation Year:</span> <?= htmlspecialchars($application['expected_graduation_year'] ?? 'N/A') ?>
                 </div>
                 <div class="mb-0">
                     <span class="fw-semibold">Institution Type:</span> <?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?>
