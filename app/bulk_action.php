@@ -1,10 +1,21 @@
 <?php
-require_once 'functions.php'; // make sure $pdo is available
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../app/functions.php'; // adjust if needed for $pdo
 
 header('Content-Type: application/json');
 
 try {
-    $input = json_decode(file_get_contents('php://input'), true);
+    // Decode JSON input
+    $inputJSON = file_get_contents('php://input');
+    $input = json_decode($inputJSON, true);
+
+    if (!$input) {
+        throw new Exception('No input received or invalid JSON: ' . $inputJSON);
+    }
+
     $action = $input['action'] ?? null;
     $ids = $input['ids'] ?? [];
 
@@ -12,7 +23,7 @@ try {
         throw new Exception('No action or IDs provided.');
     }
 
-    // Sanitize IDs (only integers)
+    // Sanitize IDs
     $ids = array_map('intval', $ids);
     $idsPlaceholders = implode(',', array_fill(0, count($ids), '?'));
 
@@ -27,7 +38,7 @@ try {
         $message = count($ids) . " application(s) marked as selected.";
 
     } else {
-        throw new Exception('Invalid action.');
+        throw new Exception('Invalid action: ' . $action);
     }
 
     echo json_encode([
