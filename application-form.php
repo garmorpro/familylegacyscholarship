@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Scholarship Application
     </h4>
 
-    <form action="" class="container py-4">
+    <form method="POST" action="" class="container py-4">
 
   <!-- Section: Personal Information -->
   <h5>Personal Information</h5>
