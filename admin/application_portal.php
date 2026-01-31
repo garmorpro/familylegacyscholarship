@@ -222,28 +222,29 @@ try {
 
     <!-- Total Applications -->
     <div class="col-md-4 col-lg-3">
-        <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
-             style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+    <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+         style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
 
-            <div class="d-flex align-items-center">
-                <div class="me-3 d-flex align-items-center justify-content-center"
-                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,202,240,0.15);">
-                    <i class="bi bi-collection-fill text-info"></i>
-                </div>
-
-                <div>
-                    <div class="fw-semibold">Total</div>
-                    <div class="text-muted" style="font-size: 13px;">
-                        All applications
-                    </div>
-                </div>
+        <div class="d-flex align-items-center">
+            <div class="me-3 d-flex align-items-center justify-content-center"
+                 style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(33,37,41,0.12);">
+                <i class="bi bi-collection-fill text-dark"></i>
             </div>
 
-            <div class="fs-4 fw-bold text-info">
-                <?= $totalApplications ?>
+            <div>
+                <div class="fw-semibold">Total</div>
+                <div class="text-muted" style="font-size: 13px;">
+                    All applications
+                </div>
             </div>
         </div>
+
+        <div class="fs-4 fw-bold text-dark">
+            <?= $totalApplications ?>
+        </div>
     </div>
+</div>
+
 
 </div>
 
