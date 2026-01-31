@@ -24,9 +24,14 @@ try {
     }
 
     // Sanitize IDs
-    $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
+    $ids = $input['ids'] ?? [];
+$ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
 
-    $idsPlaceholders = implode(',', array_fill(0, count($ids), '?'));
+if (empty($ids)) {
+    throw new Exception('No valid application IDs selected.');
+}
+$idsPlaceholders = implode(',', array_fill(0, count($ids), '?'));
+
 
     if ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM scholarship_applications WHERE id IN ($idsPlaceholders)");

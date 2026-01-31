@@ -417,7 +417,9 @@ try {
 <script>
 function performBulkAction(action) {
     const selected = Array.from(document.querySelectorAll('.app-checkbox:checked'))
-                          .map(cb => cb.dataset.id);
+                      .map(cb => parseInt(cb.dataset.id))
+                      .filter(id => !isNaN(id) && id > 0);
+
 
     if (selected.length === 0) {
         alert('Please select at least one application.');
