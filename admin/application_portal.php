@@ -461,27 +461,36 @@ try {
     }).then((result) => {
         if (result.isConfirmed) {
             // Send AJAX request
-            fetch('app/bulk_action.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({action, ids: selectedIds})
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        html: data.message
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        html: data.message
-                    });
-                }
-            })
+            // fetch('app/bulk_action.php', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({action, ids: selectedIds})
+            // })
+            // .then(res => res.json())
+            // .then(data => {
+            //     if (data.success) {
+            //         Swal.fire({
+            //             icon: 'success',
+            //             title: 'Success',
+            //             html: data.message
+            //         }).then(() => location.reload());
+            //     } else {
+            //         Swal.fire({
+            //             icon: 'error',
+            //             title: 'Error',
+            //             html: data.message
+            //         });
+            //     }
+            // })
+            fetch('/app/bulk_action.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({action, ids: selectedIds})
+})
+.then(res => res.text())
+.then(data => {
+    console.log('RAW response:', data); // See exactly what PHP returned
+});
             .catch(err => {
                 console.error(err);
                 Swal.fire({
