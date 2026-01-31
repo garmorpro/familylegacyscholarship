@@ -2,7 +2,7 @@
 require_once '../app/functions.php';
 
 /**
- * Status counts
+ * Status counts + total
  */
 try {
     $countsStmt = $pdo->query("
@@ -13,8 +13,8 @@ try {
 
     $statusCounts = [
         'submitted' => 0,
-        'reviewed' => 0,
-        'selected' => 0
+        'reviewed'  => 0,
+        'selected'  => 0
     ];
 
     while ($row = $countsStmt->fetch(PDO::FETCH_ASSOC)) {
@@ -22,12 +22,17 @@ try {
             $statusCounts[$row['application_status']] = (int) $row['total'];
         }
     }
+
+    // Total applications (all statuses)
+    $totalApplications = array_sum($statusCounts);
+
 } catch (Exception $e) {
     $statusCounts = [
         'submitted' => 0,
-        'reviewed' => 0,
-        'selected' => 0
+        'reviewed'  => 0,
+        'selected'  => 0
     ];
+    $totalApplications = 0;
 }
 
 /**
@@ -51,10 +56,12 @@ try {
     ");
 
     $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     $applications = [];
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -134,10 +141,12 @@ try {
         Review and manage scholarship applications
     </h5>
 
-    <div class="row g-3 mb-4">
+<!-- STATUS ROW -->
+
+<div class="row g-3 mb-4">
 
     <!-- Open Applications -->
-    <div class="col-md-4">
+    <div class="col-md-4 col-lg-3">
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
 
@@ -162,7 +171,7 @@ try {
     </div>
 
     <!-- Reviewed Applications -->
-    <div class="col-md-4">
+    <div class="col-md-4 col-lg-3">
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
 
@@ -186,8 +195,8 @@ try {
         </div>
     </div>
 
-    <!-- Selected for Further Review -->
-    <div class="col-md-4">
+    <!-- Selected Applications -->
+    <div class="col-md-4 col-lg-3">
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
 
@@ -211,8 +220,35 @@ try {
         </div>
     </div>
 
+    <!-- Total Applications -->
+    <div class="col-md-4 col-lg-3">
+        <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+             style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+
+            <div class="d-flex align-items-center">
+                <div class="me-3 d-flex align-items-center justify-content-center"
+                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,202,240,0.15);">
+                    <i class="bi bi-collection-fill text-info"></i>
+                </div>
+
+                <div>
+                    <div class="fw-semibold">Total</div>
+                    <div class="text-muted" style="font-size: 13px;">
+                        All applications
+                    </div>
+                </div>
+            </div>
+
+            <div class="fs-4 fw-bold text-info">
+                <?= $totalApplications ?>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+
+<!-- END STATUS ROW -->
 
 
 <!-- TABLE -->
