@@ -240,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <hr>
 
-  <div class="mt-5">
+  <div class="mt-5 mx-auto">
     <button type="submit" class="btn btn-lg mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>&nbsp;Submit Application</button>
     <p class="mt-4 text-muted" style="font-size: 12px;">By submitting this application, you confirm that all information provided is accurate and complete.</p>
   </div>
