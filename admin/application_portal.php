@@ -91,25 +91,44 @@ try {
     <h5>
         Review and manage scholarship applications
     </h5>
-    
 
-    <div class="d-inline-flex align-items-center gap-3 px-4 py-3 mb-4
-            border rounded-3 shadow-sm bg-white">
-    <div class="d-flex align-items-center justify-content-center
-                rounded-circle bg-primary bg-opacity-10"
-         style="width: 44px; height: 44px;">
-        <i class="bi bi-inbox-fill text-primary fs-5"></i>
+    <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-white shadow-sm"
+     style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+
+    <div class="d-flex align-items-center">
+        <div class="me-3 d-flex align-items-center justify-content-center"
+             style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
+            <i class="bi bi-inbox-fill text-primary"></i>
+        </div>
+
+        <div>
+            <div class="fw-semibold">Open Applications</div>
+            <div class="text-muted" style="font-size: 13px;">
+                Awaiting review
+            </div>
+        </div>
     </div>
 
-    <div class="lh-sm">
-        <div class="fw-semibold fs-5">
-            <?= $openApplicationCount ?>
-        </div>
-        <div class="text-muted small">
-            Open Applications
-        </div>
+    <div class="fs-4 fw-bold text-primary">
+        <?= $openApplicationCount ?>
     </div>
 </div>
+
+    
+
+    <div class="d-flex align-items-center mb-4">
+    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+        <?= $openApplicationCount ?> Open Applications
+    </span>
+</div>
+
+
+
+<div class="mb-4 p-3"
+     style="border-left: 4px solid #0d6efd; background-color: #f8f9fa; border-radius: 8px;">
+    <strong><?= $openApplicationCount ?></strong> open applications awaiting review
+</div>
+
 
 
     
