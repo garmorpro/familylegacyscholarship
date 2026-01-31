@@ -132,7 +132,7 @@ try {
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
-<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border-color: rgb(241,242,243) !important; padding: 0 !important;">
+<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important;">
   
   <!-- Top header remains white -->
   <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
