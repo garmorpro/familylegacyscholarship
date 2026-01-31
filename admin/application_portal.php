@@ -440,14 +440,22 @@ try {
     const nameList = selectedNames.map(name => `- ${name}<br>`).join('');
 
     // Build title/message based on action
-    let title, htmlMessage;
-    if (action === 'delete') {
-        title = 'Delete Applications';
-        htmlMessage = `<p>Are you sure you want to delete the following applications?</p><ul>${nameList}</ul>`;
-    } else if (action === 'select') {
-        title = 'Mark Applications as Selected';
-        htmlMessage = `<p>Are you sure you want to mark the following applications as selected?</p><ul>${nameList}</ul>`;
-    }
+let title, htmlMessage;
+if (action === 'delete') {
+    title = 'Delete Applications';
+    htmlMessage = `
+        <p>Are you sure you want to delete the following applications?</p>
+        <ul>${nameList}</ul>
+        <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
+    `;
+} else if (action === 'select') {
+    title = 'Mark Applications as Selected';
+    htmlMessage = `
+        <p>Are you sure you want to mark the following applications as selected?</p>
+        <ul>${nameList}</ul>
+        <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
+    `;
+}
 
     // Show SweetAlert2 confirmation
     Swal.fire({
@@ -482,15 +490,6 @@ try {
                     });
                 }
             })
-//             fetch('/app/bulk_action.php', {
-//     method: 'POST',
-//     headers: {'Content-Type': 'application/json'},
-//     body: JSON.stringify({action, ids: selectedIds})
-// })
-// .then(res => res.text())
-// .then(data => {
-//     console.log('RAW response:', data); // See exactly what PHP returned
-// });
             .catch(err => {
                 console.error(err);
                 Swal.fire({
