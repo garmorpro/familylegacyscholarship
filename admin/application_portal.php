@@ -261,8 +261,8 @@ try {
             <i class="bi bi-lightning-fill"></i> Bulk Actions
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bulkActionsBtn">
-            <li><a class="dropdown-item" href="#" onclick="performBulkAction('delete'); return false;">Delete Selected</a></li>
-            <li><a class="dropdown-item" href="#" onclick="performBulkAction('select'); return false;">Select Selected</a></li>
+            <li><a class="dropdown-item" href="#" onclick="performBulkAction('delete'); return false;">Delete</a></li>
+            <li><a class="dropdown-item" href="#" onclick="performBulkAction('select'); return false;">Mark as Selected</a></li>
         </ul>
     </div>
 </div>
