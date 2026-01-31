@@ -1,6 +1,9 @@
 <?php
 require_once '../app/functions.php';
 
+/**
+ * Status counts
+ */
 try {
     $countsStmt = $pdo->query("
         SELECT application_status, COUNT(*) AS total
@@ -25,6 +28,31 @@ try {
         'reviewed' => 0,
         'selected' => 0
     ];
+}
+
+/**
+ * Fetch applications for table
+ */
+try {
+    $applicationsStmt = $pdo->query("
+        SELECT 
+            id,
+            first_name,
+            last_name,
+            gpa,
+            email,
+            phone,
+            intended_school,
+            intended_major,
+            application_status,
+            created_at
+        FROM scholarship_applications
+        ORDER BY created_at DESC
+    ");
+
+    $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $applications = [];
 }
 ?>
 
@@ -187,8 +215,100 @@ try {
 
 
 
+<!-- TABLE -->
+    <div class="mt-4 bg-white shadow-sm"
+     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
-    
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 40px;"></th>
+                <th>Applicant</th>
+                <th>Contact</th>
+                <th>Intended School</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th style="width: 40px;"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <?php if (empty($applications)): ?>
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No applications found
+                </td>
+            </tr>
+        <?php else: ?>
+            <?php foreach ($applications as $app): ?>
+                <tr style="cursor: pointer;"
+                    onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
+
+                    <!-- Checkbox -->
+                    <td>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+
+                    <!-- Name + GPA -->
+                    <td>
+                        <div class="fw-semibold">
+                            <?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>
+                        </div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            GPA: <?= htmlspecialchars($app['gpa']) ?>
+                        </div>
+                    </td>
+
+                    <!-- Contact -->
+                    <td>
+                        <div><?= htmlspecialchars($app['email']) ?></div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            <?= htmlspecialchars($app['phone']) ?>
+                        </div>
+                    </td>
+
+                    <!-- Intended School -->
+                    <td>
+                        <div><?= htmlspecialchars($app['intended_school']) ?></div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            <?= htmlspecialchars($app['intended_major']) ?>
+                        </div>
+                    </td>
+
+                    <!-- Date Submitted -->
+                    <td>
+                        <?= date('M j, Y', strtotime($app['created_at'])) ?>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                        <span class="badge
+                            <?php
+                                echo match ($app['application_status']) {
+                                    'submitted' => 'bg-primary-subtle text-primary',
+                                    'reviewed'  => 'bg-secondary-subtle text-secondary',
+                                    'selected'  => 'bg-success-subtle text-success',
+                                    default     => 'bg-light text-dark'
+                                };
+                            ?>">
+                            <?= ucfirst($app['application_status']) ?>
+                        </span>
+                    </td>
+
+                    <!-- Chevron -->
+                    <td class="text-end text-muted">
+                        <i class="bi bi-chevron-right"></i>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+
+
+<!-- END TABLE -->
 
     
   </div>
