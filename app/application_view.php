@@ -1,5 +1,5 @@
 <?php
-require_once '../app/functions.php';
+require_once 'functions.php';
 
 /**
  * Status counts + total
