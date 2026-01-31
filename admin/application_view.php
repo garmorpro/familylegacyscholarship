@@ -205,11 +205,106 @@ try {
         </div>
     </div>
 </div>
+
+
+<div class="row mt-4">
+
+    <!-- LEFT COLUMN: 25% -->
+    <div class="col-lg-3">
+
+        <!-- Contact Information Card -->
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
+
+                <div class="mb-2">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="bi bi-envelope me-2"></i>
+                        <span class="fw-semibold">Email</span>
+                    </div>
+                    <div><?= htmlspecialchars($application['email'] ?? 'N/A') ?></div>
+                </div>
+
+                <div class="mb-0">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="bi bi-telephone me-2"></i>
+                        <span class="fw-semibold">Phone</span>
+                    </div>
+                    <div><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Profile Card -->
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-3">Academic Profile</h5>
+
+                <div class="mb-2">
+                    <span class="fw-semibold">GPA:</span> <?= htmlspecialchars($application['gpa'] ?? 'N/A') ?>
+                </div>
+                <div class="mb-2">
+                    <span class="fw-semibold">Expected Graduation Year:</span> <?= htmlspecialchars($application['expected_grad_year'] ?? 'N/A') ?>
+                </div>
+                <div class="mb-0">
+                    <span class="fw-semibold">Institution Type:</span> <?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendation Card -->
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
+                    <div class="d-flex gap-1">
+                        <!-- Placeholder icons for recommendation status -->
+                        <i class="bi bi-eye-fill text-success" title="Completed"></i>
+                        <i class="bi bi-clock-fill text-secondary" title="Pending"></i>
+                        <i class="bi bi-send-fill text-primary" title="Not Sent"></i>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <span class="fw-semibold">Recommender:</span> <?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?>
+                </div>
+                <div class="mb-2">
+                    <span class="fw-semibold">Relationship:</span> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?>
+                </div>
+                <div class="mb-2">
+                    <span class="fw-semibold">Email:</span> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?>
+                </div>
+                <div class="mb-0">
+                    <span class="fw-semibold">Status:</span> <?= htmlspecialchars($application['recommender_status'] ?? 'N/A') ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: 75% -->
+    <div class="col-lg-9">
+        <!-- Placeholder for now -->
+        <div class="card shadow-sm" style="border-radius: 12px; min-height: 400px;">
+            <div class="card-body d-flex align-items-center justify-content-center text-muted">
+                Details placeholder (75% column)
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
 <?php else: ?>
 <div class="alert alert-warning">
     Application not found.
 </div>
 <?php endif; ?>
+
+<!-- end here -->
     
   </div>
 </div>
