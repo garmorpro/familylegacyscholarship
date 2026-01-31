@@ -213,7 +213,7 @@ try {
     <div class="col-lg-4">
 
         <!-- Contact Information Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
 
