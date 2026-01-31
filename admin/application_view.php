@@ -135,7 +135,7 @@ try {
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border-color: rgb(241,242,243) !important; padding: 0 !important;">
   
   <!-- Top header remains white -->
-  <div class="card-header bg-white" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
+  <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
     <div class="mb-3">
         <!-- Back link -->
         <a href="application_portal.php" class="text-decoration-none text-muted d-inline-flex align-items-center">
@@ -162,7 +162,7 @@ try {
 
 <?php if ($application): ?>
 
-<div class="row align-items-center py-3 border-bottom">
+<div class="row align-items-center py-3">
     <!-- Left: Name + Major/School -->
     <div class="col-md-6">
         <h2 class="fw-semibold mb-1">
