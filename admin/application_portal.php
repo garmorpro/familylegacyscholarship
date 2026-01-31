@@ -1,0 +1,328 @@
+<?php
+require_once '../app/functions.php';
+
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $id = insert_application($_POST);
+        $message = "Application submitted successfully! Your application ID: $id";
+    } catch (Exception $e) {
+        $message = "Error submitting application: " . $e->getMessage();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="assets/css/styles.css?v=7.0.3">
+    <title>Application Portal - Morgan Legacy Scholarship</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+
+<header>
+  <nav class="navbar navbar-expand-lg border-bottom shadow-sm" style="background-color: white !important;">
+    <div class="container py-3">
+
+      <!-- Title + Hamburger -->
+      <div class="d-flex flex-column w-100">
+        <!-- Top row: h1 + hamburger -->
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <h1 class="h4 fw-semibold mb-1">
+            Morgan Family Legacy Scholarship
+          </h1>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            class="navbar-toggler d-lg-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="text-muted mb-0">
+          Battery Creek High School, Beaufort, SC
+        </p>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="collapse navbar-collapse mt-3 mt-lg-0" id="mainNav">
+        <ul class="navbar-nav ms-auto gap-2 gap-lg-3">
+          <li class="nav-item"><a class="nav-link active px-3" href="/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link px-3" href="/about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link px-3" href="/eligibility.html">Eligibility</a></li>
+          <li class="nav-item"><a class="nav-link px-3" href="/application.html">Application</a></li>
+          <li class="nav-item"><a class="nav-link px-3" href="/recipients.html">Recipients</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+
+<main class="flex-fill">
+<div class="container py-3" style="background-color: rgb(249,250,251);">
+
+<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
+  
+
+  <!-- Text with padding preserved -->
+  <div class="card-body">
+    <h4>
+        Application Portal
+    </h4>
+
+    <form method="POST" action="" class="container py-4">
+
+  <!-- Section: Personal Information -->
+  <h5>Personal Information</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="firstName" class="form-label">First Name</label>
+      <input type="text" class="form-control" id="firstName" name="first_name" placeholder="John">
+    </div>
+    <div class="col-md-6">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Doe">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com">
+    </div>
+    <div class="col-md-6">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890">
+    </div>
+  </div>
+
+  <!-- Section: School Information -->
+  <h5>School Information</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="gradYear" class="form-label">Expected Graduation Year</label>
+      <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" value="<?php echo date('Y')+3; ?>">
+    </div>
+    <div class="col-md-6">
+      <label for="gpa" class="form-label">Current Weighted GPA</label>
+      <input type="text" class="form-control" id="gpa" name="gpa" placeholder="4.0">
+    </div>
+  </div>
+
+  <!-- Section: Post-Secondary Education Plans -->
+  <h5>Post-Secondary Education Plans</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="institutionType" class="form-label">Type of Institution</label>
+      <select class="form-select" id="institutionType" name="institution_type">
+        <option value="">Select...</option>
+        <option value="4-Year College/University">4-Year College/University</option>
+        <option value="2-Year College/Community College">2-Year College/Community College</option>
+        <option value="Trade School">Trade School</option>
+        <option value="Technical College">Technical College</option>
+        <option value="Vocational Training Program">Vocational Training Program</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="intendedSchool" class="form-label">Intended School/Institution Name</label>
+      <input type="text" class="form-control" id="intendedSchool" name="intended_school" placeholder="School Name">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="intendedMajor" class="form-label">Intended Major/Program of Study</label>
+      <input type="text" class="form-control" id="intendedMajor" name="intended_major" placeholder="Major/Program">
+    </div>
+  </div>
+
+  <!-- Section: Activities & Leadership -->
+  <h5>Activities & Leadership</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="extracurricular" class="form-label">Extracurricular Activities, Clubs, Sports</label>
+      <textarea class="form-control" id="extracurricular" name="extracurricular" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="leadership" class="form-label">Leadership Roles & Responsibilities</label>
+      <textarea class="form-control" id="leadership" name="leadership" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="communityService" class="form-label">Community Service & Volunteer Work</label>
+      <textarea class="form-control" id="communityService" name="community_service" rows="2"></textarea>
+    </div>
+  </div>
+
+  <!-- Section: Essay -->
+  <h5>Essay</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="essay" class="form-label">Essay Question</label>
+      <textarea class="form-control" id="essay" rows="6" name="essay" placeholder="In 500-750 words, please tell us about yourself..."></textarea>
+      <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0</span> words</div>
+    </div>
+  </div>
+
+  <!-- Section: Letter of Recommendation -->
+  <h5>Letter of Recommendation</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <p>Please provide contact information for one person who can speak to your character and potential (teacher, counselor, coach, employer, or community leader). We will contact them directly.</p>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="recommenderName" class="form-label">Recommender's Name</label>
+      <input type="text" class="form-control" name="recommender_name" id="recommenderName">
+    </div>
+    <div class="col-md-6">
+      <label for="recommenderEmail" class="form-label">Recommender's Email</label>
+      <input type="email" class="form-control" name="recommender_email" id="recommenderEmail">
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="relationship" class="form-label">Relationship to You</label>
+      <input type="text" class="form-control" name="recommender_relationship" id="relationship">
+    </div>
+  </div>
+
+  <!-- Section: Additional Information -->
+  <h5>Additional Information</h5>
+  <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <label for="financialNeed" class="form-label">Financial Need</label>
+      <textarea class="form-control" name="financial_need" id="financialNeed" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-5">
+    <div class="col-12">
+      <label for="additionalInfo" class="form-label">Anything Else We Should Know?</label>
+      <textarea class="form-control" name="additional_information" id="additionalInfo" rows="2"></textarea>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="mt-5 mx-auto">
+    <button type="submit" class="btn btn-lg mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>&nbsp;Submit Application</button>
+    <p class="mt-4 text-muted" style="font-size: 12px;">By submitting this application, you confirm that all information provided is accurate and complete.</p>
+  </div>
+
+</form>
+
+<script>
+  // Word count for essay
+  const essay = document.getElementById('essay');
+  const wordCount = document.getElementById('wordCount');
+
+  essay.addEventListener('input', () => {
+    const words = essay.value.trim().split(/\s+/).filter(Boolean).length;
+    wordCount.textContent = words;
+  });
+</script>
+
+    
+  </div>
+</div>
+
+
+</div>
+</main>
+
+<footer class="bg-white border-top shadow-sm mt-5 pt-4 pb-4">
+  <div class="container">
+
+    <!-- Contact -->
+    <div class="mb-3">
+      <p class="mb-0" style="font-size: 14px;">
+        <strong>Contact:</strong> 
+        <a href="mailto:scholarship@morganlegacy.com" class="text-decoration-none text-dark footer-link">scholarship@morganlegacy.com</a>
+      </p>
+    </div>
+
+    <hr style="opacity: 0.2;">
+
+    <!-- Disclaimer -->
+    <div class="mb-3">
+      <p style="font-size: 13px; line-height: 1.5; margin: 0;">
+        <strong>Disclaimer:</strong> The Morgan Family Legacy Scholarship is a privately funded family scholarship and is not affiliated with Battery Creek High School or the Beaufort County School District.
+      </p>
+    </div>
+
+    <hr style="opacity: 0.2;">
+
+    <!-- Privacy & Copyright -->
+     <div style="font-size: 13px;">
+      <a href="#" class="text-decoration-none text-dark me-3 footer-link">Privacy Policy</a>
+      &copy; 2026 Morgan Family Legacy Scholarship
+    </div>
+
+  </div>
+</footer>
+
+
+
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Get current page path
+  const currentPath = window.location.pathname;
+
+  // Select all navbar links
+  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+  navLinks.forEach(link => {
+    // Remove any existing active class
+    link.classList.remove('active');
+
+    // If the link href matches the current path, add active
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active');
+    }
+  });
+</script>
+
+
+
+
+</body>
+</html>
