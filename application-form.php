@@ -227,14 +227,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="financialNeed" class="form-label">Financial Need</label>
-      <textarea class="form-control" name="financialNeed" id="financialNeed" rows="2"></textarea>
+      <textarea class="form-control" name="financial_need" id="financialNeed" rows="2"></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-5">
     <div class="col-12">
       <label for="additionalInfo" class="form-label">Anything Else We Should Know?</label>
-      <textarea class="form-control" name="additionalInfo" id="additionalInfo" rows="2"></textarea>
+      <textarea class="form-control" name="additional_info" id="additionalInfo" rows="2"></textarea>
     </div>
   </div>
 
