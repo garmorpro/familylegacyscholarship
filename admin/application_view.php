@@ -268,8 +268,14 @@ try {
                     <span class="text-muted">Relationship</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-2">
-                    <span class="text-muted">Email</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?></span>
+                    <span class="text-muted">Email</span> <br>
+                    <span class="fw-semibold">
+                        <a href="mailto:<?= htmlspecialchars($application['recommender_email'] ?? '') ?>">
+                            <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?>
+                        </a>
+                    </span>
                 </div>
+
                 <?php
                 // Determine badge class and text
                 $status = strtolower($application['recommender_status'] ?? '');
@@ -292,7 +298,7 @@ try {
                         $badgeText  = htmlspecialchars($application['recommender_status']);
                 }
                 ?>
-                
+
                 <div class="mb-0">
                     <span class="text-muted">Status</span> <br>
                     <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
