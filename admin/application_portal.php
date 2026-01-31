@@ -301,7 +301,7 @@ try {
                         <input
                             type="checkbox"
                             class="form-check-input app-checkbox"
-                            data-id="<?= $app['id'] ?>"
+                            data-id="<?= (int)$app['id'] ?>"
                             onclick="event.stopPropagation()"
                         >
                     </td>
