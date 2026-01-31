@@ -437,7 +437,7 @@ try {
     }
 
     // Build HTML list of names
-    const nameList = selectedNames.map(name => `- ${name}`).join('');
+    const nameList = selectedNames.map(name => `- ${name}<br>`).join('');
 
     // Build title/message based on action
     let title, htmlMessage;
