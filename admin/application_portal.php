@@ -446,6 +446,7 @@ if (action === 'delete') {
     htmlMessage = `
         <p>Are you sure you want to delete the following applications?</p>
         <ul>${nameList}</ul>
+        <br>
         <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
     `;
 } else if (action === 'select') {
@@ -453,6 +454,7 @@ if (action === 'delete') {
     htmlMessage = `
         <p>Are you sure you want to mark the following applications as selected?</p>
         <ul>${nameList}</ul>
+        <br>
         <p style="color: red; font-weight: bold;">This action <u>cannot</u> be undone.</p>
     `;
 }
