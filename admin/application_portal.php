@@ -52,7 +52,7 @@ try {
             application_status,
             submitted_at
         FROM scholarship_applications
-        ORDER BY submitted_at DESC
+        ORDER BY id DESC
     ");
 
     $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
