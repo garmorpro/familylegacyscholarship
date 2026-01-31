@@ -147,13 +147,7 @@ $appId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 // Fetch the application from DB
 try {
     $stmt = $pdo->prepare("
-        SELECT 
-            first_name,
-            last_name,
-            intended_major,
-            intended_school,
-            application_status,
-            submitted_at
+        SELECT *
         FROM scholarship_applications
         WHERE id = ?
     ");
