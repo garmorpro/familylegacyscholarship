@@ -436,27 +436,24 @@ try {
         return;
     }
 
-    // Build HTML list of names
-const nameList = selectedNames.map(name => `<li>${name}</li>`).join('');
+    // Build HTML list of names using Bootstrap list group
+const nameList = selectedNames.map(name => `<li class="list-group-item p-2">${name}</li>`).join('');
 
+// Build title/message based on action
 let title, htmlMessage;
 if (action === 'delete') {
     title = 'Delete Applications';
     htmlMessage = `
         <p>Are you sure you want to delete the following applications?</p>
-        <ul style="
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
+        <ul class="list-group" style="
+            max-height: 200px; 
+            overflow-y: auto; 
             margin-top: 10px;
             margin-bottom: 15px;
         ">
             ${nameList}
         </ul>
-        <p style="color: red; font-weight: bold; font-size: 16px; text-align: left;">
+        <p style="color: red; font-weight: bold; font-size: 16px;">
             This action <u>cannot</u> be undone.
         </p>
     `;
@@ -464,23 +461,20 @@ if (action === 'delete') {
     title = 'Mark Applications as Selected';
     htmlMessage = `
         <p>Are you sure you want to mark the following applications as selected?</p>
-        <ul style="
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
+        <ul class="list-group" style="
+            max-height: 200px; 
+            overflow-y: auto; 
             margin-top: 10px;
             margin-bottom: 15px;
         ">
             ${nameList}
         </ul>
-        <p style="color: orange; font-weight: bold; font-size: 16px; text-align: left;">
+        <p style="color: orange; font-weight: bold; font-size: 16px;">
             This action is permanent.
         </p>
     `;
 }
+
 
 
     // Show SweetAlert2 confirmation
