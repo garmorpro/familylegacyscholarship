@@ -1,16 +1,19 @@
 <?php
 require_once '../app/functions.php';
 
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        $id = insert_application($_POST);
-        $message = "Application submitted successfully! Your application ID: $id";
-    } catch (Exception $e) {
-        $message = "Error submitting application: " . $e->getMessage();
-    }
+try {
+    // Count open applications
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM scholarship_applications 
+    ");
+    $stmt->execute();
+    $openApplicationCount = (int) $stmt->fetchColumn();
+} catch (Exception $e) {
+    $openApplicationCount = 0;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -85,9 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3>
         Application Portal
     </h3>
-    <h6>
+    <h5>
         Review and manage scholarship applications
-    </h6>
+    </h5>
+    <div class="alert alert-info d-flex align-items-center mb-4" role="alert" style="border-radius: 10px;">
+    <i class="bi bi-inbox-fill me-2"></i>
+    <strong><?= $openApplicationCount ?></strong>&nbsp;Open Applications
+</div>
 
     
 
