@@ -198,7 +198,7 @@ try {
 
 </div>
 
-<div class="card-body" style="background-color: #ffe6f0; padding: 1.5rem !important;">
+<div class="card-body" style="background-color: #ffe6f0; padding: 0rem !important;">
 
 <div class="row mt-4">
 
