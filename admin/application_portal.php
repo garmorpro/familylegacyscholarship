@@ -246,8 +246,13 @@ try {
 
                     <!-- Checkbox -->
                     <td>
-                        <input type="checkbox" class="form-check-input row-checkbox">
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            onclick="event.stopPropagation()"
+                        >
                     </td>
+
 
                     <!-- Name + GPA -->
                     <td>
@@ -355,14 +360,6 @@ try {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('row-checkbox')) {
-      e.stopPropagation();
-    }
-  });
-</script>
-
 <script>
   // Get current page path
   const currentPath = window.location.pathname;
