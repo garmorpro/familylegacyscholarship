@@ -142,10 +142,10 @@ try {
             <i class="bi bi-arrow-left me-1"></i> Back to applications
         </a>
     </div>
-  </div>
+  
 
   <!-- Card body with pink background -->
-  <div class="card-body" style="background-color: #ffe6f0; padding: 1.5rem !important;">
+  
 
 <?php
 // Get the application ID
@@ -195,6 +195,10 @@ try {
         </div>
     </div>
 </div>
+
+</div>
+
+<div class="card-body" style="background-color: #ffe6f0; padding: 1.5rem !important;">
 
 <div class="row mt-4">
 
