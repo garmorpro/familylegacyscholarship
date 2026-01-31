@@ -198,7 +198,7 @@ try {
 
 </div>
 
-<div class="card-body" style="background-color: #ffe6f0; padding: 1.5rem !important;">
+<div class="card-body" style="background-color: #dfe7ff; padding: 1.5rem !important; border: none !important;">
 
 <div class="row mt-4">
 
@@ -206,7 +206,7 @@ try {
     <div class="col-lg-4">
 
         <!-- Contact Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
                 <div class="mb-2">
