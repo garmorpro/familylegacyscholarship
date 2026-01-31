@@ -227,8 +227,8 @@ try {
 
         <div class="d-flex align-items-center">
             <div class="me-3 d-flex align-items-center justify-content-center"
-                 style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(33,37,41,0.12);">
-                <i class="bi bi-collection-fill text-dark"></i>
+                 style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(255,159,67,0.15);">
+                <i class="bi bi-collection-fill" style="color: rgb(255,159,67);"></i>
             </div>
 
             <div>
@@ -239,7 +239,7 @@ try {
             </div>
         </div>
 
-        <div class="fs-4 fw-bold text-dark">
+        <div class="fs-4 fw-bold" style="color: rgb(255,159,67);">
             <?= $totalApplications ?>
         </div>
     </div>
