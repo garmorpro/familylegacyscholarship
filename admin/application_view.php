@@ -262,17 +262,42 @@ try {
                 </div>
 
                 <div class="mb-2">
-                    <span class="text-muted">Recommender:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?></span>
+                    <span class="text-muted">Recommender</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-2">
-                    <span class="text-muted">Relationship:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?></span>
+                    <span class="text-muted">Relationship</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-2">
-                    <span class="text-muted">Email:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?></span>
+                    <span class="text-muted">Email</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?></span>
                 </div>
+                <?php
+                // Determine badge class and text
+                $status = strtolower($application['recommender_status'] ?? '');
+                switch ($status) {
+                    case 'completed':
+                        $badgeClass = 'bg-success';
+                        $badgeText  = 'Completed';
+                        break;
+                    case 'sent':
+                        $badgeClass = 'bg-primary';
+                        $badgeText  = 'Sent';
+                        break;
+                    case 'not sent':
+                    case '':
+                        $badgeClass = 'bg-secondary';
+                        $badgeText  = 'Not Sent';
+                        break;
+                    default:
+                        $badgeClass = 'bg-secondary';
+                        $badgeText  = htmlspecialchars($application['recommender_status']);
+                }
+                ?>
+                
                 <div class="mb-0">
-                    <span class="text-muted">Status:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_status'] ?? 'N/A') ?></span>
+                    <span class="text-muted">Status</span> <br>
+                    <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
                 </div>
+
             </div>
         </div>
 
