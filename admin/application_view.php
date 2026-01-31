@@ -206,7 +206,7 @@ try {
     <div class="col-lg-3">
 
         <!-- Contact Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
                 <div class="mb-2">
@@ -225,7 +225,7 @@ try {
         </div>
 
         <!-- Academic Profile Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold mb-3">Academic Profile</h5>
                 <div class="mb-2">
@@ -243,7 +243,7 @@ try {
         </div>
 
         <!-- Recommendation Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
@@ -292,14 +292,14 @@ try {
     <div class="col-lg-9">
 
         <!-- Post-Secondary Plans Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-header bg-white d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
                     <i class="bi bi-mortarboard text-white"></i>
                 </div>
                 <h5 class="mb-0 fw-semibold">Post-Secondary Plans</h5>
             </div>
-            <div class="card-body" style="background-color: #ffe6f0;">
+            <div class="card-body">
                 <div class="mb-2">
                     <span class="text-muted">Intended School</span> <br>
                     <span class="fw-semibold"><?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?></span>
@@ -312,14 +312,14 @@ try {
         </div>
 
         <!-- Activities & Leadership Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-header bg-white d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #198754; border-radius: 4px;">
                     <i class="bi bi-award text-white"></i>
                 </div>
                 <h5 class="mb-0 fw-semibold">Activities & Leadership</h5>
             </div>
-            <div class="card-body" style="background-color: #ffe6f0;">
+            <div class="card-body">
                 <div class="mb-3">
                     <div class="fw-semibold mb-1">Extracurricular Activities:</div>
                     <div><?= nl2br(htmlspecialchars($application['extracurricular_activities'] ?? 'N/A')) ?></div>
@@ -338,14 +338,14 @@ try {
         </div>
 
         <!-- Essay Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-header bg-white d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 4px;">
                     <i class="bi bi-file-earmark-text text-white"></i>
                 </div>
                 <h5 class="mb-0 fw-semibold">Essay</h5>
             </div>
-            <div class="card-body" style="background-color: #ffe6f0;">
+            <div class="card-body">
                 <?php
                     $essayText = $application['essay'] ?? '';
                     $wordCount = str_word_count($essayText);
@@ -356,14 +356,14 @@ try {
         </div>
 
         <!-- Additional Details Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px;">
+        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important;">
             <div class="card-header bg-white d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
                     <i class="bi bi-info-circle text-white"></i>
                 </div>
                 <h5 class="mb-0 fw-semibold">Additional Details</h5>
             </div>
-            <div class="card-body" style="background-color: #ffe6f0;">
+            <div class="card-body">
                 <div class="mb-3">
                     <div class="fw-semibold mb-1">Financial Need:</div>
                     <div><?= nl2br(htmlspecialchars($application['financial_need'] ?? 'N/A')) ?></div>
