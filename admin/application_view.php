@@ -159,6 +159,10 @@ try {
 ?>
 
 <?php if ($application): ?>
+
+  <div class="header-header" style="background-color: pink;">
+
+  
 <div class="mb-3">
     <!-- Back link -->
     <a href="application_portal.php" class="text-decoration-none text-muted mb-3 d-inline-flex align-items-center">
@@ -198,6 +202,8 @@ try {
             </span>
         </div>
     </div>
+</div>
+
 </div>
 
 
