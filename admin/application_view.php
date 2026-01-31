@@ -262,16 +262,16 @@ try {
                 </div>
 
                 <div class="mb-2">
-                    <span class="fw-semibold">Recommender:</span> <?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?>
+                    <span class="text-muted">Recommender:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-2">
-                    <span class="fw-semibold">Relationship:</span> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?>
+                    <span class="text-muted">Relationship:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-2">
-                    <span class="fw-semibold">Email:</span> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?>
+                    <span class="text-muted">Email:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?></span>
                 </div>
                 <div class="mb-0">
-                    <span class="fw-semibold">Status:</span> <?= htmlspecialchars($application['recommender_status'] ?? 'N/A') ?>
+                    <span class="text-muted">Status:</span> <br> <span class="fw-semibold"> <?= htmlspecialchars($application['recommender_status'] ?? 'N/A') ?></span>
                 </div>
             </div>
         </div>
