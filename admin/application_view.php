@@ -135,7 +135,7 @@ try {
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border-color: rgb(241,242,243) !important;">
   
   <!-- Top header remains white -->
-  <div class="card-header bg-white">
+  <div class="card-header bg-white" style="padding: 0 !important;">
     <div class="mb-3">
         <!-- Back link -->
         <a href="application_portal.php" class="text-decoration-none text-muted d-inline-flex align-items-center">
@@ -198,7 +198,7 @@ try {
 
 </div>
 
-<div class="card-body" style="background-color: #ffe6f0; padding: 0rem !important;">
+<div class="card-body" style="background-color: #ffe6f0; padding: 1.5rem !important;">
 
 <div class="row mt-4">
 
