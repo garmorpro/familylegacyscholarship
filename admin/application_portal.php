@@ -45,9 +45,9 @@ try {
             intended_school,
             intended_major,
             application_status,
-            created_at
+            submitted_at
         FROM scholarship_applications
-        ORDER BY created_at DESC
+        ORDER BY submitted_at DESC
     ");
 
     $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
