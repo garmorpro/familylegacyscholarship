@@ -184,7 +184,7 @@ try {
                 <div>
                     <div class="fw-semibold">Reviewed</div>
                     <div class="text-muted" style="font-size: 13px;">
-                        Initial review complete
+                        Initial review
                     </div>
                 </div>
             </div>
