@@ -91,9 +91,28 @@ try {
     <h5>
         Review and manage scholarship applications
     </h5>
-    <div class="alert alert-info d-flex align-items-center mb-4" role="alert" style="border-radius: 10px;">
-    <i class="bi bi-inbox-fill me-2"></i>
-    <strong><?= $openApplicationCount ?></strong>&nbsp;Open Applications
+    
+
+    <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-white shadow-sm"
+     style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+
+    <div class="d-flex align-items-center">
+        <div class="me-3 d-flex align-items-center justify-content-center"
+             style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
+            <i class="bi bi-inbox-fill text-primary"></i>
+        </div>
+
+        <div>
+            <div class="fw-semibold">Open Applications</div>
+            <div class="text-muted" style="font-size: 13px;">
+                Awaiting review
+            </div>
+        </div>
+    </div>
+
+    <div class="fs-4 fw-bold text-primary">
+        <?= $openApplicationCount ?>
+    </div>
 </div>
 
     
