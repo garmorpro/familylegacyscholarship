@@ -39,7 +39,7 @@ function insert_application($data) {
         ':essay' => $data['essay'],
         ':recommender_name' => $data['recommender_name'],
         ':recommender_email' => $data['recommender_email'],
-        ':recommender_relationship' => $data['relationship'],
+        ':recommender_relationship' => $data['recommender_relationship'],
         ':financial_need' => $data['financialNeed'],
         ':additional_information' => $data['additionalInfo']
     ]);
