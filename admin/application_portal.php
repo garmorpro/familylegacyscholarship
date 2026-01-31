@@ -253,10 +253,8 @@ try {
 
 
 <!-- TABLE -->
-    <div class="mt-4 bg-white shadow-sm"
-     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
-     <!-- Bulk Actions Button -->
+<!-- Bulk Actions Button -->
 <div class="d-flex justify-content-end mb-2">
     <div class="dropdown">
         <button class="btn btn-light shadow-sm" type="button" id="bulkActionsBtn" data-bs-toggle="dropdown" aria-expanded="false">
@@ -268,6 +266,9 @@ try {
         </ul>
     </div>
 </div>
+
+    <div class="mt-4 bg-white shadow-sm"
+     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
 
     <table class="table table-hover mb-0 align-middle">
