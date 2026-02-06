@@ -115,7 +115,7 @@ try {
     <table class="table table-hover mb-0 align-middle" id="applicationsTable">
         <thead class="table-light">
             <tr>
-                <th style="width: 40px;"></th>
+                <!-- <th style="width: 40px;"></th> -->
                 <th>Applicant</th>
                 <th>Contact</th>
                 <th>Intended School</th>
