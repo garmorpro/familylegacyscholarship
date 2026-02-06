@@ -1,5 +1,5 @@
 <?php
-require_once '../app/functions.php';
+require_once '../app/db.php';
 
 echo '<pre>';
 print_r($_POST);
