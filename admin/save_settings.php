@@ -5,15 +5,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die("Invalid request method.");
 }
 
-// Allowed keys
+// Allowed keys to update
 $allowedSettings = [
-    'award_amount',        // numeric
-    'application_open',    // date
-    'application_closed',  // date
-    'review_start',        // date
-    'review_end',          // date
-    'announcement_date',   // date
-    'notification_email'   // string
+    'award_amount',
+    'application_open',
+    'application_closed',
+    'review_start',
+    'review_end',
+    'announcement_date',
+    'notification_email'
 ];
 
 try {
@@ -21,35 +21,17 @@ try {
 
     foreach ($allowedSettings as $key) {
         if (isset($_POST[$key])) {
-            $rawValue = trim($_POST[$key]);
-            $valueToSave = null; // default to null
+            $value = trim($_POST[$key]);
 
-            // --- Handle numeric fields ---
+            // For numeric fields like award_amount, remove $ and commas
             if ($key === 'award_amount') {
-                $cleanValue = str_replace(['$', ','], '', $rawValue);
-                $valueToSave = $cleanValue === '' ? null : (int)$cleanValue;
-            }
-            // --- Handle date fields ---
-            elseif (in_array($key, ['application_open', 'application_closed', 'review_start', 'review_end', 'announcement_date'])) {
-                $valueToSave = $rawValue !== '' ? $rawValue : null;
-            }
-            // --- Handle string fields ---
-            else {
-                $valueToSave = $rawValue !== '' ? $rawValue : null;
+                $value = str_replace(['$', ','], '', $value);
             }
 
-            // --- DEBUG: browser console log ---
-            $jsValue = json_encode([
-                'key' => $key,
-                'rawValue' => $rawValue,
-                'valueToSave' => $valueToSave
-            ]);
-            echo "<script>console.log('PHP Debug:', $jsValue);</script>";
+            // If empty string, store NULL in DB
+            $valueToSave = $value !== '' ? $value : null;
 
-            // --- DEBUG: server error log ---
-            error_log("DEBUG: key = $key, rawValue = '$rawValue', valueToSave = " . var_export($valueToSave, true));
-
-            // --- Prepare and execute PDO ---
+            // Prepare and execute the update
             $stmt = $pdo->prepare("
                 UPDATE settings
                 SET setting_value = :value, updated_at = NOW()
@@ -69,9 +51,9 @@ try {
 
     $pdo->commit();
 
-    // Temporarily comment out redirect so you can see console logs
-    // header("Location: settings.php?success=1");
-    echo "<p>Settings saved successfully! Check your browser console for debug info.</p>";
+    // Redirect back after saving
+    header("Location: settings.php?success=1");
+    exit;
 
 } catch (Exception $e) {
     $pdo->rollBack();
