@@ -26,48 +26,52 @@ try {
 
             // --- Handle numeric fields ---
             if ($key === 'award_amount') {
-                // Remove $ and commas
                 $cleanValue = str_replace(['$', ','], '', $rawValue);
-                if ($cleanValue === '') {
-                    $valueToSave = null; // empty input -> NULL in DB
-                } else {
-                    $valueToSave = (int)$cleanValue; // cast to int
-                }
+                $valueToSave = $cleanValue === '' ? null : (int)$cleanValue;
             }
             // --- Handle date fields ---
             elseif (in_array($key, ['application_open', 'application_closed', 'review_start', 'review_end', 'announcement_date'])) {
-                $valueToSave = $rawValue !== '' ? $rawValue : null; // empty string -> NULL
+                $valueToSave = $rawValue !== '' ? $rawValue : null;
             }
             // --- Handle string fields ---
             else {
-                $valueToSave = $rawValue !== '' ? $rawValue : null; // empty string -> NULL
+                $valueToSave = $rawValue !== '' ? $rawValue : null;
             }
 
-            // --- DEBUG: log what we're saving ---
+            // --- DEBUG: browser console log ---
+            $jsValue = json_encode([
+                'key' => $key,
+                'rawValue' => $rawValue,
+                'valueToSave' => $valueToSave
+            ]);
+            echo "<script>console.log('PHP Debug:', $jsValue);</script>";
+
+            // --- DEBUG: server error log ---
             error_log("DEBUG: key = $key, rawValue = '$rawValue', valueToSave = " . var_export($valueToSave, true));
 
-            // --- Prepare statement ---
+            // --- Prepare and execute PDO ---
             $stmt = $pdo->prepare("
                 UPDATE settings
                 SET setting_value = :value, updated_at = NOW()
                 WHERE setting_key = :key
             ");
 
-            // Bind value depending on NULL or not
             if ($valueToSave === null) {
                 $stmt->bindValue(':value', null, PDO::PARAM_NULL);
             } else {
                 $stmt->bindValue(':value', $valueToSave, PDO::PARAM_STR);
             }
-            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
 
+            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
             $stmt->execute();
         }
     }
 
     $pdo->commit();
-    header("Location: settings.php?success=1");
-    exit;
+
+    // Temporarily comment out redirect so you can see console logs
+    // header("Location: settings.php?success=1");
+    echo "<p>Settings saved successfully! Check your browser console for debug info.</p>";
 
 } catch (Exception $e) {
     $pdo->rollBack();
