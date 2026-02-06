@@ -212,11 +212,11 @@ try {
     <!-- Right: Settings Icon -->
      <div class="" style="display: flex;">
         <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/recipients.php'">
-            <i class="bi bi-trash3 me-1"></i>
+            <i class="bi bi-people me-1"></i>
             Recipients
         </button>
         <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/settings.php'">
-            <i class="bi bi-cog me-1"></i>
+            <i class="bi bi-gear me-1"></i>
             Settings
         </button>
         
