@@ -70,7 +70,7 @@ try {
             ':intended_major' => $app['intended_major'],
             ':additional_information' => $app['additional_information'],
             ':date_submitted' => $app['date_submitted'],
-            ':application_year' => date('Y', strtotime($app['date_submitted']))
+            ':application_year' => date('Y')
         ]);
     }
 
