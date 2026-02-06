@@ -2,52 +2,99 @@
 // functions.php
 require_once 'db.php';
 
-// --- Function to insert application ---
-function insert_application($pdo, $data) {
-    $sql = "
-        INSERT INTO scholarship_applications (
-            first_name, last_name, email, phone, expected_graduation_year,
-            gpa, institution_type, intended_school, intended_major,
-            extracurricular, leadership, community_service,
-            essay, recommender_name, recommender_email, recommender_relationship,
-            financial_need, additional_information
-        ) VALUES (
-            :first_name, :last_name, :email, :phone, :expected_graduation_year,
-            :gpa, :institution_type, :intended_school, :intended_major,
-            :extracurricular, :leadership, :community_service,
-            :essay, :recommender_name, :recommender_email, :recommender_relationship,
-            :financial_need, :additional_information
-        )
-    ";
+/**
+ * Insert application + recommendation in a single transaction
+ */
+function insert_application_with_recommendation(PDO $pdo, array $data) {
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':first_name' => $data['first_name'],
-        ':last_name' => $data['last_name'],
-        ':email' => $data['email'],
-        ':phone' => $data['phone'],
-        ':expected_graduation_year' => $data['expected_graduation_year'],
-        ':gpa' => $data['gpa'],
-        ':institution_type' => $data['institution_type'],
-        ':intended_school' => $data['intended_school'],
-        ':intended_major' => $data['intended_major'],
-        ':extracurricular' => $data['extracurricular'],
-        ':leadership' => $data['leadership'],
-        ':community_service' => $data['community_service'],
-        ':essay' => $data['essay'],
-        ':recommender_name' => $data['recommender_name'],
-        ':recommender_email' => $data['recommender_email'],
-        ':recommender_relationship' => $data['recommender_relationship'],
-        ':financial_need' => $data['financial_need'] ?? '',
-        ':additional_information' => $data['additional_information'] ?? ''
-    ]);
+    try {
+        // Start transaction
+        $pdo->beginTransaction();
 
-    return $pdo->lastInsertId();
+        // --------------------------------------------------
+        // Insert into scholarship_applications
+        // --------------------------------------------------
+        $sqlApplication = "
+            INSERT INTO scholarship_applications (
+                first_name, last_name, email, phone, expected_graduation_year,
+                gpa, institution_type, intended_school, intended_major,
+                extracurricular, leadership, community_service,
+                essay, financial_need, additional_information
+            ) VALUES (
+                :first_name, :last_name, :email, :phone, :expected_graduation_year,
+                :gpa, :institution_type, :intended_school, :intended_major,
+                :extracurricular, :leadership, :community_service,
+                :essay, :financial_need, :additional_information
+            )
+        ";
+
+        $stmtApp = $pdo->prepare($sqlApplication);
+        $stmtApp->execute([
+            ':first_name'              => $data['first_name'],
+            ':last_name'               => $data['last_name'],
+            ':email'                   => $data['email'],
+            ':phone'                   => $data['phone'],
+            ':expected_graduation_year'=> $data['expected_graduation_year'],
+            ':gpa'                     => $data['gpa'],
+            ':institution_type'        => $data['institution_type'],
+            ':intended_school'         => $data['intended_school'],
+            ':intended_major'          => $data['intended_major'],
+            ':extracurricular'         => $data['extracurricular'],
+            ':leadership'              => $data['leadership'],
+            ':community_service'       => $data['community_service'],
+            ':essay'                   => $data['essay'],
+            ':financial_need'          => $data['financial_need'] ?? '',
+            ':additional_information'  => $data['additional_information'] ?? ''
+        ]);
+
+        // Get application ID
+        $application_id = $pdo->lastInsertId();
+
+        // --------------------------------------------------
+        // Insert into recommendations
+        // --------------------------------------------------
+        $sqlRecommendation = "
+            INSERT INTO recommendations (
+                application_id,
+                recommender_name,
+                recommender_email,
+                recommender_relationship,
+                status
+            ) VALUES (
+                :application_id,
+                :recommender_name,
+                :recommender_email,
+                :recommender_relationship,
+                :status
+            )
+        ";
+
+        $stmtRec = $pdo->prepare($sqlRecommendation);
+        $stmtRec->execute([
+            ':application_id'          => $application_id,
+            ':recommender_name'        => $data['recommender_name'],
+            ':recommender_email'       => $data['recommender_email'],
+            ':recommender_relationship'=> $data['recommender_relationship'],
+            ':status'                  => 'pending'
+        ]);
+
+        // Commit everything
+        $pdo->commit();
+
+        return $application_id;
+
+    } catch (PDOException $e) {
+        // Roll back if ANYTHING fails
+        $pdo->rollBack();
+        throw $e;
+    }
 }
 
-// --- Handle form submission ---
+// --------------------------------------------------
+// Handle form submission
+// --------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Collect form data safely
+
     $data = [
         'first_name' => $_POST['first_name'] ?? '',
         'last_name' => $_POST['last_name'] ?? '',
@@ -66,18 +113,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'recommender_email' => $_POST['recommender_email'] ?? '',
         'recommender_relationship' => $_POST['recommender_relationship'] ?? '',
         'financial_need' => $_POST['financial_need'] ?? '',
-        'additional_information' => $_POST['additional_information'] ?? '',
+        'additional_information' => $_POST['additional_information'] ?? ''
     ];
 
     try {
-        // Insert into database
-        $application_id = insert_application($pdo, $data);
+        $application_id = insert_application_with_recommendation($pdo, $data);
 
-        // Redirect to thank you page
         header("Location: thank_you.php");
-        exit(); // Always exit after redirect
+        exit();
+
     } catch (PDOException $e) {
-        // Handle DB error gracefully
         echo "Error submitting application: " . $e->getMessage();
         exit();
     }
