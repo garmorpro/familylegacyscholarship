@@ -4,9 +4,7 @@ require_once '../app/db.php';
 
 require_once '../path.php';
 // Ensure PDO exists
-if (!isset($pdo)) {
-    die("PDO connection not initialized!");
-}
+
 
 // Fetch all recipients from DB
 
