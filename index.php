@@ -124,30 +124,44 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
       <i class="bi bi-clock"></i> Time remaining to submit your application:
     </p>
 
-    <!-- Countdown display -->
-    <div id="countdown" class="d-flex gap-2 flex-wrap justify-content-center">
+    <div id="countdown-container" class="d-flex gap-2 flex-wrap justify-content-center position-relative">
 
-      <div class="text-center">
-        <div class="count-box" id="days">0</div>
-        <div style="font-size: 12px;">Days</div>
-      </div>
-
-      <div class="text-center">
-        <div class="count-box" id="hours">0</div>
-        <div style="font-size: 12px;">Hours</div>
-      </div>
-
-      <div class="text-center">
-        <div class="count-box" id="minutes">0</div>
-        <div style="font-size: 12px;">Minutes</div>
-      </div>
-
-      <div class="text-center">
-        <div class="count-box" id="seconds">0</div>
-        <div style="font-size: 12px;">Seconds</div>
-      </div>
-
+  <!-- Countdown boxes -->
+  <div id="countdown-boxes" class="d-flex gap-2 flex-wrap justify-content-center">
+    <div class="text-center">
+      <div class="count-box" id="days">0</div>
+      <div style="font-size: 12px;">Days</div>
     </div>
+
+    <div class="text-center">
+      <div class="count-box" id="hours">0</div>
+      <div style="font-size: 12px;">Hours</div>
+    </div>
+
+    <div class="text-center">
+      <div class="count-box" id="minutes">0</div>
+      <div style="font-size: 12px;">Minutes</div>
+    </div>
+
+    <div class="text-center">
+      <div class="count-box" id="seconds">0</div>
+      <div style="font-size: 12px;">Seconds</div>
+    </div>
+  </div>
+
+  <!-- Closed / not open message -->
+  <div id="countdown-message" class="text-center" style="
+      display: none;
+      font-size: 20px;
+      font-weight: 600;
+      color: rgb(220,53,69); /* red color */
+      width: 100%;
+    ">
+    Application is closed
+  </div>
+
+</div>
+
   </div>
 </div>
 
@@ -320,22 +334,32 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
 </script>
 
 <script>
-  // Get dates from PHP
   const applicationOpen = new Date("<?= $applicationOpen ?>T00:00:00").getTime();
   const applicationClose = new Date("<?= $applicationClose ?>T23:59:59").getTime();
+
+  const countdownBoxes = document.getElementById("countdown-boxes");
+  const countdownMessage = document.getElementById("countdown-message");
 
   function updateCountdown() {
     const now = new Date().getTime();
 
     if (now < applicationOpen) {
-      document.getElementById("countdown").innerText = "Applications is closed";
+      countdownBoxes.style.display = "none";
+      countdownMessage.style.display = "block";
+      countdownMessage.innerText = "Applications not yet open";
       return;
     }
 
     if (now > applicationClose) {
-      document.getElementById("countdown").innerText = "Application is closed";
+      countdownBoxes.style.display = "none";
+      countdownMessage.style.display = "block";
+      countdownMessage.innerText = "Application is closed";
       return;
     }
+
+    // Applications are open → show countdown
+    countdownBoxes.style.display = "flex";
+    countdownMessage.style.display = "none";
 
     const distance = applicationClose - now;
 
@@ -354,6 +378,7 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
   updateCountdown();
   setInterval(updateCountdown, 1000);
 </script>
+
 
 
 
