@@ -3,6 +3,10 @@ session_start();
 
 require_once '../../app/db.php';
 require_once '../../path.php';
+require_once '../../vendor/autoload.php'; // PHPMailer autoload
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -10,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Basic input sanitation
+// Input sanitation
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
@@ -22,12 +26,7 @@ if ($email === '' || $password === '') {
 try {
     // Fetch admin user
     $stmt = $pdo->prepare("
-        SELECT
-            id,
-            email,
-            password_hash,
-            is_active,
-            failed_login_attempts
+        SELECT id, email, password_hash, is_active, failed_login_attempts
         FROM admin_users
         WHERE email = :email
         LIMIT 1
@@ -35,20 +34,14 @@ try {
     $stmt->execute(['email' => $email]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Generic failure (no info leaks)
+    // Generic failure
     if (!$admin) {
         header('Location: ' . BASE_URL . '/admin/auth/?error=invalid');
         exit;
     }
 
-    // Account locked / inactive
-    if (!$admin['is_active']) {
-        header('Location: ' . BASE_URL . '/admin/auth/?error=locked');
-        exit;
-    }
-
-    // Hard stop if already locked by attempts
-    if ($admin['failed_login_attempts'] >= 3) {
+    // Already locked
+    if (!$admin['is_active'] || $admin['failed_login_attempts'] >= 3) {
         header('Location: ' . BASE_URL . '/admin/auth/?error=locked');
         exit;
     }
@@ -58,40 +51,87 @@ try {
 
         $newAttempts = $admin['failed_login_attempts'] + 1;
 
-        // Lock account on 3rd failure
         if ($newAttempts >= 3) {
-            $stmt = $pdo->prepare("
-                UPDATE admin_users
-                SET
-                    failed_login_attempts = :attempts,
-                    is_active = false,
-                    last_failed_login = NOW()
-                WHERE id = :id
-            ");
-        } else {
-            $stmt = $pdo->prepare("
-                UPDATE admin_users
-                SET
-                    failed_login_attempts = :attempts,
-                    last_failed_login = NOW()
-                WHERE id = :id
-            ");
-        }
+            // Generate unlock token
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour
 
-        $stmt->execute([
-            'attempts' => $newAttempts,
-            'id' => $admin['id']
-        ]);
+            // Lock account + store token
+            $stmt = $pdo->prepare("
+                UPDATE admin_users
+                SET failed_login_attempts = :attempts,
+                    is_active = false,
+                    unlock_token = :token,
+                    unlock_token_expires = :expires,
+                    last_failed_login = NOW()
+                WHERE id = :id
+            ");
+            $stmt->execute([
+                'attempts' => $newAttempts,
+                'token' => $token,
+                'expires' => $expires,
+                'id' => $admin['id']
+            ]);
+
+            // Send email with unlock link
+            $unlockLink = BASE_URL . "/admin/auth/unlock.php?token=$token";
+
+            $mail = new PHPMailer(true);
+            try {
+                //Server settings
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com'; // Your SMTP
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'garrett.morgan.pro@gmail.com';
+                $mail->Password   = '***REMOVED-SMTP-PASSWORD***';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+
+                //Recipients
+                $mail->setFrom('admin@themorganlegacy.com', 'Morgan Legacy Admin');
+                $mail->addAddress($admin['email']);
+
+                // Content
+                // Attach logo and give it a Content ID
+                $mail->AddEmbeddedImage('../../assets/images/logo.png', 'logoimg');
+
+                // Then reference it in the HTML using cid:
+                $mail->isHTML(true);
+                $mail->Subject = "Account Lockout: TheMorganLegacy Admin Account";
+                $mail->Body = "
+                    <p><img src='cid:logoimg' alt='Morgan Legacy Scholarship Logo' style='height:80px;'></p>
+                    Your admin account has been locked after 3 failed login attempts.<br>
+                    Click the link below to unlock your account (valid 1 hour):<br>
+                    <a href='$unlockLink'>$unlockLink</a>
+                ";
+                $mail->send();
+                
+            } catch (Exception $e) {
+                error_log("Mail could not be sent: {$mail->ErrorInfo}");
+            }
+
+        } else {
+            // Just increment failed attempts
+            $stmt = $pdo->prepare("
+                UPDATE admin_users
+                SET failed_login_attempts = :attempts,
+                    last_failed_login = NOW()
+                WHERE id = :id
+            ");
+            $stmt->execute([
+                'attempts' => $newAttempts,
+                'id' => $admin['id']
+            ]);
+        }
 
         header('Location: ' . BASE_URL . '/admin/auth/?error=invalid');
         exit;
     }
 
-    // ✅ SUCCESS — reset counters
+    // ✅ Success — reset counters
     $stmt = $pdo->prepare("
         UPDATE admin_users
-        SET
-            failed_login_attempts = 0,
+        SET failed_login_attempts = 0,
             last_login_at = NOW()
         WHERE id = :id
     ");
