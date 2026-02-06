@@ -440,7 +440,7 @@ switch ($status) {
 <div class="card mb-3 shadow-sm" style="border-radius: 12px; border: none; overflow: hidden;">
     <!-- Card Header -->
     <div class="card-header bg-white d-flex align-items-center gap-2" style="padding: 20px 10px;">
-        <div class="d-flex align-items-center justify-content-center me-2 border-none" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 6px;">
+        <div class="d-flex align-items-center justify-content-center me-2 border-none" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 6px; border: none !important;">
             <i class="bi bi-file-earmark-text text-white"></i>
         </div>
         <h5 class="mb-0 fw-semibold">Essay</h5>
