@@ -483,7 +483,7 @@ if ($applicationClose) {
                                     default     => 'bg-light text-dark'
                                 };
                             ?>">
-                            <?= ucfirst($app['application_status']) ?>
+                            <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
                         </span>
                     </td>
 
