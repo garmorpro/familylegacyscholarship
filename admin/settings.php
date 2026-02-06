@@ -1,5 +1,6 @@
 <?php
 require_once '../app/functions.php';
+require_once '../app/require_admin.php';
 
 require_once '../path.php';
 // Ensure PDO exists

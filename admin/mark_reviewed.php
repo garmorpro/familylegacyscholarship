@@ -1,5 +1,6 @@
 <?php
 require '../app/db.php'; // Make sure this points to your PDO connection
+require_once '../app/require_admin.php';
 
 // Check if ID is provided
 if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
