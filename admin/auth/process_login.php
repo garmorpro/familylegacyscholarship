@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Input sanitation
-$email = trim($_POST['email_real'] ?? '');
-$password = $_POST['pass_real'] ?? '';
+$email = trim($_POST['email'] ?? '');
+$password = $_POST['password'] ?? '';
 
 if ($email === '' || $password === '') {
     header('Location: ' . BASE_URL . '/admin/auth/?error=missing');
