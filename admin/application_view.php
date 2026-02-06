@@ -188,7 +188,7 @@ try {
     <?php endif; ?>
     <?php
     // Check if any application has already been selected as final recipient
-    $stmt = $pdo->query("SELECT COUNT(*) FROM applications WHERE final_recipient = TRUE");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM applications WHERE status = final_recipient");
     $finalCount = (int) $stmt->fetchColumn();
     ?>
     
