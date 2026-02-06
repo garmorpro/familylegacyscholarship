@@ -160,7 +160,7 @@ try {
 
                                 <!-- Message container -->
                                 <div class="alert alert-info d-none" id="alreadyUploadedMessage">
-                                    This recipient already has a picture uploaded.
+                                    This recipient already has a picture uploaded. If you want to change the picture uploaded, please reach out to Garrett Morgan.
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -175,18 +175,18 @@ try {
 
                     <script>
                     var uploadModal = document.getElementById('uploadPictureModal');
-                                
+
                     uploadModal.addEventListener('show.bs.modal', function (event) {
                         var button = event.relatedTarget; // Row that triggered modal
                         var recipientId = button.getAttribute('data-recipient-id');
                         var recipientPicture = button.getAttribute('data-recipient-picture');
-                                
+
                         document.getElementById('recipient_id').value = recipientId;
-                                
+
                         var fileInputContainer = document.getElementById('fileInputContainer');
                         var alreadyUploadedMessage = document.getElementById('alreadyUploadedMessage');
                         var uploadButton = document.getElementById('uploadButton');
-                                
+
                         if (recipientPicture) {
                             // Recipient already has a picture
                             fileInputContainer.classList.add('d-none');
