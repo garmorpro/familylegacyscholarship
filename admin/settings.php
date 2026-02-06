@@ -141,8 +141,7 @@ try {
     <!-- Left: Titles -->
     <div>
         <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Admin Settings</h3>
-        <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage application periods, award amounts, and timeline dates
-</h5>
+        <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage application periods, award amounts, and timeline dates</h5>
     </div>
 
 </div>
