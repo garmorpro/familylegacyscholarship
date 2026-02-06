@@ -459,6 +459,10 @@ switch ($status) {
         </span>
     </div>
 
+    <p>
+        Tell us about yourself
+    </p>
+
     <!-- Card Body -->
     <div class="card-body" style="padding: 20px 25px; background-color: #f8f9fa; border-radius: 0 0 12px 12px;">
         <div style="line-height: 1.6; color: #343a40; font-size: 14px;">
