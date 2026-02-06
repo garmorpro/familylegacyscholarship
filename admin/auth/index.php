@@ -1,6 +1,21 @@
 <?php
-// login.php (logic can come later)
 session_start();
+
+$errorMessage = '';
+
+if (isset($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'invalid':
+            $errorMessage = 'Invalid email or password.';
+            break;
+        case 'missing':
+            $errorMessage = 'Please enter both email and password.';
+            break;
+        case 'server':
+            $errorMessage = 'Something went wrong. Please try again.';
+            break;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,6 +123,17 @@ button:hover {
   font-size: .75rem;
   color: var(--muted);
 }
+
+.error-message {
+  margin-bottom: 1rem;
+  padding: .6rem .75rem;
+  border-radius: 8px;
+  font-size: .85rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
 </style>
 </head>
 
@@ -116,6 +142,13 @@ button:hover {
 <div class="login-card">
   <h1>Admin Access</h1>
   <p>Sign in to manage the admin portal</p>
+
+  <?php if ($errorMessage): ?>
+  <div class="error-message">
+    <?= htmlspecialchars($errorMessage) ?>
+  </div>
+<?php endif; ?>
+
 
   <form method="POST" action="process_login.php">
     <div class="form-group">
