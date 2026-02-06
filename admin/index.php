@@ -160,6 +160,14 @@ try {
 </div>
 
 
+<?php
+if (php_sapi_name() !== 'cli') { // only for web requests
+    $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? 'not set';
+    echo "Remote IP address: $remoteAddr\n";
+}
+?>
+
+
 <!-- STATUS ROW -->
 
     <div class="row g-3 mb-4">
