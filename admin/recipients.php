@@ -134,7 +134,37 @@ try {
             </tr>
         <?php else: ?>
             <?php foreach ($recipients as $rec): ?>
-                <tr>
+                <tr style="cursor: pointer;"
+                    data-bs-toggle="modal"
+                    data-bs-target="#uploadPictureModal"
+                    data-recipient-id="<?= $rec['id'] ?>">
+
+                    <!-- Upload Picture Modal -->
+<div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadPictureLabel">Upload Recipient Picture</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="recipient_id" id="recipient_id">
+            <div class="mb-3">
+                <label for="recipient_picture" class="form-label">Choose an image</label>
+                <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
                     <td style="width: 20px;"></td>
 
                     <!-- Name + GPA -->
