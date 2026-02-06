@@ -147,7 +147,7 @@ try {
 
     <!-- Left Border Alert -->
     <div style="
-        border-left: 5px solid #0d6efd;   /* blue left border */
+        border-left: 5px solid rgb(62,163,45);   /* blue left border */
         background-color: rgb(242,253,244);        /* subtle gray background */
         padding: 15px 20px;
         border-radius: 4px;
