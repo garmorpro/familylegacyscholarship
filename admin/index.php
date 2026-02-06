@@ -354,47 +354,53 @@ if ($applicationClose) {
 
 
 <!-- Bulk Actions Button -->
-<div class="d-flex justify-content-end align-items-center gap-2 mb-3 flex-wrap">
+<div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
 
-    <!-- Search Bar -->
-    <input type="text" id="searchInput" class="form-control form-control-sm"
-           placeholder="Search applicants..." style="width: 220px;">
+    <!-- Left side: Search Bar -->
+    <div>
+        <input type="text" id="searchInput" class="form-control form-control-sm"
+               placeholder="Search applicants..." style="width: 220px;">
+    </div>
 
-    <!-- Clear Applications -->
-    <?php if ($applicationsClosed): ?>
-        <button class="btn btn-danger-soft" onclick="confirmClearApplications()">
-            <i class="bi bi-trash3 me-1"></i>
-            Clear Applications
-        </button>
-    <?php endif; ?>
+    <!-- Right side: Buttons -->
+    <div class="d-flex align-items-center gap-2">
+        <!-- Clear Applications -->
+        <?php if ($applicationsClosed): ?>
+            <button class="btn btn-danger-soft" onclick="confirmClearApplications()">
+                <i class="bi bi-trash3 me-1"></i>
+                Clear Applications
+            </button>
+        <?php endif; ?>
 
-    <!-- Bulk Actions Dropdown -->
-    <div class="dropdown">
-        <button class="btn btn-action" type="button" id="bulkActionsBtn"
-                data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-lightning-fill me-1"></i>
-            Bulk Actions
-            <i class="bi bi-chevron-down ms-1 small"></i>
-        </button>
+        <!-- Bulk Actions Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-action" type="button" id="bulkActionsBtn"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-lightning-fill me-1"></i>
+                Bulk Actions
+                <i class="bi bi-chevron-down ms-1 small"></i>
+            </button>
 
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-            <li>
-                <a class="dropdown-item d-flex align-items-center gap-2"
-                   href="#" onclick="performBulkAction('delete'); return false;">
-                    <i class="bi bi-trash text-danger"></i>
-                    Delete
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item d-flex align-items-center gap-2"
-                   href="#" onclick="performBulkAction('select'); return false;">
-                    <i class="bi bi-check-circle text-success"></i>
-                    Advance to Final Review
-                </a>
-            </li>
-        </ul>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2"
+                       href="#" onclick="performBulkAction('delete'); return false;">
+                        <i class="bi bi-trash text-danger"></i>
+                        Delete
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2"
+                       href="#" onclick="performBulkAction('select'); return false;">
+                        <i class="bi bi-check-circle text-success"></i>
+                        Advance to Final Review
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
+
 
 
 
