@@ -224,7 +224,7 @@ try {
                     <div class="d-flex align-items-center mb-1">
                         <i class="bi bi-envelope me-2 text-primary"></i> <span class="text-muted">Email</span>
                     </div>
-                    <span class="fw-semibold"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></span>
+                    <a href="mailto:<?= htmlspecialchars($application['email'] ?? 'N/A') ?>"><span class="fw-semibold"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></span></a>
                 </div>
                 <hr>
                 <div class="mb-0">
