@@ -109,9 +109,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com">
     </div>
     <div class="col-md-6">
-      <label for="phone" class="form-label">Phone Number</label>
-      <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890">
-    </div>
+  <label for="phone" class="form-label">Phone Number</label>
+  <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890" maxlength="14">
+</div>
+
+<script>
+const phoneInput = document.getElementById('phone');
+
+phoneInput.addEventListener('input', function(e) {
+    let input = phoneInput.value.replace(/\D/g,''); // Remove all non-digits
+    if (input.length > 10) input = input.slice(0,10); // max 10 digits
+
+    let formatted = '';
+    if (input.length > 0) {
+        formatted += '(' + input.substring(0,3);
+    }
+    if (input.length >= 4) {
+        formatted += ') ' + input.substring(3,6);
+    }
+    if (input.length >= 7) {
+        formatted += '-' + input.substring(6,10);
+    }
+
+    phoneInput.value = formatted;
+});
+</script>
+
   </div>
 
   <!-- Section: School Information -->
