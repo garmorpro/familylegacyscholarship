@@ -1,3 +1,8 @@
+<?php
+require_once 'app/db.php';
+require_once 'path.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,58 +11,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="assets/css/styles.css?v=9.0.7">
-    <title>Morgan Legacy Scholarship</title>
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
+    <title>About - Morgan Legacy Scholarship</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
 
-<header>
-  <nav class="navbar navbar-expand-lg border-bottom shadow-sm" style="background-color: white !important;">
-    <div class="container py-3">
-
-      <!-- Title + Hamburger -->
-      <div class="d-flex flex-column w-100">
-        <!-- Top row: h1 + hamburger -->
-        <div class="d-flex align-items-center justify-content-between w-100">
-          <h1 class="h4 fw-semibold mb-1">
-            Morgan Family Legacy Scholarship
-          </h1>
-
-          <!-- Hamburger (mobile only) -->
-          <button
-            class="navbar-toggler d-lg-none"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNav"
-            aria-controls="mainNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-
-        <!-- Subtitle -->
-        <p class="text-muted mb-0">
-          Battery Creek High School, Beaufort, SC
-        </p>
-      </div>
-
-      <!-- Navigation Links -->
-      <div class="collapse navbar-collapse mt-3 mt-lg-0" id="mainNav">
-        <ul class="navbar-nav ms-auto gap-2 gap-lg-3">
-          <li class="nav-item"><a class="nav-link active px-3" href="/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/eligibility.html">Eligibility</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/application.html">Application</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/recipients.html">Recipients</a></li>
-        </ul>
-      </div>
-
-    </div>
-  </nav>
-</header>
+<?php include_once ROOT_PATH . '/assets/includes/header.php'; ?>
 
 
 <main class="flex-fill">
