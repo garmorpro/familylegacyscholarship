@@ -288,8 +288,25 @@ switch ($status) {
 }
 ?>
 <div class="d-flex gap-1">
-    <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
+    <?php if ($status === 'not_sent'): ?>
+        <!-- Not sent: show clickable icon that triggers alert -->
+        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
+           style="cursor:pointer;" 
+           onclick="alert('This would send the recommendation email to <?= addslashes($recommendation['recommender_email'] ?? 'N/A') ?>');">
+        </i>
+    <?php elseif ($status === 'completed'): ?>
+        <!-- Completed: open modal -->
+        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
+           style="cursor:pointer;" 
+           data-bs-toggle="modal" 
+           data-bs-target="#recModal<?= $recommendation['id'] ?>">
+        </i>
+    <?php else: ?>
+        <!-- Pending or Sent: static icon -->
+        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
+    <?php endif; ?>
 </div>
+
 
                 </div>
 
