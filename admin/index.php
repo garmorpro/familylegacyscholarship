@@ -294,6 +294,7 @@ if ($applicationClose) {
 
 <!-- Bulk Actions Button -->
 <div class="d-flex justify-content-end gap-2 mb-2">
+    <?= $applicationClose; ?>
 
     <?php if ($applicationsClosed): ?>
         <button
