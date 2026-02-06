@@ -449,7 +449,7 @@ switch ($status) {
                     $essayText = $application['essay'] ?? '';
                     $wordCount = str_word_count($essayText);
                 ?>
-                <div class="mb-2" style="font-size: 14px !important; margin-top: -15px !important; margin-bottom: 15px !important; margin-left:20px;"><span class="fw-semibold">Word Count:</span> <?= $wordCount ?></div>
+                <div class="mb-2" style="font-size: 14px !important; margin-top: -15px !important; margin-bottom: 15px !important; margin-left:35px;"><span class="fw-semibold">Word Count:</span> <?= $wordCount ?></div>
                 <div><?= nl2br(htmlspecialchars($essayText)) ?></div>
             </div>
         </div>
