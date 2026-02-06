@@ -470,7 +470,7 @@ switch ($status) {
 
         <!-- Additional Details Card -->
         <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-header bg-white d-flex align-items-center gap-2" style="border: none !important; padding-top: 30px; padding-left: 25px; margin-bottom: -20px !important;">
+            <div class="card-header bg-white d-flex align-items-center gap-2" style="border: none !important; padding-top: 30px; padding-left: 10px; margin-bottom: -20px !important;">
                 <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
                     <i class="bi bi-info-circle text-white"></i>
                 </div>
