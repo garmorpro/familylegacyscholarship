@@ -276,9 +276,9 @@ switch ($status) {
         $iconClass = 'bi-eye-fill text-success';
         $iconTitle = 'Completed';
         break;
-    case 'pending':
+    case 'sent':
         $iconClass = 'bi-clock-fill text-secondary';
-        $iconTitle = 'Pending';
+        $iconTitle = 'Send';
         break;
     case 'sent':
     case 'not_sent':
