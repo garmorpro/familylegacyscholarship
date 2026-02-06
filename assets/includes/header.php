@@ -18,12 +18,12 @@
 
       <!-- Navigation Links -->
       <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto gap-2 gap-lg-3">
-          <li class="nav-item"><a class="nav-link active px-3" href="<?= BASE_URL ?>/">Home</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/about.php">About</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/eligibility.php">Eligibility</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/application.php">Application</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/recipients.php">Recipients</a></li>
+        <ul class="navbar-nav ms-auto gap-2 gap-lg-2">
+          <li class="nav-item"><a class="nav-link active px-2" href="<?= BASE_URL ?>/">Home</a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="<?= BASE_URL ?>/about.php">About</a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="<?= BASE_URL ?>/eligibility.php">Eligibility</a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="<?= BASE_URL ?>/application.php">Application</a></li>
+          <li class="nav-item"><a class="nav-link px-2" href="<?= BASE_URL ?>/recipients.php">Recipients</a></li>
         </ul>
       </div>
 
