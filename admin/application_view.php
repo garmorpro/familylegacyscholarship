@@ -263,7 +263,9 @@ $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
 $status = strtolower($recommendation['recommender_status'] ?? 'not_sent');
 
 // Determine icon, title, and click action
-$iconClass = $iconTitle = $clickAction = '';
+$iconClass = '';
+$iconTitle = '';
+$clickAction = '';
 
 if ($status === 'completed') {
     $iconClass = 'bi-eye-fill text-success';
@@ -348,7 +350,6 @@ switch ($status) {
 </div>
 <?php endif; ?>
 
-        </div>
 
     </div>
 
