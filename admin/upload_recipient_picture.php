@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE recipients SET recipient_picture = :picture WHERE id = :id");
             $stmt->execute([':picture' => $recipient_picture, ':id' => $recipientId]);
 
-            header("Location: recipients.php"); // redirect back
+            header("Location: /admin/recipients.php"); // redirect back
             exit;
         } else {
             die("Error uploading file.");
