@@ -153,7 +153,7 @@ try {
     border-left: 5px solid rgb(62,163,45);   /* green left border */
     background-color: rgb(242,253,244);      /* subtle light green background */
     padding: 15px 20px;
-    border-radius: 4px;
+    border-radius: 12px;
     color: #212529;
     font-size: 14px;
     margin-bottom: 20px;
