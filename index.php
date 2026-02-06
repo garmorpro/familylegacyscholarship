@@ -117,27 +117,16 @@ $today = date('Y-m-d');
 ?>
 
 <?php if ($today >= $applicationOpen && $today <= $applicationClose): ?>
-  <!-- OPEN -->
   <span class="badge rounded-pill mb-1"
         style="background-color: rgb(226,251,232); color: rgb(43,101,54); font-weight: 400 !important;">
     <i class="bi bi-check2-circle me-1"></i>
     Applications Now Open
   </span>
-
-<?php elseif ($today < $applicationOpen): ?>
-  <!-- NOT OPEN YET -->
-  <span class="badge rounded-pill mb-1"
-        style="background-color: rgb(240,240,240); color: rgb(90,90,90); font-weight: 400 !important;">
-    <i class="bi bi-clock me-1"></i>
-    Applications Open <?= date("F j, Y", strtotime($applicationOpen)) ?>
-  </span>
-
 <?php else: ?>
-  <!-- CLOSED -->
   <span class="badge rounded-pill mb-1"
         style="background-color: rgb(253,235,235); color: rgb(153,27,27); font-weight: 400 !important;">
     <i class="bi bi-x-circle me-1"></i>
-    Applications Closed
+    Application Closed
   </span>
 <?php endif; ?>
 
