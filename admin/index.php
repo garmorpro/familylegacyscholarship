@@ -386,7 +386,7 @@ if ($applicationClose) {
                    href="#"
                    onclick="performBulkAction('select'); return false;">
                     <i class="bi bi-check-circle text-success"></i>
-                    Mark as Selected
+                    Advance to Final Review
                 </a>
             </li>
         </ul>
@@ -584,9 +584,9 @@ if (action === 'delete') {
         </p>
     `;
 } else if (action === 'select') {
-    title = 'Mark Applications as Selected';
+    title = 'Advance Applicants to Final Review';
     htmlMessage = `
-        <p>Are you sure you want to mark the following applications as selected?</p>
+        <p>Are you sure you want to advance the following applications as to final review?</p>
         <ul class="list-group" style="
             max-height: 200px; 
             overflow-y: auto; 

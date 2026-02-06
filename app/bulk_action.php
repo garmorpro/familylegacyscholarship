@@ -32,9 +32,9 @@ try {
         $stmt->execute($ids);
         $message = count($ids) . " application(s) deleted.";
     } elseif ($action === 'select') {
-        $stmt = $pdo->prepare("UPDATE scholarship_applications SET application_status = 'selected' WHERE id IN ($placeholders)");
+        $stmt = $pdo->prepare("UPDATE scholarship_applications SET application_status = 'final_review' WHERE id IN ($placeholders)");
         $stmt->execute($ids);
-        $message = count($ids) . " application(s) marked as selected.";
+        $message = count($ids) . " application(s) advanced to final review.";
     } else {
         throw new Exception('Invalid action: ' . $action);
     }
