@@ -147,7 +147,7 @@ try {
     </div>
 
     <!-- Right: Settings Icon -->
-     <div>
+     <div class="" style="display: flex;">
 <a href="<?= BASE_URL ?>/admin/auth/logout.php" title="Logout" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
         <i class="bi bi-box-arrow-in-left"></i>
     </a>
