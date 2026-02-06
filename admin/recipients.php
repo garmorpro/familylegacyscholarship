@@ -168,9 +168,9 @@ try {
                     <!-- Date Submitted -->
                     <td>
                         <?php if (!empty($rec['recipient_picture'])): ?>
-                            <span class="badge rounded-pill bg-success-subtle text-white">Uploaded</span>
+                            <span class="badge rounded-pill bg-success-subtle text-success">Uploaded</span>
                         <?php else: ?>
-                            <span class="badge rounded-pill bg-secondary text-white">Not Yet</span>
+                            <span class="badge rounded-pill bg-warning-subtle text-warning">Not Yet</span>
                         <?php endif; ?>
                     </td>
 
