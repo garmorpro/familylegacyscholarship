@@ -269,6 +269,8 @@ try {
             Email address for receiving application notifications and updates
         </span>
 
+        <br>
+
         <!-- Submit Button -->
         <button type="submit" style="
             padding: 10px 20px;
