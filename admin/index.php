@@ -16,7 +16,8 @@ try {
     $statusCounts = [
         'submitted' => 0,
         'reviewed'  => 0,
-        'final_review'  => 0
+        'final_review'  => 0,
+        'final_recipient' => 0
     ];
 
     while ($row = $countsStmt->fetch(PDO::FETCH_ASSOC)) {
