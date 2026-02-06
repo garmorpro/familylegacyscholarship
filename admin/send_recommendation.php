@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '/vendor/autoload.php'; // Composer autoload
+require '../vendor/autoload.php'; // Composer autoload
 require '../app/db.php'; // your PDO connection
 
 if (!isset($_GET['id'])) {
