@@ -211,7 +211,9 @@ try {
         <div style="margin-bottom: 15px;">
             <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
             <div style="display: flex; gap: 10px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
                 <input type="date" id="review_start" name="review_start" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
                 <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
             </div>
         </div>
@@ -227,7 +229,7 @@ try {
 
         <!-- Recipient Announcement -->
         <div class="w-25" style="margin-bottom: 15px;">
-            <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Recipient Announcement</label>
+            <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
             <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
