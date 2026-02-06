@@ -1,3 +1,23 @@
+<?php
+require_once 'app/db.php';
+
+try {
+    $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    $settings = [];
+    while ($row = $settingsStmt->fetch(PDO::FETCH_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (Exception $e) {
+    $settings = [];
+}
+
+// Helper
+function getSetting($key, $default = '') {
+    global $settings;
+    return isset($settings[$key]) ? htmlspecialchars($settings[$key], ENT_QUOTES, 'UTF-8') : $default;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,30 +146,35 @@
 </div>
 
 <div class="row g-3 mb-3">
-  <!-- Card 1 -->
+  <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
     <div class="card mb-0" style="border: none !important; height: 75px;">
       <div class="card-body">
         <h4 class="card-title" style="font-size: 18px;">
           <i class="bi bi-currency-dollar me-2"  style="color: rgb(45,92,242);"></i>Award Amount
         </h4>
-        <p class="card-text text-muted" style="font-size: 16px !important;">$1,000</p>
+        <p class="card-text text-muted" style="font-size: 16px !important;">
+          $<?= number_format(getSetting('award_amount', 0)) ?>
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- Card 2 -->
+  <!-- Card 2: Application Deadline -->
   <div class="col-12 col-md-6">
     <div class="card mt-0" style="border: none !important; height: 75px;">
       <div class="card-body">
         <h4 class="card-title" style="font-size: 18px;">
           <i class="bi bi-calendar2 me-2" style="color: rgb(45,92,242);"></i>Application Deadline
         </h4>
-        <p class="card-text text-muted" style="font-size: 16px !important;">April 15, 2026</p>
+        <p class="card-text text-muted" style="font-size: 16px !important;">
+          <?= date("F j, Y", strtotime(getSetting('application_closed', date('Y-m-d')))) ?>
+        </p>
       </div>
     </div>
   </div>
 </div>
+
 
 
     
