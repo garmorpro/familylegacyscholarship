@@ -166,7 +166,7 @@ try {
 
                     <!-- Date Submitted -->
                     <td>
-                        <?= date('Y', strtotime($rec['application_year'])) ?>
+                        <?= htmlspecialchars($rec['application_year']) ?>
                     </td>
 
                     
