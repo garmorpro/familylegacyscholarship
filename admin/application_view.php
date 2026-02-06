@@ -249,6 +249,7 @@ try {
 // Fetch recommendation for this application
 $recommendationStmt = $pdo->prepare("
     SELECT 
+        id,
         recommender_name, 
         recommender_email, 
         recommender_relationship, 
