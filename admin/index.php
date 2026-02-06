@@ -211,17 +211,15 @@ try {
 
     <!-- Right: Settings Icon -->
      <div class="" style="display: flex;">
-        <button class="btn btn-danger-soft me-2" onclick="performBulkAction('bulk_delete')">
+        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/recipients.php'">
             <i class="bi bi-trash3 me-1"></i>
             Recipients
         </button>
-        <button class="btn btn-danger-soft me-2" onclick="performBulkAction('bulk_delete')">
+        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/auth/logout.php'">
             <i class="bi bi-trash3 me-1"></i>
-            Recipients
+            Settings
         </button>
-        <a href="settings.php" title="Settings" class="me-3" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
-            <i class="bi bi-gear-fill"></i>
-        </a>
+        
         <a href="<?= BASE_URL ?>/admin/auth/logout.php" title="Logout" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
             <i class="bi bi-box-arrow-in-left"></i>
         </a>
