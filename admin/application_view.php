@@ -296,8 +296,7 @@ $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
     switch ($status) {
         case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
         case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
-        case 'not sent':
-        case '': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
+        case 'not_sent': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
         default: $badgeClass='bg-secondary'; $badgeText=htmlspecialchars($recommendation['recommender_status']);
     }
 ?>
