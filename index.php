@@ -181,18 +181,36 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
   </div>
 
   <!-- Card 2: Application Deadline -->
-  <div class="col-12 col-md-6">
+  <?php
+$applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
+$applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
+$today = date('Y-m-d');
+
+if ($today < $applicationOpen) {
+    $label = "Application Opens";
+    $dateToShow = $applicationOpen;
+} elseif ($today > $applicationClose) {
+    $label = "Application Opens";
+    $dateToShow = $applicationOpen; // you could also say "Applications closed" if preferred
+} else {
+    $label = "Application Deadline";
+    $dateToShow = $applicationClose;
+}
+?>
+
+<div class="col-12 col-md-6">
     <div class="card mt-0" style="border: none !important; height: 75px;">
       <div class="card-body">
         <h4 class="card-title" style="font-size: 18px;">
-          <i class="bi bi-calendar2 me-2" style="color: rgb(45,92,242);"></i>Application Deadline
+          <i class="bi bi-calendar2 me-2" style="color: rgb(45,92,242);"></i><?= $label ?>
         </h4>
         <p class="card-text text-muted" style="font-size: 16px !important;">
-          <?= date("F j, Y", strtotime(getSetting('application_closed', date('Y-m-d')))) ?>
+          <?= date("F j, Y", strtotime($dateToShow)) ?>
         </p>
       </div>
     </div>
-  </div>
+</div>
+
 </div>
 
 
@@ -346,7 +364,7 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
     if (now < applicationOpen) {
       countdownBoxes.style.display = "none";
       countdownMessage.style.display = "block";
-      countdownMessage.innerText = "Applications is closed";
+      countdownMessage.innerText = "Application is closed";
       return;
     }
 
