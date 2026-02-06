@@ -146,6 +146,7 @@ function getSetting($key, $default = '') {
             position: absolute;
             left: 12px;
             top: 50%;
+            padding-right: 15px;
             transform: translateY(-50%);
             font-weight: 600;
             color: #495057;
