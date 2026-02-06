@@ -478,7 +478,8 @@ if ($applicationClose) {
                                 echo match ($app['application_status']) {
                                     'submitted' => 'bg-primary-subtle text-primary',
                                     'reviewed'  => 'bg-secondary-subtle text-secondary',
-                                    'selected'  => 'bg-success-subtle text-success',
+                                    'final_review'  => 'bg-success-subtle text-success',
+                                    'final_selected'  => 'bg-success-subtle text-success',
                                     default     => 'bg-light text-dark'
                                 };
                             ?>">
