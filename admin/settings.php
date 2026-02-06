@@ -1,6 +1,11 @@
 <?php
 require_once '../app/functions.php';
 
+// Ensure PDO exists
+if (!isset($pdo)) {
+    die("PDO connection not initialized!");
+}
+
 // Fetch all settings from DB
 try {
     $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
@@ -17,9 +22,10 @@ try {
 // Helper function to safely get a setting
 function getSetting($key, $default = '') {
     global $settings;
-    return isset($settings[$key]) ? htmlspecialchars($settings[$key]) : $default;
+    return isset($settings[$key]) ? htmlspecialchars($settings[$key], ENT_QUOTES, 'UTF-8') : $default;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

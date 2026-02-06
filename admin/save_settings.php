@@ -1,6 +1,11 @@
 <?php
 require_once '../app/functions.php';
 
+// Ensure PDO exists
+if (!isset($pdo)) {
+    die("PDO connection not initialized!");
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die("Invalid request method.");
 }
@@ -19,6 +24,13 @@ $allowedSettings = [
 try {
     $pdo->beginTransaction();
 
+    // Prepare statement once
+    $stmt = $pdo->prepare("
+        UPDATE settings
+        SET setting_value = :value, updated_at = NOW()
+        WHERE setting_key = :key
+    ");
+
     foreach ($allowedSettings as $key) {
         if (isset($_POST[$key])) {
             $value = trim($_POST[$key]);
@@ -26,24 +38,17 @@ try {
             // For numeric fields like award_amount, remove $ and commas
             if ($key === 'award_amount') {
                 $value = str_replace(['$', ','], '', $value);
+
+                // Optional: ensure numeric
+                if (!is_numeric($value)) {
+                    throw new Exception("Invalid value for award amount.");
+                }
             }
 
-            // If empty string, store NULL in DB
-            $valueToSave = $value !== '' ? $value : null;
+            // Never store NULL in NOT NULL column, store empty string instead
+            $valueToSave = $value !== '' ? $value : '';
 
-            // Prepare and execute the update
-            $stmt = $pdo->prepare("
-                UPDATE settings
-                SET setting_value = :value, updated_at = NOW()
-                WHERE setting_key = :key
-            ");
-
-            if ($valueToSave === null) {
-                $stmt->bindValue(':value', null, PDO::PARAM_NULL);
-            } else {
-                $stmt->bindValue(':value', $valueToSave, PDO::PARAM_STR);
-            }
-
+            $stmt->bindValue(':value', $valueToSave, PDO::PARAM_STR);
             $stmt->bindValue(':key', $key, PDO::PARAM_STR);
             $stmt->execute();
         }
@@ -51,11 +56,14 @@ try {
 
     $pdo->commit();
 
-    // Redirect back after saving
+    // Redirect back with success
     header("Location: settings.php?success=1");
     exit;
 
 } catch (Exception $e) {
     $pdo->rollBack();
-    echo "Error updating settings: " . $e->getMessage();
+    // Redirect back with error message
+    $error = urlencode($e->getMessage());
+    header("Location: settings.php?error=$error");
+    exit;
 }
