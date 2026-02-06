@@ -137,8 +137,12 @@ function getSetting($key, $default = '') {
     </div>
 
     <form method="POST" action="save_settings.php">
-    <label for="award_amount">Award Amount ($)</label>
-    <input type="text" name="award_amount" id="award_amount" value="<?= getSetting('award_amount') ?>">
+
+    <label for="application_open">Application Open</label>
+    <input type="date" name="application_open" id="application_open" value="<?= getSetting('application_open') ?>">
+
+    <label for="application_closed">Application Closed</label>
+    <input type="date" name="application_closed" id="application_closed" value="<?= getSetting('application_closed') ?>">
 
     <button type="submit">Save Settings</button>
 </form>
