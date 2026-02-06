@@ -1,6 +1,7 @@
 <?php
 require_once '../app/functions.php';
 
+require_once '../path.php';
 // Ensure PDO exists
 if (!isset($pdo)) {
     die("PDO connection not initialized!");
