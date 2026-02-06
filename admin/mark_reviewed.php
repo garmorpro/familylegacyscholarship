@@ -18,7 +18,7 @@ try {
     $stmt->execute([':id' => $appId]);
 
     // Redirect back to the application details page
-    header("Location: application_details.php?id=" . $appId);
+    header("Location: /admin/application_details.php?id=" . $appId);
     exit;
 
 } catch (Exception $e) {
