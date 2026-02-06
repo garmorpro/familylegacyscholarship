@@ -268,80 +268,28 @@ $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
                     <?php
-$status = strtolower($recommendation['recommender_status'] ?? 'not_sent');
+$status = strtolower($recommendation['recommender_status'] ?? 'not sent');
 
-// Determine icon, title, and click behavior
 switch ($status) {
     case 'completed':
         $iconClass = 'bi-eye-fill text-success';
         $iconTitle = 'Completed';
-        $clickAction = "data-bs-toggle='modal' data-bs-target='#recModal{$recommendation['id']}'";
         break;
-
     case 'pending':
         $iconClass = 'bi-clock-fill text-secondary';
         $iconTitle = 'Pending';
-        $clickAction = ''; // not clickable
         break;
-
     case 'sent':
     case 'not_sent':
     default:
         $iconClass = 'bi-send-fill text-primary';
         $iconTitle = 'Not Sent';
-        $clickAction = "href='/send_recommendation.php?id={$recommendation['id']}'"; // clickable link
         break;
 }
 ?>
-
-<div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-            <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
-            <div class="d-flex gap-1">
-                <?php if ($clickAction): ?>
-                    <a <?= $clickAction ?> title="<?= htmlspecialchars($iconTitle) ?>">
-                        <i class="bi <?= $iconClass ?>"></i>
-                    </a>
-                <?php else: ?>
-                    <i class="bi <?= $iconClass ?>" title="<?= htmlspecialchars($iconTitle) ?>"></i>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="mb-2">
-            <span class="text-muted">Recommender</span> <br>
-            <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></span>
-        </div>
-        <div class="mb-2">
-            <span class="text-muted">Relationship</span> <br>
-            <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?></span>
-        </div>
-        <div class="mb-2">
-            <span class="text-muted">Email</span> <br> 
-            <span class="fw-semibold">
-                <a href="mailto:<?= htmlspecialchars($recommendation['recommender_email'] ?? '') ?>">
-                    <?= htmlspecialchars($recommendation['recommender_email'] ?? 'N/A') ?>
-                </a>
-            </span>
-        </div>
-
-        <?php
-            switch ($status) {
-                case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
-                case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
-                case 'not_sent':
-                case 'pending':
-                default: $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
-            }
-        ?>
-        <div class="mb-0">
-            <span class="text-muted">Status</span> <br>
-            <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
-        </div>
-    </div>
+<div class="d-flex gap-1">
+    <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
 </div>
-
 
                 </div>
 
