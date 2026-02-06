@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .scholarship-header h1 {
     font-size: 1.8rem;
     margin: 0;
-    color: #d63384; /* pink/purple accent */
+    color: #000000; /* pink/purple accent */
   }
   .form-container {
     background-color: #ffffff;
