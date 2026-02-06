@@ -213,7 +213,12 @@ try {
             <div style="display: flex; gap: 10px;">
                 <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
                 <input type="date" id="review_start" name="review_start" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+            </div>
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
+            <div style="display: flex; gap: 10px;">
                 <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
+                <input type="date" id="review_start" name="review_start" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
                 <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
             </div>
         </div>
