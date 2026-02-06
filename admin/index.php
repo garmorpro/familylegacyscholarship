@@ -215,8 +215,8 @@ try {
             <i class="bi bi-trash3 me-1"></i>
             Recipients
         </button>
-        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/auth/logout.php'">
-            <i class="bi bi-trash3 me-1"></i>
+        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/settings.php'">
+            <i class="bi bi-cog me-1"></i>
             Settings
         </button>
         
