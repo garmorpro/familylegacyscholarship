@@ -79,5 +79,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 </div>
 
+
+<!-- Initialize TinyMCE -->
+  <script>
+    tinymce.init({
+      selector: '#content', // CSS selector for the textarea
+      height: 300,             // editor height
+      menubar: false,          // hide menu if you want
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table code help wordcount'
+      ],
+      toolbar: 'undo redo | formatselect | ' +
+               'bold italic backcolor | alignleft aligncenter ' +
+               'alignright alignjustify | bullist numlist outdent indent | ' +
+               'removeformat | help'
+    });
+  </script>
+
 </body>
 </html>
