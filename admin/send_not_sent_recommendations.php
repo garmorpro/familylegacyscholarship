@@ -1,9 +1,56 @@
 <?php
 
+<?php
+// Only allow localhost (server) access
 if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
     http_response_code(403);
-    exit('Forbidden');
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>403 Forbidden</title>
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background: #fef2f2;
+                color: #b91c1c;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+                text-align: center;
+            }
+            .container {
+                max-width: 400px;
+            }
+            h1 {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+            p {
+                font-size: 1.2rem;
+            }
+            a {
+                color: #b91c1c;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>403 Forbidden</h1>
+            <p>Access Denied. You are not allowed to view this page.</p>
+            <p>If you believe this is an error, contact the server administrator.</p>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
 }
+
 
 
 use PHPMailer\PHPMailer\PHPMailer;
