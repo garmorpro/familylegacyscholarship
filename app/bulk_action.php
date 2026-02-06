@@ -69,7 +69,7 @@ try {
             ':intended_school' => $app['intended_school'],
             ':intended_major' => $app['intended_major'],
             ':additional_information' => $app['additional_information'],
-            ':date_submitted' => $app['date_submitted'],
+            ':date_submitted' => $app['submitted_at'],
             ':application_year' => date('Y')
         ]);
     }
