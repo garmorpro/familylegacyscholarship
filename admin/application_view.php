@@ -453,7 +453,7 @@ switch ($status) {
     font-size: 13px;
     padding: 0.35rem 0.8rem;
     border-radius: 50rem;
-    background: linear-gradient(135deg, #b7c0ee, #334ed6);
+    background: linear-gradient(135deg, #b7c0ee, rgb(49,108,244));
     color: #fff;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     display: inline-flex;
