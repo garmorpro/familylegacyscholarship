@@ -1,7 +1,7 @@
 <?php
 
 // Only allow localhost (server) access
-if (php_sapi_name() !== 'cli' && ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1') {
+if (php_sapi_name() !== 'cli') {
     http_response_code(403);
     ?>
     <!DOCTYPE html>
