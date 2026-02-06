@@ -20,36 +20,37 @@ try {
     $pdo->beginTransaction();
 
     foreach ($allowedSettings as $key) {
-        if (isset($_POST[$key])) {
-            $value = trim($_POST[$key]);
+    if (isset($_POST[$key])) {
+        $value = trim($_POST[$key]);
 
-            // Remove $ and commas for award_amount
-            if ($key === 'award_amount') {
-                $value = str_replace(['$', ','], '', $value);
-            }
+        // Remove $ and commas for award_amount
+        if ($key === 'award_amount') {
+            $value = str_replace(['$', ','], '', $value);
+            // Convert empty string to NULL
+            $value = $value === '' ? null : $value;
+        }
 
-            // Convert empty strings to NULL
-            $value = trim($_POST[$key]);
+        // Convert empty strings to NULL for other fields if needed
+        if ($key !== 'award_amount') {
+            $value = $value === '' ? null : $value;
+        }
 
-if ($key === 'award_amount') {
-    $value = str_replace(['$', ','], '', $value);
+        $stmt = $pdo->prepare("
+            UPDATE settings
+            SET setting_value = :value, updated_at = NOW()
+            WHERE setting_key = :key
+        ");
+
+        if ($value === null) {
+            $stmt->bindValue(':value', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(':value', $value, PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 }
 
-// Store empty strings instead of NULL
-$value = $value !== '' ? $value : '';
-
-$stmt = $pdo->prepare("
-    UPDATE settings
-    SET setting_value = :value, updated_at = NOW()
-    WHERE setting_key = :key
-");
-
-$stmt->bindValue(':value', $value, PDO::PARAM_STR);
-$stmt->bindValue(':key', $key, PDO::PARAM_STR);
-$stmt->execute();
-
-        }
-    }
 
     $pdo->commit();
     header("Location: settings.php?success=1");
