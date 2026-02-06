@@ -359,7 +359,7 @@ if ($applicationClose) {
     <!-- Left side: Search Bar -->
     <div>
         <input type="text" id="searchInput" class="form-control form-control-sm"
-               placeholder="Search applicants..." style="width: 220px;">
+               placeholder="Search applicants..." style="width: 220px; border-radius: 20px !important;">
     </div>
 
     <!-- Right side: Buttons -->
