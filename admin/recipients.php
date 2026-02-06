@@ -170,7 +170,7 @@ try {
                         <?php if (!empty($rec['recipient_picture'])): ?>
                             <span class="badge rounded-pill bg-success-subtle text-success">Uploaded</span>
                         <?php else: ?>
-                            <span class="badge rounded-pill bg-warning-subtle text-warning">Not Yet</span>
+                            <span class="badge rounded-pill bg-danger-subtle text-danger">Not Yet</span>
                         <?php endif; ?>
                     </td>
 
