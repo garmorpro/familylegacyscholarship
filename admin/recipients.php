@@ -121,7 +121,7 @@ try {
                 <th>Intended School</th>
                 <th>Application Year</th>
                 <!-- <th>Status</th> -->
-                <th style="width: 40px;"></th>
+                <!-- <th style="width: 40px;"></th> -->
             </tr>
         </thead>
 
