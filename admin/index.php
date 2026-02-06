@@ -359,14 +359,14 @@ if ($applicationClose) {
     <!-- Left side: Search Bar -->
     <div>
         <input type="text" id="searchInput" class="form-control form-control-sm"
-               placeholder="Search applicants..." style="width: 260px; padding-top: 8px !important; padding-bottom: 8px !important; padding-left: 8px !important; border-radius: 20px !important;">
+               placeholder="Search applicants..." style="width: 260px; padding-top: 8px !important; padding-bottom: 8px !important; border-radius: 20px !important;">
     </div>
 
     <!-- Right side: Buttons -->
     <div class="d-flex align-items-center gap-2">
         <!-- Clear Applications -->
         <?php if ($applicationsClosed): ?>
-            <button class="btn btn-danger-soft" onclick="confirmClearApplications()">
+            <button class="btn btn-danger-soft" onclick="performBulkAction('bulk_delete')">
                 <i class="bi bi-trash3 me-1"></i>
                 Clear Applications
             </button>
@@ -615,7 +615,16 @@ if (action === 'delete') {
             This action is permanent.
         </p>
     `;
+} else if (action === 'bulk_delete') {
+    title = 'Delete All Applications';
+    htmlMessage = `
+        <p>Are you sure you want to delete all current applications?</p>
+        <p style="color: red; font-weight: bold; font-size: 16px;">
+            This action <u>cannot</u> be undone.
+        </p>
+    `;
 }
+
 
 
 
