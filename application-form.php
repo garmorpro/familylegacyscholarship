@@ -144,7 +144,7 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="gradYear" class="form-label">Expected Graduation Year</label>
-      <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" value="<?php echo date('Y')+3; ?>">
+      <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" placeholder="<?php echo date('Y')+3; ?>">
     </div>
     <div class="col-md-6">
       <label for="gpa" class="form-label">Current Weighted GPA</label>
