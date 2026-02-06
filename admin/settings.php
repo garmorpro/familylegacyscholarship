@@ -162,17 +162,17 @@ try {
     <div style="
         flex-shrink: 0;
         font-size: 20px;
-        color: rgb(62,163,45);
+        color: rgb(62,163,75);
         line-height: 1;
     ">
-        <i class="bi bi-check-circle-fill"></i>
+        <i class="bi bi-exclamation-circle"></i>
     </div>
 
     <!-- Text content -->
     <div>
-        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px;">Note:</div>
-        <div style="font-weight: 400; font-size: 14px; color: #212529;">
-            Changes made here will affect all future applications. Please double-check your dates and award amounts.
+        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: rgb(38,82,47);">Applications are currently open</div>
+        <div style="font-weight: 400; font-size: 14px; color: rgb(51,128,63;">
+            Students can submit applications through the website
         </div>
     </div>
 </div>
