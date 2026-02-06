@@ -423,12 +423,12 @@ switch ($status) {
             <div class="card-body">
                 <div class="mb-3">
                     <div class="fw-semibold mb-1">Extracurricular Activities:</div>
-                    <div><?= nl2br(htmlspecialchars($application['extracurricular_activities'] ?? 'N/A')) ?></div>
+                    <div><?= nl2br(htmlspecialchars($application['extracurricular'] ?? 'N/A')) ?></div>
                 </div>
                 <hr>
                 <div class="mb-3">
                     <div class="fw-semibold mb-1">Leadership Roles:</div>
-                    <div><?= nl2br(htmlspecialchars($application['leadership_roles'] ?? 'N/A')) ?></div>
+                    <div><?= nl2br(htmlspecialchars($application['leadership'] ?? 'N/A')) ?></div>
                 </div>
                 <hr>
                 <div>
@@ -489,7 +489,7 @@ switch ($status) {
                 <hr>
                 <div>
                     <div class="fw-semibold mb-1">Additional Notes:</div>
-                    <div><?= nl2br(htmlspecialchars($application['additional_notes'] ?? 'N/A')) ?></div>
+                    <div><?= nl2br(htmlspecialchars($application['additional_information'] ?? 'N/A')) ?></div>
                 </div>
             </div>
         </div>
