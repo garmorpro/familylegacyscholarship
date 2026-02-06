@@ -147,16 +147,36 @@ try {
 
     <!-- Left Border Alert -->
     <div style="
-        border-left: 5px solid rgb(62,163,45);   /* blue left border */
-        background-color: rgb(242,253,244);        /* subtle gray background */
-        padding: 15px 20px;
-        border-radius: 4px;
-        color: #212529;
-        font-size: 14px;
-        margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-left: 5px solid rgb(62,163,45);   /* green left border */
+    background-color: rgb(242,253,244);      /* subtle light green background */
+    padding: 15px 20px;
+    border-radius: 4px;
+    color: #212529;
+    font-size: 14px;
+    margin-bottom: 20px;
+">
+    <!-- Icon -->
+    <div style="
+        flex-shrink: 0;
+        font-size: 20px;
+        color: rgb(62,163,45);
+        line-height: 1;
     ">
-        <strong>Note:</strong> Changes made here will affect all future applications. Please double-check your dates and award amounts.
+        <i class="bi bi-check-circle-fill"></i>
     </div>
+
+    <!-- Text content -->
+    <div>
+        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px;">Note:</div>
+        <div style="font-weight: 400; font-size: 14px; color: #212529;">
+            Changes made here will affect all future applications. Please double-check your dates and award amounts.
+        </div>
+    </div>
+</div>
+
 </div>
 
 </div>
