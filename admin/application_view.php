@@ -222,15 +222,16 @@ try {
                 <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
                 <div class="mb-2">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-envelope me-2"></i> Email
+                        <i class="bi bi-envelope me-2"></i> <span class="text-muted">Email</span>
                     </div>
-                    <div><?= htmlspecialchars($application['email'] ?? 'N/A') ?></div>
+                    <span class="fw-semibold"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></span>
                 </div>
+                <hr>
                 <div class="mb-0">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-telephone me-2"></i> Phone
+                        <i class="bi bi-telephone me-2"></i> <span class="text-muted">Phone</span>
                     </div>
-                    <div><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></div>
+                    <span class="fw-semibold"><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></span>
                 </div>
             </div>
         </div>
