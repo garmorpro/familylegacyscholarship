@@ -133,7 +133,6 @@ try {
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
-  
 
   <!-- Text with padding preserved -->
   <div class="card-body">
@@ -146,44 +145,90 @@ try {
     </div>
 
     <!-- Left Border Alert -->
-<div style="
-    display: flex;
-    align-items: center;  /* vertically center the icon */
-    gap: 12px;
-    border-left: 5px solid rgb(62,163,45);   /* green left border */
-    background-color: rgb(242,253,244);      /* subtle light green background */
-    padding: 15px 20px;
-    border-radius: 12px;
-    color: #212529;
-    font-size: 14px;
-    margin-bottom: 20px;
-">
-    <!-- Icon -->
     <div style="
-        flex-shrink: 0;
-        font-size: 20px;
-        color: rgb(62,163,75);
-        line-height: 1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-left: 5px solid rgb(62,163,45);
+        background-color: rgb(242,253,244);
+        padding: 15px 20px;
+        border-radius: 12px;
+        color: #212529;
+        font-size: 14px;
+        margin-bottom: 20px;
     ">
-        <i class="bi bi-exclamation-circle"></i>
-    </div>
-
-    <!-- Text content -->
-    <div>
-        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: rgb(38,82,47) !important;">Applications are currently open</div>
-        <div style="font-weight: 400; font-size: 14px; color: rgb(51,128,63) !important;">
-            Students can submit applications through the website
+        <div style="
+            flex-shrink: 0;
+            font-size: 20px;
+            color: rgb(62,163,75);
+            line-height: 1;
+        ">
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+        <div>
+            <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: rgb(38,82,47) !important;">Applications are currently open</div>
+            <div style="font-weight: 400; font-size: 14px; color: rgb(51,128,63) !important;">
+                Students can submit applications through the website
+            </div>
         </div>
     </div>
+
+    <!-- Settings Form -->
+    <form method="POST" action="save_settings.php" style="margin-top: 20px;">
+        <!-- Award Information -->
+        <div style="margin-bottom: 15px;">
+            <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
+            <input type="number" step="0.01" id="award_amount" name="award_amount" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+        </div>
+
+        <!-- Application Period -->
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Application Period</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="date" id="application_open" name="application_open" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <input type="date" id="application_closed" name="application_closed" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+            </div>
+        </div>
+
+        <!-- Review Period -->
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="date" id="review_start" name="review_start" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+            </div>
+        </div>
+
+        <!-- Recipient Announcement -->
+        <div style="margin-bottom: 15px;">
+            <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Recipient Announcement</label>
+            <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+        </div>
+
+        <!-- Notification Email -->
+        <div style="margin-bottom: 20px;">
+            <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
+            <input type="email" id="notification_email" name="notification_email" placeholder="admin@domain.com" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" style="
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#0b5ed7'" onmouseout="this.style.backgroundColor='#0d6efd'">
+            Save Settings
+        </button>
+    </form>
+
+  </div>
 </div>
 
-
-
-
-
-</div>
-
-</div>
 
 
 </div>
