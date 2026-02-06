@@ -267,11 +267,30 @@ $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
-                    <div class="d-flex gap-1">
-                        <i class="bi bi-eye-fill text-success" title="Completed"></i>
-                        <i class="bi bi-clock-fill text-secondary" title="Pending"></i>
-                        <i class="bi bi-send-fill text-primary" title="Not Sent"></i>
-                    </div>
+                    <?php
+$status = strtolower($recommendation['recommender_status'] ?? 'not sent');
+
+switch ($status) {
+    case 'completed':
+        $iconClass = 'bi-eye-fill text-success';
+        $iconTitle = 'Completed';
+        break;
+    case 'pending':
+        $iconClass = 'bi-clock-fill text-secondary';
+        $iconTitle = 'Pending';
+        break;
+    case 'sent':
+    case 'not sent':
+    default:
+        $iconClass = 'bi-send-fill text-primary';
+        $iconTitle = 'Not Sent';
+        break;
+}
+?>
+<div class="d-flex gap-1">
+    <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
+</div>
+
                 </div>
 
                 <div class="mb-2">
