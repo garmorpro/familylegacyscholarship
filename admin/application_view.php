@@ -133,27 +133,19 @@ try {
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border-color: rgb(241,242,243) !important; padding: 0 !important;">
-
+  
   <!-- Top header remains white -->
-  <div class="card-header bg-white shadow-sm d-flex justify-content-between align-items-start" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
-    
+  <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
     <div class="mb-3">
         <!-- Back link -->
         <a href="application_portal.php" class="text-decoration-none text-muted d-inline-flex align-items-center">
             <i class="bi bi-arrow-left me-1"></i> Back to applications
         </a>
     </div>
+  
 
-    <?php if ($application['application_status'] === 'submitted'): ?>
-        <div class="mb-3">
-            <form method="POST" action="mark_reviewed.php">
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">Mark Reviewed</button>
-            </form>
-        </div>
-    <?php endif; ?>
-    
-  </div>
+  <!-- Card body with pink background -->
+  
 
 <?php
 // Get the application ID
@@ -170,7 +162,7 @@ try {
 
 <?php if ($application): ?>
 
-<div class="row align-items-center py-3 px-3" style="background-color: #ffe6f0; border-bottom: 1px solid rgb(241,242,243);">
+<div class="row align-items-center py-3">
     <!-- Left: Name + Major/School -->
     <div class="col-md-6">
         <h2 class="fw-semibold mb-1">
@@ -204,9 +196,7 @@ try {
     </div>
 </div>
 
-<?php endif; ?>
 </div>
-
 
 <div class="card-body" style="background-color: #eaefff; padding: 1.5rem !important; border: none !important;">
 
