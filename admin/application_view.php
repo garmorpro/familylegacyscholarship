@@ -457,6 +457,8 @@ switch ($status) {
         ">
             <?= $wordCount ?> words
         </span>
+        <br>
+        
         <div>
             <p>
                 tell me a
