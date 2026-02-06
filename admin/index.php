@@ -298,6 +298,7 @@ if ($applicationClose) {
     <?php if ($applicationsClosed): ?>
         <button
             class="btn btn-danger shadow-sm"
+            style="font-size: 14px !important;"
             onclick="confirmClearApplications()"
         >
             <i class="bi bi-trash3"></i> Clear Applications
