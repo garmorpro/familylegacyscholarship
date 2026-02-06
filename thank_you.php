@@ -34,7 +34,7 @@ require_once 'path.php';
           <p>
             We will review your submission and contact you if any additional information is required.
           </p>
-          <p>
+          <p class="text-muted" style="font-size: 14px;">
             * NOTE: Be sure to add our email address (scholarship@themorganlegacy.com) to your allow list (or just add it to your address book), otherwise our email might get lost in your spam folder.
           </p>
           <a href="<?= BASE_URL ?>/" class="btn btn-primary mt-3">Return to Home</a>
