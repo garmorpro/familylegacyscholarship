@@ -313,18 +313,30 @@ function getSetting($key, $default = '') {
   });
 </script>
 
+<?php
+$applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
+$applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
+?>
+
 <script>
-  // Set your deadline
-  const deadline = new Date("2026-04-15T23:59:59").getTime();
+  // Get dates from PHP
+  const applicationOpen = new Date("<?= $applicationOpen ?>T00:00:00").getTime();
+  const applicationClose = new Date("<?= $applicationClose ?>T23:59:59").getTime();
 
   function updateCountdown() {
     const now = new Date().getTime();
-    let distance = deadline - now;
 
-    if(distance < 0){
-      document.getElementById("countdown").innerHTML = "Application closed";
+    if (now < applicationOpen) {
+      document.getElementById("countdown").innerText = "Applications not yet open";
       return;
     }
+
+    if (now > applicationClose) {
+      document.getElementById("countdown").innerText = "Application closed";
+      return;
+    }
+
+    const distance = applicationClose - now;
 
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -341,6 +353,7 @@ function getSetting($key, $default = '') {
   updateCountdown();
   setInterval(updateCountdown, 1000);
 </script>
+
 
 
 
