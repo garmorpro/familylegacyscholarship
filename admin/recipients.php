@@ -121,7 +121,7 @@ try {
                 <th>Intended School</th>
                 <th>Application Year</th>
                 <th>Picture</th>
-                <!-- <th style="width: 40px;"></th> -->
+                <th style="width: 40px;"></th>
             </tr>
         </thead>
 
@@ -172,6 +172,10 @@ try {
                         <?php else: ?>
                             <span class="badge rounded-pill bg-danger-subtle text-danger">Not Yet</span>
                         <?php endif; ?>
+                    </td>
+
+                    <td class="text-end text-muted">
+                        <i class="bi bi-chevron-right"></i>
                     </td>
 
 
