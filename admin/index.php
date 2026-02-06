@@ -273,8 +273,37 @@ try {
 
 <!-- TABLE -->
 
+<?php
+// Fetch application_close date
+$stmt = $pdo->prepare("
+    SELECT setting_value
+    FROM settings
+    WHERE setting_key = 'application_close'
+    LIMIT 1
+");
+$stmt->execute();
+$applicationClose = $stmt->fetchColumn();
+
+// Determine if applications are closed
+$applicationsClosed = false;
+if ($applicationClose) {
+    $applicationsClosed = (new DateTime() > new DateTime($applicationClose));
+}
+?>
+
+
 <!-- Bulk Actions Button -->
-<div class="d-flex justify-content-end mb-2">
+<div class="d-flex justify-content-end gap-2 mb-2">
+
+    <?php if ($applicationsClosed): ?>
+        <button
+            class="btn btn-danger shadow-sm"
+            onclick="confirmClearApplications()"
+        >
+            <i class="bi bi-trash3"></i> Clear Applications
+        </button>
+    <?php endif; ?>
+
     <div class="dropdown">
         <button class="btn btn-light shadow-sm" type="button" id="bulkActionsBtn" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-lightning-fill"></i> Bulk Actions
@@ -285,6 +314,7 @@ try {
         </ul>
     </div>
 </div>
+
 
     <div class="mt-4 bg-white shadow-sm"
      style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
