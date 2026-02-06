@@ -149,7 +149,7 @@ function getSetting($key, $default = '') {
             font-weight: 600;
             color: #495057;
         ">$</span>
-        <input type="number" step="0.01" id="award_amount" name="award_amount" 
+        <input type="text" id="award_amount" name="award_amount" 
                value="<?= getSetting('award_amount') ?>" 
                style="width: 100%; padding: 8px 20px 8px 24px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
