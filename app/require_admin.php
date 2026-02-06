@@ -4,7 +4,7 @@ require_once 'db.php';
 require_once '../path.php';
 
 // Check if the user is logged in as admin
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== 1) {
     // Redirect to login page
     header('Location: ' . BASE_URL . '/admin/auth/login.php');
     exit;
