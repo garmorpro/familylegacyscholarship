@@ -209,17 +209,22 @@ try {
 
         <!-- Review Period -->
         <div style="margin-bottom: 15px;">
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
-            <div style="display: flex; gap: 10px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
-                <input type="date" id="review_start" name="review_start" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-                <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-            </div>
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-            </div>
+    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Review Period</label>
+    <div style="display: flex; gap: 10px;">
+        <!-- Start Date -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <label for="review_start" style="font-weight: 500; font-size: 13px; margin-bottom: 3px;">Start Date</label>
+            <input type="date" id="review_start" name="review_start" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
+
+        <!-- End Date -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <label for="review_end" style="font-weight: 500; font-size: 13px; margin-bottom: 3px;">End Date</label>
+            <input type="date" id="review_end" name="review_end" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+        </div>
+    </div>
+</div>
+
         <span class="text-muted" style="font-size: 14px;">
             Estimated period for reviewing and evaluating applications
         </span>
