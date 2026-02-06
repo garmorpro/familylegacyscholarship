@@ -243,6 +243,26 @@ try {
         </div>
 
         <!-- Recommendation Card -->
+         <?php
+
+  
+// Fetch recommendation for this application
+$recommendationStmt = $pdo->prepare("
+    SELECT 
+        recommender_name, 
+        recommender_email, 
+        recommender_relationship, 
+        status AS recommender_status
+    FROM recommendations
+    WHERE scholarship_application_id = :app_id
+    LIMIT 1
+");
+$recommendationStmt->execute([':app_id' => $application['id']]);
+$recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
+?>
+
+
+         
         <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -255,33 +275,37 @@ try {
                 </div>
 
                 <div class="mb-2">
-                    <span class="text-muted">Recommender</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['recommender_name'] ?? 'N/A') ?></span>
-                </div>
-                <div class="mb-2">
-                    <span class="text-muted">Relationship</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['recommender_relationship'] ?? 'N/A') ?></span>
-                </div>
-                <div class="mb-2">
-                    <span class="text-muted">Email</span> <br> 
-                    <span class="fw-semibold">
-                        <a href="mailto:<?= htmlspecialchars($application['recommender_email'] ?? '') ?>">
-                            <?= htmlspecialchars($application['recommender_email'] ?? 'N/A') ?>
-                        </a>
-                    </span>
-                </div>
-                <?php
-                    $status = strtolower($application['recommender_status'] ?? '');
-                    switch ($status) {
-                        case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
-                        case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
-                        case 'not sent':
-                        case '': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
-                        default: $badgeClass='bg-secondary'; $badgeText=htmlspecialchars($application['recommender_status']);
-                    }
-                ?>
-                <div class="mb-0">
-                    <span class="text-muted">Status</span> <br>
-                    <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
-                </div>
+    <span class="text-muted">Recommender</span> <br>
+    <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></span>
+</div>
+<div class="mb-2">
+    <span class="text-muted">Relationship</span> <br>
+    <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?></span>
+</div>
+<div class="mb-2">
+    <span class="text-muted">Email</span> <br> 
+    <span class="fw-semibold">
+        <a href="mailto:<?= htmlspecialchars($recommendation['recommender_email'] ?? '') ?>">
+            <?= htmlspecialchars($recommendation['recommender_email'] ?? 'N/A') ?>
+        </a>
+    </span>
+</div>
+
+<?php
+    $status = strtolower($recommendation['recommender_status'] ?? '');
+    switch ($status) {
+        case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
+        case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
+        case 'not sent':
+        case '': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
+        default: $badgeClass='bg-secondary'; $badgeText=htmlspecialchars($recommendation['recommender_status']);
+    }
+?>
+<div class="mb-0">
+    <span class="text-muted">Status</span> <br>
+    <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
+</div>
+
 
             </div>
         </div>
