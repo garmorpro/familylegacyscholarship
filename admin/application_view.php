@@ -16,7 +16,7 @@ try {
     $statusCounts = [
         'submitted' => 0,
         'reviewed'  => 0,
-        'selected'  => 0
+        'final_review'  => 0
     ];
 
     while ($row = $countsStmt->fetch(PDO::FETCH_ASSOC)) {
@@ -32,7 +32,7 @@ try {
     $statusCounts = [
         'submitted' => 0,
         'reviewed'  => 0,
-        'selected'  => 0
+        'final_review'  => 0
     ];
     $totalApplications = 0;
 }
@@ -198,11 +198,12 @@ try {
                 echo match ($application['application_status']) {
                     'submitted' => 'bg-primary-subtle text-primary',
                     'reviewed'  => 'bg-secondary-subtle text-secondary',
-                    'selected'  => 'bg-success-subtle text-success',
+                    'final_review'  => 'bg-success-subtle text-success',
+                    'final_selected'  => 'bg-success-subtle text-success',
                     default     => 'bg-light text-dark'
                 };
             ?>">
-            <?= ucfirst($application['application_status']) ?>
+            <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
         </span>
     </div>
 </div>
