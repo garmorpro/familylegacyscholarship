@@ -39,4 +39,4 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute(['id' => $user['id']]);
 
-echo "Your account has been unlocked! You can now <a href='login.php'>login</a>.";
+echo "Your account has been unlocked! You can now <a href='/admin/auth/'>login</a>.";
