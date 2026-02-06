@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Scholarship Header -->
     <div class="scholarship-header">
-        <img src="/assets/logo.png" alt="Morgan Legacy Scholarship Logo">
+        <img src="../assets/logo.jpg" alt="Morgan Legacy Scholarship Logo">
         <h1>The Morgan Legacy Scholarship</h1>
     </div>
 
