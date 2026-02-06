@@ -29,23 +29,25 @@ try {
             }
 
             // Convert empty strings to NULL
-            $value = $value !== '' ? $value : null;
+            $value = trim($_POST[$key]);
 
-            $stmt = $pdo->prepare("
-                UPDATE settings
-                SET setting_value = :value, updated_at = NOW()
-                WHERE setting_key = :key
-            ");
+if ($key === 'award_amount') {
+    $value = str_replace(['$', ','], '', $value);
+}
 
-            // Bind properly
-            if ($value === null) {
-                $stmt->bindValue(':value', null, PDO::PARAM_NULL);
-            } else {
-                $stmt->bindValue(':value', $value, PDO::PARAM_STR);
-            }
+// Store empty strings instead of NULL
+$value = $value !== '' ? $value : '';
 
-            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
-            $stmt->execute();
+$stmt = $pdo->prepare("
+    UPDATE settings
+    SET setting_value = :value, updated_at = NOW()
+    WHERE setting_key = :key
+");
+
+$stmt->bindValue(':value', $value, PDO::PARAM_STR);
+$stmt->bindValue(':key', $key, PDO::PARAM_STR);
+$stmt->execute();
+
         }
     }
 
