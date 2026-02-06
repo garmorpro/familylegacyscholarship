@@ -137,12 +137,19 @@ try {
 
   <!-- Text with padding preserved -->
   <div class="card-body">
-    <h3>
-        Application Portal
-    </h3>
-    <h5>
-        Review and manage scholarship applications
-    </h5>
+    <div class="d-flex align-items-center justify-content-between mb-4" style="padding: 15px 20px; background-color: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <!-- Left: Titles -->
+    <div>
+        <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Application Portal</h3>
+        <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Review and manage scholarship applications</h5>
+    </div>
+
+    <!-- Right: Settings Icon -->
+    <a href="settings.php" title="Settings" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
+        <i class="bi bi-gear-fill"></i>
+    </a>
+</div>
+
 
 <!-- STATUS ROW -->
 
