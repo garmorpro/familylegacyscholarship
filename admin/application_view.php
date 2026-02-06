@@ -457,11 +457,11 @@ switch ($status) {
         ">
             <?= $wordCount ?> words
         </span>
+        <p>
+            Tell us about your self
+        </p>
     </div>
-
-    <p>
-        Tell us about yourself
-    </p>
+    
 
     <!-- Card Body -->
     <div class="card-body" style="padding: 20px 25px; background-color: #f8f9fa; border-radius: 0 0 12px 12px;">
