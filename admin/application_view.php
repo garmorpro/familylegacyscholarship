@@ -291,9 +291,9 @@ switch ($status) {
     <?php if ($status === 'not_sent'): ?>
         <!-- Not sent: show clickable icon that triggers alert -->
         <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
-           style="cursor:pointer;" 
-           onclick="alert('This would send the recommendation email to <?= addslashes($recommendation['recommender_email'] ?? 'N/A') ?>');">
-        </i>
+       style="cursor:pointer;"
+       onclick="window.location.href='/send_recommendation.php?id=<?= $recommendation['id'] ?>'">
+    </i>
     <?php elseif ($status === 'completed'): ?>
         <!-- Completed: open modal -->
         <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
