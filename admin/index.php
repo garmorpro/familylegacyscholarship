@@ -59,7 +59,8 @@ try {
             CASE application_status
                 WHEN 'final_recipient' THEN 1
                 WHEN 'final_review' THEN 2
-                ELSE 3
+                WHEN 'reviewed' THEN 3
+                ELSE 4
             END,
             submitted_at DESC
     ");
