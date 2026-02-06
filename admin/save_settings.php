@@ -1,10 +1,6 @@
 <?php
 require_once '../app/db.php';
 
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
-exit;
 
 // Ensure PDO exists
 if (!isset($pdo)) {
