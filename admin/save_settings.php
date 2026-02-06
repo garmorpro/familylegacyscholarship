@@ -23,23 +23,30 @@ try {
         if (isset($_POST[$key])) {
             $value = trim($_POST[$key]);
 
-            // Special handling: remove $ sign for award_amount but store as text
+            // Special handling: remove $ sign and commas for award_amount
             if ($key === 'award_amount') {
                 $value = str_replace(['$', ','], '', $value);
             }
 
+            // Convert empty strings to NULL
             $value = $value !== '' ? $value : null;
 
-$stmt = $pdo->prepare("
-    UPDATE settings
-    SET setting_value = :value, updated_at = NOW()
-    WHERE setting_key = :key
-");
-$stmt->execute([
-    ':value' => $value,
-    ':key'   => $key
-]);
+            // Prepare update statement
+            $stmt = $pdo->prepare("
+                UPDATE settings
+                SET setting_value = :value, updated_at = NOW()
+                WHERE setting_key = :key
+            ");
 
+            // Bind values explicitly as strings (or NULL)
+            if ($value === null) {
+                $stmt->bindValue(':value', null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue(':value', $value, PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+
+            $stmt->execute();
         }
     }
 
