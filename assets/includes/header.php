@@ -4,7 +4,7 @@
 
       <!-- Logo + Title -->
       <div class="d-flex align-items-center">
-        <img src="<?= BASE_URL ?>/assets/images/logo.png" alt="" style="height:75px; margin-right: 15px;">
+        <a href="<?= BASE_URL ?>/"><img src="<?= BASE_URL ?>/assets/images/logo.png" alt="" style="height:75px; margin-right: 15px;"></a>
 
         <div class="d-flex flex-column text-center">
           <h1 class="h4 fw-semibold mb-0">
