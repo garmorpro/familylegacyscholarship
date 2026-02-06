@@ -134,8 +134,6 @@ try {
             </tr>
         <?php else: ?>
             <?php foreach ($recipients as $rec): ?>
-                <!-- <tr style="cursor: pointer;"
-                    onclick="window.location.href='application_view.php?id=<?= //$rec['id'] ?>'"> -->
                 <tr>
 
                     <!-- Name + GPA -->
