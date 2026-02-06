@@ -186,6 +186,14 @@ try {
             </form>
         </div>
     <?php endif; ?>
+    <?php if ($application['application_status'] === 'final_review'): ?>
+        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
+            <form method="POST" action="mark_final_selected.php" class="d-inline">
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn btn-outline-success btn-sm">Designate Final Recipient</button>
+            </form>
+        </div>
+    <?php endif; ?>
 
     <div>
         <span class="fw-semibold me-2">Submission Date:</span>
