@@ -207,7 +207,7 @@ try {
                     'submitted' => 'bg-primary-subtle text-primary',
                     'reviewed'  => 'bg-secondary-subtle text-secondary',
                     'final_review'  => 'bg-success-subtle text-success',
-                    'final_selected'  => 'bg-success-subtle text-success',
+                    'final_recipient'  => 'bg-success-subtle text-success',
                     default     => 'bg-light text-dark'
                 };
             ?>">
