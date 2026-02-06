@@ -21,7 +21,7 @@ try {
 
     foreach ($allowedSettings as $key) {
         if (isset($_POST[$key])) {
-            $value = $_POST[$key];
+            $value = $_POST[$key] !== '' ? $_POST[$key] : null;
 
             // Update setting
             $stmt = $pdo->prepare("
