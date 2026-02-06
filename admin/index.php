@@ -429,7 +429,7 @@ if ($applicationClose) {
             </tr>
         <?php else: ?>
             <?php foreach ($applications as $app): ?>
-                <tr style="cursor: pointer;"
+                <tr style="cursor: pointer; background-color: pink;"
                     onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
 
                     <!-- Checkbox -->
