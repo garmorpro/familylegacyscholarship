@@ -47,18 +47,23 @@ try {
     $mail->addAddress($rec['recommender_email'], $rec['recommender_name']);
 
     // Content
-    $mail->isHTML(true);
-    $mail->Subject = "Recommendation Request for {$applicantName}";
-    $mail->Body = "
-        <p>Dear {$rec['recommender_name']},</p>
-        <p>{$applicantName} has applied for the The Morgan Legacy scholarship and listed you as a recommender.</p>
-        <p>Please submit your recommendation using the link below:</p>
-        <p><a href='{$link}' target='_blank'>Submit Recommendation</a></p>
-        <p>Thank you for your support!</p>
-        <p>XYZ Scholarship Committee</p>
-    ";
+    // Attach logo and give it a Content ID
+$mail->AddEmbeddedImage('../assets/images/logo.png', 'logoimg');
 
-    $mail->send();
+// Then reference it in the HTML using cid:
+$mail->isHTML(true);
+$mail->Subject = "Recommendation Request for {$applicantName}";
+$mail->Body = "
+    <p><img src='cid:logoimg' alt='Morgan Legacy Scholarship Logo' style='height:80px;'></p>
+    <p>Dear {$rec['recommender_name']},</p>
+    <p>{$applicantName} has applied for The Morgan Legacy scholarship and listed you as a recommender.</p>
+    <p>Please submit your recommendation using the link below:</p>
+    <p><a href='{$link}' target='_blank'>Submit Recommendation</a></p>
+    <p>Thank you for your support!</p>
+    <p>The Morgan Legacy Scholarship Committee</p>
+";
+$mail->send();
+
 
     // Update recommendation status
     $update = $pdo->prepare("
