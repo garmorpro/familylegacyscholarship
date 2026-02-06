@@ -567,9 +567,10 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     // Collect selected applications
     const selectedCheckboxes = Array.from(document.querySelectorAll('.app-checkbox:checked'));
     const selectedIds = selectedCheckboxes.map(cb => cb.dataset.id);
-    const selectedNames = selectedCheckboxes.map(cb => cb.dataset.name); // see step 3
+    const selectedNames = selectedCheckboxes.map(cb => cb.dataset.name);
 
-    if (selectedIds.length === 0) {
+    // Only require selection for actions other than bulk_delete
+    if (action !== 'bulk_delete' && selectedIds.length === 0) {
         Swal.fire({
             icon: 'info',
             title: 'No applications selected',
@@ -579,54 +580,51 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     }
 
     // Build HTML list of names using Bootstrap list group
-const nameList = selectedNames.map(name => `<li class="list-group-item p-2">${name}</li>`).join('');
+    const nameList = selectedNames.map(name => `<li class="list-group-item p-2">${name}</li>`).join('');
 
-// Build title/message based on action
-let title, htmlMessage;
-if (action === 'delete') {
-    title = 'Delete Applications';
-    htmlMessage = `
-        <p>Are you sure you want to delete the following applications?</p>
-        <ul class="list-group" style="
-            max-height: 200px; 
-            overflow-y: auto; 
-            margin-top: 10px;
-            margin-bottom: 15px;
-        ">
-            ${nameList}
-        </ul>
-        <p style="color: red; font-weight: bold; font-size: 16px;">
-            This action <u>cannot</u> be undone.
-        </p>
-    `;
-} else if (action === 'select') {
-    title = 'Advance Applicants to Final Review';
-    htmlMessage = `
-        <p>Are you sure you want to advance the following applications as to final review?</p>
-        <ul class="list-group" style="
-            max-height: 200px; 
-            overflow-y: auto; 
-            margin-top: 10px;
-            margin-bottom: 15px;
-        ">
-            ${nameList}
-        </ul>
-        <p style="color: orange; font-weight: bold; font-size: 16px;">
-            This action is permanent.
-        </p>
-    `;
-} else if (action === 'bulk_delete') {
-    title = 'Delete All Applications';
-    htmlMessage = `
-        <p>Are you sure you want to delete all current applications?</p>
-        <p style="color: red; font-weight: bold; font-size: 16px;">
-            This action <u>cannot</u> be undone.
-        </p>
-    `;
-}
-
-
-
+    // Build title/message based on action
+    let title, htmlMessage;
+    if (action === 'delete') {
+        title = 'Delete Applications';
+        htmlMessage = `
+            <p>Are you sure you want to delete the following applications?</p>
+            <ul class="list-group" style="
+                max-height: 200px; 
+                overflow-y: auto; 
+                margin-top: 10px;
+                margin-bottom: 15px;
+            ">
+                ${nameList}
+            </ul>
+            <p style="color: red; font-weight: bold; font-size: 16px;">
+                This action <u>cannot</u> be undone.
+            </p>
+        `;
+    } else if (action === 'select') {
+        title = 'Advance Applicants to Final Review';
+        htmlMessage = `
+            <p>Are you sure you want to advance the following applications to final review?</p>
+            <ul class="list-group" style="
+                max-height: 200px; 
+                overflow-y: auto; 
+                margin-top: 10px;
+                margin-bottom: 15px;
+            ">
+                ${nameList}
+            </ul>
+            <p style="color: orange; font-weight: bold; font-size: 16px;">
+                This action is permanent.
+            </p>
+        `;
+    } else if (action === 'bulk_delete') {
+        title = 'Delete All Applications';
+        htmlMessage = `
+            <p>Are you sure you want to delete all current applications?</p>
+            <p style="color: red; font-weight: bold; font-size: 16px;">
+                This action <u>cannot</u> be undone.
+            </p>
+        `;
+    }
 
     // Show SweetAlert2 confirmation
     Swal.fire({
