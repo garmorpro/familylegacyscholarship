@@ -186,14 +186,23 @@ try {
             </form>
         </div>
     <?php endif; ?>
-    <?php if ($application['application_status'] === 'final_review'): ?>
+    <?php
+    // Check if any application has already been selected as final recipient
+    $stmt = $pdo->query("SELECT COUNT(*) FROM applications WHERE final_recipient = TRUE");
+    $finalCount = (int) $stmt->fetchColumn();
+    ?>
+    
+    <?php if ($application['application_status'] === 'final_review' && $finalCount === 0): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_final_selected.php" class="d-inline">
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn btn-outline-success btn-sm">Designate Final Recipient</button>
+                <button type="submit" class="btn btn-outline-success btn-sm">
+                    Designate Final Recipient
+                </button>
             </form>
         </div>
     <?php endif; ?>
+
 
     <div>
         <span class="fw-semibold me-2">Submission Date:</span>
@@ -207,7 +216,7 @@ try {
                     'submitted' => 'bg-primary-subtle text-primary',
                     'reviewed'  => 'bg-secondary-subtle text-secondary',
                     'final_review'  => 'bg-success-subtle text-success',
-                    'final_recipient'  => 'bg-success-subtle text-success',
+                    'final_recipient'  => 'bg-info-subtle text-info',
                     default     => 'bg-light text-dark'
                 };
             ?>">
