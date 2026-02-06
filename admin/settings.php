@@ -184,6 +184,11 @@ try {
             <input type="number" step="0.01" id="award_amount" name="award_amount" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
+        <hr>
+
+        <h4>
+            Application Period
+        </h4>
         <!-- Application Period -->
         <div style="margin-bottom: 15px;">
             <label style="font-weight: 600; display: block; margin-bottom: 5px;">Application Period</label>
@@ -192,6 +197,15 @@ try {
                 <input type="date" id="application_closed" name="application_closed" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
             </div>
         </div>
+        <span class="text-muted" style="font-size: 14px;">
+            Set the dates when students can submit applications
+        </span>
+
+        <hr>
+
+        <h4>
+            Review Period
+        </h4>
 
         <!-- Review Period -->
         <div style="margin-bottom: 15px;">
@@ -201,6 +215,15 @@ try {
                 <input type="date" id="review_end" name="review_end" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
             </div>
         </div>
+        <span class="text-muted" style="font-size: 14px;">
+            Estimated period for reviewing and evaluating applications
+        </span>
+
+        <hr>
+
+        <h4>
+            Recipient Announcement
+        </h4>
 
         <!-- Recipient Announcement -->
         <div style="margin-bottom: 15px;">
@@ -208,11 +231,25 @@ try {
             <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
+        <span class="text-muted" style="font-size: 14px;">
+            Date when scholarship recipients will be announced
+        </span>
+
+        <hr>
+
+        <h4>
+            Notification Settings
+        </h4>
+
         <!-- Notification Email -->
         <div style="margin-bottom: 20px;">
             <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
             <input type="email" id="notification_email" name="notification_email" placeholder="admin@domain.com" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
+
+        <span class="text-muted" style="font-size: 14px;">
+            Email address for receiving application notifications and updates
+        </span>
 
         <!-- Submit Button -->
         <button type="submit" style="
