@@ -79,6 +79,60 @@ try {
 
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
+    <style>
+        /* Base modern action button */
+.btn-action {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    background: #f9fafb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* Soft danger button (not scary red) */
+.btn-danger-soft {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-danger-soft:hover {
+    background: #fecaca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(153,27,27,0.15);
+}
+
+/* Dropdown polish */
+.dropdown-menu {
+    border-radius: 12px;
+    padding: 6px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background: #f3f4f6;
+}
+
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
