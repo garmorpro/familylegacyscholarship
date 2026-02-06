@@ -29,7 +29,7 @@ if (!$rec) {
 // Build email content
 $token = $rec['token'];
 $applicantName = $rec['first_name'] . ' ' . $rec['last_name'];
-$link = "https://themorganlegacy.com/submit_recommendation.php?token={$token}";
+$link = "https://themorganlegacy.com/recommendation/submit_recommendation.php?token={$token}";
 
 $mail = new PHPMailer(true);
 try {
