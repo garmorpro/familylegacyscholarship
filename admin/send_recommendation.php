@@ -2,8 +2,8 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../app/db.php';
+require '../vendor/autoload.php'; // Composer autoload
+require '../app/db.php'; // your PDO connection
 
 if (!isset($_GET['id'])) {
     die("Recommendation ID missing.");
@@ -43,7 +43,7 @@ try {
     $mail->Port       = 587;
 
     // Recipients
-    $mail->setFrom('garrett@morganserver.com', 'TheMorganLegacy');
+    $mail->setFrom('noreply@morganserver.com', 'TheMorganLegacy');
     $mail->addAddress($rec['recommender_email'], $rec['recommender_name']);
 
     // Content
