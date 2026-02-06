@@ -152,13 +152,13 @@ button:hover {
 
   <form method="POST" action="process_login.php" autocomplete="off">
     <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required autofocus autocomplete="off">
+      <label for="email_real">Email</label>
+      <input type="email" id="email_real" name="email_real" required autofocus autocomplete="off">
     </div>
 
     <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required autocomplete="new-password">
+      <label for="pass_real">Password</label>
+      <input type="password" id="pass_real" name="pass_real" required autocomplete="new-password">
     </div>
 
     <button type="submit">Sign In</button>
