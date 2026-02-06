@@ -203,7 +203,7 @@ try {
                     default     => 'bg-light text-dark'
                 };
             ?>">
-            <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
+            <?= ucwords(str_replace('_', ' ', $application['application_status'])) ?>
         </span>
     </div>
 </div>
