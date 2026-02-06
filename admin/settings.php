@@ -170,8 +170,8 @@ try {
 
     <!-- Text content -->
     <div>
-        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: rgb(38,82,47);">Applications are currently open</div>
-        <div style="font-weight: 400; font-size: 14px; color: rgb(51,128,63;">
+        <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: rgb(38,82,47) !important;">Applications are currently open</div>
+        <div style="font-weight: 400; font-size: 14px; color: rgb(51,128,63) !important;">
             Students can submit applications through the website
         </div>
     </div>
