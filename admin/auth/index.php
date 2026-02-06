@@ -115,7 +115,7 @@ button:hover {
 
 <div class="login-card">
   <h1>Admin Access</h1>
-  <p>Sign in to manage the Morgan Legacy portal</p>
+  <p>Sign in to manage the admin portal</p>
 
   <form method="POST" action="process_login.php">
     <div class="form-group">
