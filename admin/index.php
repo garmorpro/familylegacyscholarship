@@ -2,6 +2,7 @@
 session_start();
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
+require_once '../path.php';
 
 /**
  * Status counts + total
@@ -146,52 +147,7 @@ try {
 <body class="d-flex flex-column min-vh-100">
 
 
-<header>
-  <nav class="navbar navbar-expand-lg border-bottom shadow-sm" style="background-color: white !important;">
-    <div class="container py-3">
-
-      <!-- Title + Hamburger -->
-      <div class="d-flex flex-column w-100">
-        <!-- Top row: h1 + hamburger -->
-        <div class="d-flex align-items-center justify-content-between w-100">
-          <h1 class="h4 fw-semibold mb-1">
-            Morgan Family Legacy Scholarship
-          </h1>
-
-          <!-- Hamburger (mobile only) -->
-          <button
-            class="navbar-toggler d-lg-none"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNav"
-            aria-controls="mainNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-
-        <!-- Subtitle -->
-        <p class="text-muted mb-0">
-          Battery Creek High School, Beaufort, SC
-        </p>
-      </div>
-
-      <!-- Navigation Links -->
-      <div class="collapse navbar-collapse mt-3 mt-lg-0" id="mainNav">
-        <ul class="navbar-nav ms-auto gap-2 gap-lg-3">
-          <li class="nav-item"><a class="nav-link active px-3" href="/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/eligibility.html">Eligibility</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/application.html">Application</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="/recipients.html">Recipients</a></li>
-        </ul>
-      </div>
-
-    </div>
-  </nav>
-</header>
+<?php include_once ROOT_PATH . '/assets/includes/header.php'; ?>
 
 
 <main class="flex-fill">
@@ -521,36 +477,7 @@ if ($applicationClose) {
 </div>
 </main>
 
-<footer class="bg-white border-top shadow-sm mt-5 pt-4 pb-4">
-  <div class="container">
-
-    <!-- Contact -->
-    <div class="mb-3">
-      <p class="mb-0" style="font-size: 14px;">
-        <strong>Contact:</strong> 
-        <a href="mailto:scholarship@morganlegacy.com" class="text-decoration-none text-dark footer-link">scholarship@morganlegacy.com</a>
-      </p>
-    </div>
-
-    <hr style="opacity: 0.2;">
-
-    <!-- Disclaimer -->
-    <div class="mb-3">
-      <p style="font-size: 13px; line-height: 1.5; margin: 0;">
-        <strong>Disclaimer:</strong> The Morgan Family Legacy Scholarship is a privately funded family scholarship and is not affiliated with Battery Creek High School or the Beaufort County School District.
-      </p>
-    </div>
-
-    <hr style="opacity: 0.2;">
-
-    <!-- Privacy & Copyright -->
-     <div style="font-size: 13px;">
-      <a href="#" class="text-decoration-none text-dark me-3 footer-link">Privacy Policy</a>
-      &copy; 2026 Morgan Family Legacy Scholarship
-    </div>
-
-  </div>
-</footer>
+<?php include_once ROOT_PATH . '/assets/includes/footer.php'; ?>
 
 
 
