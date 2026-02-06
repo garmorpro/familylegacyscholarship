@@ -249,17 +249,25 @@ try {
 // Fetch recommendation for this application
 $recommendationStmt = $pdo->prepare("
     SELECT 
-        id,
-        recommender_name, 
-        recommender_email, 
-        recommender_relationship, 
-        status AS recommender_status
-    FROM recommendations
-    WHERE scholarship_application_id = :app_id
+        r.id,
+        r.recommender_name, 
+        r.recommender_email, 
+        r.recommender_relationship, 
+        r.status AS recommender_status,
+        r.recommendation,
+        s.first_name,
+        s.last_name
+    FROM recommendations r
+    JOIN scholarship_applications s ON s.id = r.scholarship_application_id
+    WHERE r.scholarship_application_id = :app_id
     LIMIT 1
 ");
 $recommendationStmt->execute([':app_id' => $application['id']]);
 $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
+
+// Combine first and last name for easier use
+$recommendation['applicant_name'] = $recommendation['first_name'] . ' ' . $recommendation['last_name'];
+
 ?>
 
 
