@@ -6,7 +6,7 @@
       <div class="d-flex flex-column w-100">
         <!-- Top row: h1 + hamburger -->
         <div class="d-flex align-items-center justify-content-between w-100">
-            <img src="<?= ROOT_PATH ?>/assets/images/logo.png" alt="">
+            <img src="<?= BASE_URL ?>/assets/images/logo.png" alt="">
           <h1 class="h4 fw-semibold mb-1">
             The Morgan Family Legacy Scholarship
           </h1>
