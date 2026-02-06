@@ -120,7 +120,7 @@ try {
                 <th>Contact</th>
                 <th>Intended School</th>
                 <th>Application Year</th>
-                <!-- <th>Status</th> -->
+                <th>Picture</th>
                 <!-- <th style="width: 40px;"></th> -->
             </tr>
         </thead>
@@ -163,6 +163,11 @@ try {
                     <!-- Date Submitted -->
                     <td>
                         <?= htmlspecialchars($rec['application_year']) ?>
+                    </td>
+
+                    <!-- Date Submitted -->
+                    <td>
+                        <?= htmlspecialchars($rec['recipient_picture']) ?>
                     </td>
 
                     
