@@ -188,7 +188,7 @@ try {
     <?php endif; ?>
     <?php
     // Check if any application has already been selected as final recipient
-    $stmt = $pdo->query("SELECT COUNT(*) FROM scholarhip_applications WHERE status = final_recipient");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM scholarhip_applications WHERE application_status = final_recipient");
     $finalCount = (int) $stmt->fetchColumn();
     ?>
     
