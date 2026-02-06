@@ -176,6 +176,9 @@ try {
     <!-- Settings Form -->
     <form method="POST" action="save_settings.php" style="margin-top: 20px;">
         <!-- Award Information -->
+         <h4>
+            Award Information
+         </h4>
         <div style="margin-bottom: 15px;">
             <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
             <input type="number" step="0.01" id="award_amount" name="award_amount" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
