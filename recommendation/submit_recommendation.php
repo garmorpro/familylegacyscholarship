@@ -110,8 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($rec['status'] !== 'completed'): ?>
     <div class="form-container">
         <form method="POST">
+
+            <!-- Highlight applicant for clarity -->
+            <div class="alert alert-secondary" role="alert" style="font-weight: 600; font-size: 1.1rem;">
+                This recommendation is for <strong><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></strong>.
+            </div>
+
             <div class="mb-3">
-                <label for="content" class="form-label">Your Recommendation</label>
+                <label for="content" class="form-label" style="font-size: 20px; font-weight: 600;">Your Recommendation</label>
                 <textarea name="content" id="content" rows="10" class="form-control"><?= htmlspecialchars($_POST['content'] ?? '') ?></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit Recommendation</button>
