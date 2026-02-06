@@ -175,12 +175,32 @@ try {
 
                     <script>
                     var uploadModal = document.getElementById('uploadPictureModal');
+                                
                     uploadModal.addEventListener('show.bs.modal', function (event) {
                         var button = event.relatedTarget; // Row that triggered modal
                         var recipientId = button.getAttribute('data-recipient-id');
+                        var recipientPicture = button.getAttribute('data-recipient-picture');
+                                
                         document.getElementById('recipient_id').value = recipientId;
+                                
+                        var fileInputContainer = document.getElementById('fileInputContainer');
+                        var alreadyUploadedMessage = document.getElementById('alreadyUploadedMessage');
+                        var uploadButton = document.getElementById('uploadButton');
+                                
+                        if (recipientPicture) {
+                            // Recipient already has a picture
+                            fileInputContainer.classList.add('d-none');
+                            alreadyUploadedMessage.classList.remove('d-none');
+                            uploadButton.disabled = true; // disable upload
+                        } else {
+                            // No picture yet
+                            fileInputContainer.classList.remove('d-none');
+                            alreadyUploadedMessage.classList.add('d-none');
+                            uploadButton.disabled = false;
+                        }
                     });
                     </script>
+
 
 
 
