@@ -8,7 +8,6 @@ require_once 'db.php';
 function insert_application_with_recommendation(PDO $pdo, array $data) {
 
     try {
-        // Start transaction
         $pdo->beginTransaction();
 
         // --------------------------------------------------
@@ -30,38 +29,39 @@ function insert_application_with_recommendation(PDO $pdo, array $data) {
 
         $stmtApp = $pdo->prepare($sqlApplication);
         $stmtApp->execute([
-            ':first_name'              => $data['first_name'],
-            ':last_name'               => $data['last_name'],
-            ':email'                   => $data['email'],
-            ':phone'                   => $data['phone'],
-            ':expected_graduation_year'=> $data['expected_graduation_year'],
-            ':gpa'                     => $data['gpa'],
-            ':institution_type'        => $data['institution_type'],
-            ':intended_school'         => $data['intended_school'],
-            ':intended_major'          => $data['intended_major'],
-            ':extracurricular'         => $data['extracurricular'],
-            ':leadership'              => $data['leadership'],
-            ':community_service'       => $data['community_service'],
-            ':essay'                   => $data['essay'],
-            ':financial_need'          => $data['financial_need'] ?? '',
-            ':additional_information'  => $data['additional_information'] ?? ''
+            ':first_name'               => $data['first_name'],
+            ':last_name'                => $data['last_name'],
+            ':email'                    => $data['email'],
+            ':phone'                    => $data['phone'],
+            ':expected_graduation_year' => $data['expected_graduation_year'],
+            ':gpa'                      => $data['gpa'],
+            ':institution_type'         => $data['institution_type'],
+            ':intended_school'          => $data['intended_school'],
+            ':intended_major'           => $data['intended_major'],
+            ':extracurricular'          => $data['extracurricular'],
+            ':leadership'               => $data['leadership'],
+            ':community_service'        => $data['community_service'],
+            ':essay'                    => $data['essay'],
+            ':financial_need'           => $data['financial_need'] ?? '',
+            ':additional_information'   => $data['additional_information'] ?? ''
         ]);
 
-        // Get application ID
+        // Grab PK from scholarship_applications
         $application_id = $pdo->lastInsertId();
 
         // --------------------------------------------------
         // Insert into recommendations
+        // NOTE: correct FK column name
         // --------------------------------------------------
         $sqlRecommendation = "
             INSERT INTO recommendations (
-                application_id,
+                scholarship_application_id,
                 recommender_name,
                 recommender_email,
                 recommender_relationship,
                 status
             ) VALUES (
-                :application_id,
+                :scholarship_application_id,
                 :recommender_name,
                 :recommender_email,
                 :recommender_relationship,
@@ -71,20 +71,18 @@ function insert_application_with_recommendation(PDO $pdo, array $data) {
 
         $stmtRec = $pdo->prepare($sqlRecommendation);
         $stmtRec->execute([
-            ':application_id'          => $application_id,
-            ':recommender_name'        => $data['recommender_name'],
-            ':recommender_email'       => $data['recommender_email'],
-            ':recommender_relationship'=> $data['recommender_relationship'],
-            ':status'                  => 'pending'
+            ':scholarship_application_id' => $application_id,
+            ':recommender_name'           => $data['recommender_name'],
+            ':recommender_email'          => $data['recommender_email'],
+            ':recommender_relationship'   => $data['recommender_relationship'],
+            ':status'                     => 'pending'
         ]);
 
-        // Commit everything
         $pdo->commit();
 
         return $application_id;
 
     } catch (PDOException $e) {
-        // Roll back if ANYTHING fails
         $pdo->rollBack();
         throw $e;
     }
@@ -117,11 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     try {
-        $application_id = insert_application_with_recommendation($pdo, $data);
-
+        insert_application_with_recommendation($pdo, $data);
         header("Location: thank_you.php");
         exit();
-
     } catch (PDOException $e) {
         echo "Error submitting application: " . $e->getMessage();
         exit();
