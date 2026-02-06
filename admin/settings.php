@@ -137,7 +137,7 @@ function getSetting($key, $default = '') {
             Award Information
          </h4>
         <!-- Award Information -->
-<div style="margin-bottom: 15px;">
+<div class="w-50" style="margin-bottom: 15px;">
     <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
     <input type="number" step="0.01" id="award_amount" name="award_amount" 
            value="<?= getSetting('award_amount') ?>" 
@@ -202,7 +202,7 @@ function getSetting($key, $default = '') {
         </h4>
 
         <!-- Recipient Announcement -->
-        <div style="margin-bottom: 15px;">
+        <div class="w-50" style="margin-bottom: 15px;">
     <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
     <input type="date" id="announcement_date" name="announcement_date" 
            value="<?= getSetting('announcement_date') ?>" 
