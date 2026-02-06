@@ -302,6 +302,24 @@ switch ($status) {
            data-bs-toggle="modal" 
            data-bs-target="#recModal<?= $recommendation['id'] ?>">
         </i>
+        <!-- Modal -->
+    <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="recModalLabel<?= $recommendation['id'] ?>">Recommendation for <?= htmlspecialchars($recommendation['applicant_name']) ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Recommendation content -->
+            <?= nl2br(htmlspecialchars($recommendation['recommendation'])) ?>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <?php else: ?>
         <!-- Pending or Sent: static icon -->
         <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
