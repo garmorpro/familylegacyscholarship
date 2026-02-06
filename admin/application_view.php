@@ -195,7 +195,7 @@ try {
         <span class="fw-semibold me-2">Status:</span>
         <span class="badge
             <?php
-                echo match ($app['application_status']) {
+                echo match ($application['application_status']) {
                     'submitted' => 'bg-primary-subtle text-primary',
                     'reviewed'  => 'bg-secondary-subtle text-secondary',
                     'final_review'  => 'bg-success-subtle text-success',
