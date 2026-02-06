@@ -194,13 +194,13 @@ try {
     <div style="display: flex; gap: 10px;">
         <!-- Open Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="application_open" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Open Date</label>
+            <label for="application_open" style="font-weight: 600; font-size: 16px; margin-bottom: 3px;">Open Date</label>
             <input type="date" id="application_open" name="application_open" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
         <!-- Close Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="application_closed" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Close Date</label>
+            <label for="application_closed" style="font-weight: 600; font-size: 16px; margin-bottom: 3px;">Close Date</label>
             <input type="date" id="application_closed" name="application_closed" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
     </div>
@@ -221,13 +221,13 @@ try {
     <div style="display: flex; gap: 10px;">
         <!-- Start Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_start" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Start Date</label>
+            <label for="review_start" style="font-weight: 600; font-size: 16px; margin-bottom: 3px;">Start Date</label>
             <input type="date" id="review_start" name="review_start" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
         <!-- End Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_end" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">End Date</label>
+            <label for="review_end" style="font-weight: 600; font-size: 16px; margin-bottom: 3px;">End Date</label>
             <input type="date" id="review_end" name="review_end" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
     </div>
