@@ -226,7 +226,7 @@ try {
         </h4>
 
         <!-- Recipient Announcement -->
-        <div style="margin-bottom: 15px;">
+        <div class="w-25" style="margin-bottom: 15px;">
             <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Recipient Announcement</label>
             <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
