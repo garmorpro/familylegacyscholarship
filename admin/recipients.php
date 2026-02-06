@@ -137,41 +137,50 @@ try {
                 <tr style="cursor: pointer;"
                     data-bs-toggle="modal"
                     data-bs-target="#uploadPictureModal"
-                    data-recipient-id="<?= $rec['id'] ?>">
+                    data-recipient-id="<?= $rec['id'] ?>"
+                    data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>">
 
                     <!-- Upload Picture Modal -->
-<div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="uploadPictureLabel">Upload Recipient Picture</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" name="recipient_id" id="recipient_id">
-            <div class="mb-3">
-                <label for="recipient_picture" class="form-label">Choose an image</label>
-                <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
+                    <div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="uploadPictureLabel">Upload Recipient Picture</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="recipient_id" id="recipient_id">
 
-<script>
-var uploadModal = document.getElementById('uploadPictureModal');
-uploadModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget; // Row that triggered modal
-    var recipientId = button.getAttribute('data-recipient-id');
-    document.getElementById('recipient_id').value = recipientId;
-});
-</script>
+                                <!-- File input container -->
+                                <div class="mb-3" id="fileInputContainer">
+                                    <label for="recipient_picture" class="form-label">Choose an image</label>
+                                    <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
+                                </div>
+
+                                <!-- Message container -->
+                                <div class="alert alert-info d-none" id="alreadyUploadedMessage">
+                                    This recipient already has a picture uploaded.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                              <button type="submit" class="btn btn-primary" id="uploadButton">Upload</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+
+                    <script>
+                    var uploadModal = document.getElementById('uploadPictureModal');
+                    uploadModal.addEventListener('show.bs.modal', function (event) {
+                        var button = event.relatedTarget; // Row that triggered modal
+                        var recipientId = button.getAttribute('data-recipient-id');
+                        document.getElementById('recipient_id').value = recipientId;
+                    });
+                    </script>
 
 
 
