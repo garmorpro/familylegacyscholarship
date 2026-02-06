@@ -259,38 +259,32 @@ $recommendationStmt = $pdo->prepare("
 $recommendationStmt->execute([':app_id' => $application['id']]);
 $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
 
-// Determine icon, title, and clickable behavior
+// Default to 'not_sent' if empty
 $status = strtolower($recommendation['recommender_status'] ?? 'not_sent');
 
-switch ($status) {
-    case 'completed':
-        $iconClass = 'bi-eye-fill text-success';
-        $iconTitle = 'Completed';
-        // Opens modal for completed recommendation
-        $clickAction = "data-bs-toggle='modal' data-bs-target='#recModal{$recommendation['id']}'";
-        break;
-    case 'pending':
-        $iconClass = 'bi-clock-fill text-secondary';
-        $iconTitle = 'Pending';
-        $clickAction = ''; // not clickable
-        break;
-    case 'sent':
-    case 'not_sent':
-    default:
-        $iconClass = 'bi-send-fill text-primary';
-        $iconTitle = 'Not Sent';
-        // Link to send recommendation email
-        $clickAction = "href='/send_recommendation.php?id={$recommendation['id']}'";
-        break;
+// Determine icon, title, and click action
+$iconClass = $iconTitle = $clickAction = '';
+
+if ($status === 'completed') {
+    $iconClass = 'bi-eye-fill text-success';
+    $iconTitle = 'Completed';
+    $clickAction = "data-bs-toggle='modal' data-bs-target='#recModal{$recommendation['id']}'";
+} elseif ($status === 'pending') {
+    $iconClass = 'bi-clock-fill text-secondary';
+    $iconTitle = 'Pending';
+    $clickAction = ''; // not clickable
+} else { // not_sent or sent
+    $iconClass = 'bi-send-fill text-primary';
+    $iconTitle = 'Not Sent';
+    $clickAction = "href='/send_recommendation.php?id={$recommendation['id']}'";
 }
 
 // Determine badge
 switch ($status) {
     case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
     case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
-    case 'not_sent': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
     case 'pending': $badgeClass='bg-secondary'; $badgeText='Pending'; break;
-    default: $badgeClass='bg-secondary'; $badgeText=htmlspecialchars($recommendation['recommender_status']);
+    default: $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
 }
 ?>
 
