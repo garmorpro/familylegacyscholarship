@@ -21,9 +21,17 @@ try {
 
     foreach ($allowedSettings as $key) {
         if (isset($_POST[$key])) {
-            $value = $_POST[$key] !== '' ? $_POST[$key] : null;
+            $value = trim($_POST[$key]);
 
-            // Update setting
+            // Special handling: remove $ sign for award_amount but store as text
+            if ($key === 'award_amount') {
+                $value = str_replace(['$', ','], '', $value);
+            }
+
+            // If empty, store as NULL in DB
+            $value = $value !== '' ? $value : null;
+
+            // Update setting in DB
             $stmt = $pdo->prepare("
                 UPDATE settings
                 SET setting_value = :value, updated_at = NOW()
@@ -38,7 +46,7 @@ try {
 
     $pdo->commit();
 
-    // Redirect back to settings page with success
+    // Redirect back to settings page with success message
     header("Location: settings.php?success=1");
     exit;
 
