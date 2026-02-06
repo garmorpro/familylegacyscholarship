@@ -172,13 +172,13 @@ function getSetting($key, $default = '') {
 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
     <div style="flex: 1; display: flex; flex-direction: column;">
         <label for="application_open" style="font-weight: 600; margin-bottom: 3px;">Open Date</label>
-        <input type="text" id="application_open" name="application_open" 
+        <input type="date" id="application_open" name="application_open" 
                value="<?= getSetting('application_open') ?>" 
                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
     <div style="flex: 1; display: flex; flex-direction: column;">
         <label for="application_closed" style="font-weight: 600; margin-bottom: 3px;">Close Date</label>
-        <input type="text" id="application_closed" name="application_closed" 
+        <input type="date" id="application_closed" name="application_closed" 
                value="<?= getSetting('application_closed') ?>" 
                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
@@ -198,13 +198,13 @@ function getSetting($key, $default = '') {
 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
     <div style="flex: 1; display: flex; flex-direction: column;">
         <label for="review_start" style="font-weight: 600; margin-bottom: 3px;">Start Date</label>
-        <input type="text" id="review_start" name="review_start" 
+        <input type="date" id="review_start" name="review_start" 
                value="<?= getSetting('review_start') ?>" 
                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
     <div style="flex: 1; display: flex; flex-direction: column;">
         <label for="review_end" style="font-weight: 600; margin-bottom: 3px;">End Date</label>
-        <input type="text" id="review_end" name="review_end" 
+        <input type="date" id="review_end" name="review_end" 
                value="<?= getSetting('review_end') ?>" 
                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
@@ -223,7 +223,7 @@ function getSetting($key, $default = '') {
         <!-- Recipient Announcement -->
         <div class="w-50" style="margin-bottom: 15px;">
     <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
-    <input type="text" id="announcement_date" name="announcement_date" 
+    <input type="date" id="announcement_date" name="announcement_date" 
            value="<?= getSetting('announcement_date') ?>" 
            style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
 </div>
@@ -241,7 +241,7 @@ function getSetting($key, $default = '') {
         <!-- Notification Email -->
         <div style="margin-bottom: 20px;">
     <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
-    <input type="text" id="notification_email" name="notification_email" 
+    <input type="email" id="notification_email" name="notification_email" 
            value="<?= getSetting('notification_email') ?>" 
            placeholder="admin@domain.com" 
            style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
