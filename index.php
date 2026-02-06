@@ -214,11 +214,17 @@ if ($today < $applicationOpen) {
 </div>
 
 
-<?php if ($applicationClose > $today < $applicationOpen) { ?>
-<?php } elseif ($today > $applicationClose) { ?>
-<?php } else { ?>
-    <a href="/application-form.php" class="btn mt-4" style="background-color: rgb(7, 5, 55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>Start Your Application</a>
-<?php } ?>
+<?php if ($today >= $applicationOpen && $today <= $applicationClose) {
+?>
+    <a href="/application-form.php"
+       class="btn mt-4"
+       style="background-color: rgb(7, 5, 55); color:white; font-size: 18px !important;">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        Start Your Application
+    </a>
+<?php
+}
+?>
   </div>
 </div>
 
