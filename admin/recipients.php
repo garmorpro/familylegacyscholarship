@@ -160,7 +160,7 @@ try {
 
                                 <!-- Message container -->
                                 <div class="alert alert-info d-none" id="alreadyUploadedMessage">
-                                    This recipient already has a picture uploaded. If you want to change the picture uploaded, please reach out to Garrett Morgan.
+                                    This recipient already has a picture uploaded. <br><br>If you want to change the picture uploaded, please reach out to Garrett Morgan.
                                 </div>
                             </div>
                             <div class="modal-footer">
