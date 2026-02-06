@@ -292,7 +292,7 @@ $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
 </div>
 
 <?php
-    $status = strtolower($recommendation['recommender_status'] ?? '');
+    $status = strtoupper($recommendation['recommender_status'] ?? '');
     switch ($status) {
         case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
         case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
