@@ -97,6 +97,15 @@ function getSetting($key, $default = '') {
 
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
 
+<!-- Top header remains white -->
+  <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
+    <div class="mb-3">
+        <!-- Back link -->
+        <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none text-muted d-inline-flex align-items-center">
+            <i class="bi bi-arrow-left me-1"></i> Back to applications
+        </a>
+    </div>
+
   <!-- Text with padding preserved -->
   <div class="card-body">
     <div class="d-flex align-items-center justify-content-between mb-4" style="padding: 15px 20px;">
