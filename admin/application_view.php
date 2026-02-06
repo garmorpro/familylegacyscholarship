@@ -177,7 +177,7 @@ try {
 <div class="col-md-6 text-md-end mt-3 mt-md-0">
 
     <?php if ($application['application_status'] === 'submitted'): ?>
-        <div class="mb-2">
+        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_reviewed.php" class="d-inline">
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">Mark Reviewed</button>
