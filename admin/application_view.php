@@ -222,14 +222,14 @@ try {
                 <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
                 <div class="mb-2">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-envelope me-2"></i> <span class="text-muted">Email</span>
+                        <i class="bi bi-envelope me-2 text-primary"></i> <span class="text-muted">Email</span>
                     </div>
                     <span class="fw-semibold"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></span>
                 </div>
                 <hr>
                 <div class="mb-0">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-telephone me-2"></i> <span class="text-muted">Phone</span>
+                        <i class="bi bi-telephone me-2 text-primary"></i> <span class="text-muted">Phone</span>
                     </div>
                     <span class="fw-semibold"><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></span>
                 </div>
