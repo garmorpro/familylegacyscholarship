@@ -278,7 +278,7 @@ try {
 $stmt = $pdo->prepare("
     SELECT setting_value
     FROM settings
-    WHERE setting_key = 'application_close'
+    WHERE setting_key = 'application_closed'
     LIMIT 1
 ");
 $stmt->execute();
