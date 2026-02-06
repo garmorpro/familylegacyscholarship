@@ -457,9 +457,11 @@ switch ($status) {
         ">
             <?= $wordCount ?> words
         </span>
-        <p>
-            Tell us about your self
-        </p>
+        <div>
+            <p>
+                tell me a
+            </p>
+        </div>
     </div>
     
 
