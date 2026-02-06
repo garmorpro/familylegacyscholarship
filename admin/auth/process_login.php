@@ -92,10 +92,7 @@ try {
                 $mail->addAddress($admin['email']);
 
                 // Content
-                // Attach logo and give it a Content ID
                 $mail->AddEmbeddedImage('../../assets/images/logo.png', 'logoimg');
-
-                // Then reference it in the HTML using cid:
                 $mail->isHTML(true);
                 $mail->Subject = "Account Lockout: TheMorganLegacy Admin Account";
                 $mail->Body = "
@@ -128,11 +125,12 @@ try {
         exit;
     }
 
-    // ✅ Success — reset counters
+    // ✅ Success — reset counters and mark logged_in
     $stmt = $pdo->prepare("
         UPDATE admin_users
         SET failed_login_attempts = 0,
-            last_login_at = NOW()
+            last_login_at = NOW(),
+            logged_in = TRUE
         WHERE id = :id
     ");
     $stmt->execute(['id' => $admin['id']]);
