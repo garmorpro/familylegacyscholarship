@@ -41,7 +41,7 @@ function getSetting($key, $default = '') {
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
-    <title>Application Portal - Morgan Legacy Scholarship</title>
+    <title>Settings - Morgan Legacy Scholarship</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
