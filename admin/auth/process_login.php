@@ -1,7 +1,8 @@
 <?php
 session_start();
+
 require_once '../../app/db.php';
-require_once '../../path.php'; 
+require_once '../../path.php';
 
 // Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -14,14 +15,19 @@ $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if ($email === '' || $password === '') {
-    header('Location: login.php?error=missing');
+    header('Location: ' . BASE_URL . '/admin/auth/?error=missing');
     exit;
 }
 
 try {
-    // Get admin user
+    // Fetch admin user
     $stmt = $pdo->prepare("
-        SELECT id, email, password_hash, is_active, failed_login_attempts
+        SELECT
+            id,
+            email,
+            password_hash,
+            is_active,
+            failed_login_attempts
         FROM admin_users
         WHERE email = :email
         LIMIT 1
@@ -29,34 +35,63 @@ try {
     $stmt->execute(['email' => $email]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Generic failure (do not reveal which part failed)
-    if (!$admin || !$admin['is_active']) {
+    // Generic failure (no info leaks)
+    if (!$admin) {
         header('Location: ' . BASE_URL . '/admin/auth/?error=invalid');
-        // header('Location: login.php?error=invalid');
         exit;
     }
 
-    // Verify password
+    // Account locked / inactive
+    if (!$admin['is_active']) {
+        header('Location: ' . BASE_URL . '/admin/auth/?error=locked');
+        exit;
+    }
+
+    // Hard stop if already locked by attempts
+    if ($admin['failed_login_attempts'] >= 3) {
+        header('Location: ' . BASE_URL . '/admin/auth/?error=locked');
+        exit;
+    }
+
+    // Password check
     if (!password_verify($password, $admin['password_hash'])) {
 
-        // Increment failed attempts
-        $stmt = $pdo->prepare("
-            UPDATE admin_users
-            SET failed_login_attempts = failed_login_attempts + 1,
-                last_failed_login = NOW()
-            WHERE id = :id
-        ");
-        $stmt->execute(['id' => $admin['id']]);
+        $newAttempts = $admin['failed_login_attempts'] + 1;
+
+        // Lock account on 3rd failure
+        if ($newAttempts >= 3) {
+            $stmt = $pdo->prepare("
+                UPDATE admin_users
+                SET
+                    failed_login_attempts = :attempts,
+                    is_active = false,
+                    last_failed_login = NOW()
+                WHERE id = :id
+            ");
+        } else {
+            $stmt = $pdo->prepare("
+                UPDATE admin_users
+                SET
+                    failed_login_attempts = :attempts,
+                    last_failed_login = NOW()
+                WHERE id = :id
+            ");
+        }
+
+        $stmt->execute([
+            'attempts' => $newAttempts,
+            'id' => $admin['id']
+        ]);
 
         header('Location: ' . BASE_URL . '/admin/auth/?error=invalid');
-        // header('Location: login.php?error=invalid');
         exit;
     }
 
-    // ✅ SUCCESS — reset failed attempts
+    // ✅ SUCCESS — reset counters
     $stmt = $pdo->prepare("
         UPDATE admin_users
-        SET failed_login_attempts = 0,
+        SET
+            failed_login_attempts = 0,
             last_login_at = NOW()
         WHERE id = :id
     ");
@@ -65,18 +100,15 @@ try {
     // Harden session
     session_regenerate_id(true);
 
-    $_SESSION['admin_id'] = $admin['id'];
+    $_SESSION['admin_id']    = $admin['id'];
     $_SESSION['admin_email'] = $admin['email'];
-    $_SESSION['is_admin'] = true;
+    $_SESSION['is_admin']    = true;
 
-    // header('Location: /admin/');
     header('Location: ' . BASE_URL . '/admin/');
     exit;
 
 } catch (PDOException $e) {
-    // Log this server-side in real life
     error_log($e->getMessage());
-    // header('Location: login.php?error=server');
     header('Location: ' . BASE_URL . '/admin/auth/?error=server');
     exit;
 }
