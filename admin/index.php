@@ -215,7 +215,7 @@ try {
             <i class="bi bi-people me-1"></i>
             Recipients
         </button>
-        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/settings.php'">
+        <button class="btn btn-action me-3" onclick="window.location.href='<?= BASE_URL ?>/admin/settings.php'">
             <i class="bi bi-gear me-1"></i>
             Settings
         </button>
