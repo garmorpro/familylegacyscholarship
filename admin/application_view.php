@@ -458,8 +458,8 @@ switch ($status) {
             <?= $wordCount ?> words
         </span>
     </div>
-    <p>
-        Test
+    <p style="font-size: 14px;">
+        In 500-750 words, please tell us about yourself...
     </p>
 
     <!-- Card Body -->
