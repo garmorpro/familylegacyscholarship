@@ -1,68 +1,25 @@
 <?php
 require_once '../app/functions.php';
 
-/**
- * Status counts + total
- */
+// Fetch all settings from DB
 try {
-    $countsStmt = $pdo->query("
-        SELECT application_status, COUNT(*) AS total
-        FROM scholarship_applications
-        GROUP BY application_status
-    ");
+    $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    $settings = [];
 
-    $statusCounts = [
-        'submitted' => 0,
-        'reviewed'  => 0,
-        'selected'  => 0
-    ];
-
-    while ($row = $countsStmt->fetch(PDO::FETCH_ASSOC)) {
-        if (isset($statusCounts[$row['application_status']])) {
-            $statusCounts[$row['application_status']] = (int) $row['total'];
-        }
+    while ($row = $settingsStmt->fetch(PDO::FETCH_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
     }
 
-    // Total applications (all statuses)
-    $totalApplications = array_sum($statusCounts);
-
 } catch (Exception $e) {
-    $statusCounts = [
-        'submitted' => 0,
-        'reviewed'  => 0,
-        'selected'  => 0
-    ];
-    $totalApplications = 0;
+    $settings = [];
 }
 
-/**
- * Fetch applications for table
- */
-try {
-    $applicationsStmt = $pdo->query("
-        SELECT 
-            id,
-            first_name,
-            last_name,
-            gpa,
-            email,
-            phone,
-            intended_school,
-            intended_major,
-            application_status,
-            submitted_at
-        FROM scholarship_applications
-        ORDER BY id DESC
-    ");
-
-    $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
-
-} catch (Exception $e) {
-    $applications = [];
+// Helper function to safely get a setting
+function getSetting($key, $default = '') {
+    global $settings;
+    return isset($settings[$key]) ? htmlspecialchars($settings[$key]) : $default;
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -179,10 +136,13 @@ try {
          <h4>
             Award Information
          </h4>
-        <div style="margin-bottom: 15px;">
-            <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
-            <input type="number" step="0.01" id="award_amount" name="award_amount" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
+        <!-- Award Information -->
+<div style="margin-bottom: 15px;">
+    <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
+    <input type="number" step="0.01" id="award_amount" name="award_amount" 
+           value="<?= getSetting('award_amount') ?>" 
+           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+</div>
 
         <hr>
 
@@ -190,19 +150,18 @@ try {
             Application Period
         </h4>
         <!-- Application Period -->
-        <div style="margin-bottom: 15px;">
-    <div style="display: flex; gap: 10px;">
-        <!-- Open Date -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="application_open" style="font-weight: 600; margin-bottom: 3px;">Open Date</label>
-            <input type="date" id="application_open" name="application_open" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
-
-        <!-- Close Date -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="application_closed" style="font-weight: 600; margin-bottom: 3px;">Close Date</label>
-            <input type="date" id="application_closed" name="application_closed" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
+<div style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <div style="flex: 1; display: flex; flex-direction: column;">
+        <label for="application_open" style="font-weight: 600; margin-bottom: 3px;">Open Date</label>
+        <input type="date" id="application_open" name="application_open" 
+               value="<?= getSetting('application_open') ?>" 
+               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column;">
+        <label for="application_closed" style="font-weight: 600; margin-bottom: 3px;">Close Date</label>
+        <input type="date" id="application_closed" name="application_closed" 
+               value="<?= getSetting('application_closed') ?>" 
+               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
 </div>
 
@@ -217,19 +176,18 @@ try {
         </h4>
 
         <!-- Review Period -->
-        <div style="margin-bottom: 15px;">
-    <div style="display: flex; gap: 10px;">
-        <!-- Start Date -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_start" style="font-weight: 600; margin-bottom: 3px;">Start Date</label>
-            <input type="date" id="review_start" name="review_start" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
-
-        <!-- End Date -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_end" style="font-weight: 600; margin-bottom: 3px;">End Date</label>
-            <input type="date" id="review_end" name="review_end" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
+<div style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <div style="flex: 1; display: flex; flex-direction: column;">
+        <label for="review_start" style="font-weight: 600; margin-bottom: 3px;">Start Date</label>
+        <input type="date" id="review_start" name="review_start" 
+               value="<?= getSetting('review_start') ?>" 
+               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column;">
+        <label for="review_end" style="font-weight: 600; margin-bottom: 3px;">End Date</label>
+        <input type="date" id="review_end" name="review_end" 
+               value="<?= getSetting('review_end') ?>" 
+               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
     </div>
 </div>
 
@@ -244,10 +202,12 @@ try {
         </h4>
 
         <!-- Recipient Announcement -->
-        <div class="w-50" style="margin-bottom: 15px;">
-            <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
-            <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
+        <div style="margin-bottom: 15px;">
+    <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
+    <input type="date" id="announcement_date" name="announcement_date" 
+           value="<?= getSetting('announcement_date') ?>" 
+           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+</div>
 
         <span class="text-muted" style="font-size: 14px;">
             Date when scholarship recipients will be announced
@@ -261,9 +221,12 @@ try {
 
         <!-- Notification Email -->
         <div style="margin-bottom: 20px;">
-            <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
-            <input type="email" id="notification_email" name="notification_email" placeholder="admin@domain.com" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-        </div>
+    <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
+    <input type="email" id="notification_email" name="notification_email" 
+           value="<?= getSetting('notification_email') ?>" 
+           placeholder="admin@domain.com" 
+           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+</div>
 
         <span class="text-muted" style="font-size: 14px;">
             Email address for receiving application notifications and updates
