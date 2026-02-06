@@ -73,7 +73,9 @@ $mail->send();
     ");
     $update->execute([':id' => $recId]);
 
-    echo "Recommendation email sent successfully!";
+    // echo "Recommendation email sent successfully!";
+    header("Location: ".$_SERVER['HTTP_REFERER']);
+    exit;
 } catch (Exception $e) {
     echo "Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
