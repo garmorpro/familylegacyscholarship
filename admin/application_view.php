@@ -173,27 +173,38 @@ try {
         </div>
     </div>
 
-    <!-- Right: Submission Date & Status -->
-    <div class="col-md-6 text-md-end mt-3 mt-md-0">
-        <div>
-            <span class="fw-semibold me-2">Submission Date:</span>
-            <?= date('M j, Y', strtotime($application['submitted_at'])) ?>
+    <!-- Right: Reviewed button + Submission Date & Status -->
+<div class="col-md-6 text-md-end mt-3 mt-md-0">
+
+    <?php if ($application['application_status'] === 'submitted'): ?>
+        <div class="mb-2">
+            <form method="POST" action="mark_reviewed.php" class="d-inline">
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Mark Reviewed</button>
+            </form>
         </div>
-        <div class="mt-1">
-            <span class="fw-semibold me-2">Status:</span>
-            <span class="badge 
-                <?php
-                    echo match ($application['application_status']) {
-                        'submitted' => 'bg-primary-subtle text-primary',
-                        'reviewed'  => 'bg-secondary-subtle text-secondary',
-                        'selected'  => 'bg-success-subtle text-success',
-                        default     => 'bg-light text-dark'
-                    };
-                ?>">
-                <?= ucfirst($application['application_status']) ?>
-            </span>
-        </div>
+    <?php endif; ?>
+
+    <div>
+        <span class="fw-semibold me-2">Submission Date:</span>
+        <?= date('M j, Y', strtotime($application['submitted_at'])) ?>
     </div>
+    <div class="mt-1">
+        <span class="fw-semibold me-2">Status:</span>
+        <span class="badge 
+            <?php
+                echo match ($application['application_status']) {
+                    'submitted' => 'bg-primary-subtle text-primary',
+                    'reviewed'  => 'bg-secondary-subtle text-secondary',
+                    'selected'  => 'bg-success-subtle text-success',
+                    default     => 'bg-light text-dark'
+                };
+            ?>">
+            <?= ucfirst($application['application_status']) ?>
+        </span>
+    </div>
+</div>
+
 </div>
 
 </div>
