@@ -1,6 +1,11 @@
 <?php
 require_once '../app/functions.php';
 
+echo '<pre>';
+print_r($_POST);
+echo '</pre>';
+exit;
+
 // Ensure PDO exists
 if (!isset($pdo)) {
     die("PDO connection not initialized!");
