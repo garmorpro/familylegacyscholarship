@@ -54,8 +54,15 @@ try {
             application_status,
             submitted_at
         FROM scholarship_applications
-        ORDER BY id DESC
+        ORDER BY
+            CASE application_status
+                WHEN 'final_recipient' THEN 1
+                WHEN 'final_review' THEN 2
+                ELSE 3
+            END,
+            submitted_at DESC
     ");
+
 
     $applications = $applicationsStmt->fetchAll(PDO::FETCH_ASSOC);
 
