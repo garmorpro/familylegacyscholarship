@@ -21,27 +21,42 @@ try {
     // Ensure valid integer IDs
     $ids = array_filter(array_map('intval', $ids), fn($id) => $id > 0);
 
-    if (!$action || empty($ids)) {
-        throw new Exception('No valid action or IDs provided.');
+    if (!$action) {
+        throw new Exception('No action provided.');
     }
 
-    $placeholders = implode(',', array_fill(0, count($ids), '?'));
-
     if ($action === 'delete') {
+        if (empty($ids)) {
+            throw new Exception('No applications selected for deletion.');
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $stmt = $pdo->prepare("DELETE FROM scholarship_applications WHERE id IN ($placeholders)");
         $stmt->execute($ids);
         $message = count($ids) . " application(s) deleted.";
+
     } elseif ($action === 'select') {
+        if (empty($ids)) {
+            throw new Exception('No applications selected to advance.');
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $stmt = $pdo->prepare("UPDATE scholarship_applications SET application_status = 'final_review' WHERE id IN ($placeholders)");
         $stmt->execute($ids);
         $message = count($ids) . " application(s) advanced to final review.";
+
+    } elseif ($action === 'bulk_delete') {
+        // Delete all applications except those with final_recipient status
+        $stmt = $pdo->prepare("DELETE FROM scholarship_applications WHERE application_status != 'final_recipient'");
+        $stmt->execute();
+        $deletedCount = $stmt->rowCount();
+        $message = $deletedCount . " application(s) deleted (excluding final recipients).";
+
     } else {
         throw new Exception('Invalid action: ' . $action);
     }
 
     echo json_encode(['success' => true, 'message' => $message]);
-
-    // Important: do NOT close PHP tag or echo anything else
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
