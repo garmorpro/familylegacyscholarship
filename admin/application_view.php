@@ -348,6 +348,7 @@ switch ($status) {
 </div>
 <?php endif; ?>
 
+        </div>
 
     </div>
 
