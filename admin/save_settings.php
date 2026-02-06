@@ -7,50 +7,63 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Allowed keys
 $allowedSettings = [
-    'award_amount',
-    'application_open',
-    'application_closed',
-    'review_start',
-    'review_end',
-    'announcement_date',
-    'notification_email'
+    'award_amount',        // numeric
+    'application_open',    // date
+    'application_closed',  // date
+    'review_start',        // date
+    'review_end',          // date
+    'announcement_date',   // date
+    'notification_email'   // string
 ];
 
 try {
     $pdo->beginTransaction();
 
     foreach ($allowedSettings as $key) {
-    if (isset($_POST[$key])) {
-        $value = trim($_POST[$key]);
+        if (isset($_POST[$key])) {
+            $rawValue = trim($_POST[$key]);
+            $valueToSave = null; // default to null
 
-        // Remove $ and commas for award_amount
-        if ($key === 'award_amount') {
-            $value = str_replace(['$', ','], '', $value);
-            // Convert empty string to NULL
-            $value = $value === '' ? null : $value;
+            // --- Handle numeric fields ---
+            if ($key === 'award_amount') {
+                // Remove $ and commas
+                $cleanValue = str_replace(['$', ','], '', $rawValue);
+                if ($cleanValue === '') {
+                    $valueToSave = null; // empty input -> NULL in DB
+                } else {
+                    $valueToSave = (int)$cleanValue; // cast to int
+                }
+            }
+            // --- Handle date fields ---
+            elseif (in_array($key, ['application_open', 'application_closed', 'review_start', 'review_end', 'announcement_date'])) {
+                $valueToSave = $rawValue !== '' ? $rawValue : null; // empty string -> NULL
+            }
+            // --- Handle string fields ---
+            else {
+                $valueToSave = $rawValue !== '' ? $rawValue : null; // empty string -> NULL
+            }
+
+            // --- DEBUG: log what we're saving ---
+            error_log("DEBUG: key = $key, rawValue = '$rawValue', valueToSave = " . var_export($valueToSave, true));
+
+            // --- Prepare statement ---
+            $stmt = $pdo->prepare("
+                UPDATE settings
+                SET setting_value = :value, updated_at = NOW()
+                WHERE setting_key = :key
+            ");
+
+            // Bind value depending on NULL or not
+            if ($valueToSave === null) {
+                $stmt->bindValue(':value', null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue(':value', $valueToSave, PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+
+            $stmt->execute();
         }
-
-        // Convert empty strings to NULL for other fields if needed
-        if ($key !== 'award_amount') {
-            $value = $value === '' ? null : $value;
-        }
-
-        $stmt = $pdo->prepare("
-            UPDATE settings
-            SET setting_value = :value, updated_at = NOW()
-            WHERE setting_key = :key
-        ");
-
-        if ($value === null) {
-            $stmt->bindValue(':value', null, PDO::PARAM_NULL);
-        } else {
-            $stmt->bindValue(':value', $value, PDO::PARAM_STR);
-        }
-        $stmt->bindValue(':key', $key, PDO::PARAM_STR);
-        $stmt->execute();
     }
-}
-
 
     $pdo->commit();
     header("Location: settings.php?success=1");
