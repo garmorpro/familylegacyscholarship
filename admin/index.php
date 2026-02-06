@@ -211,7 +211,7 @@ try {
 
     <!-- Right: Settings Icon -->
      <div class="" style="display: flex;">
-        <a href="settings.php" title="Settings" class="me-4" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
+        <a href="settings.php" title="Settings" class="me-3" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
             <i class="bi bi-gear-fill"></i>
         </a>
         <a href="<?= BASE_URL ?>/admin/auth/logout.php" title="Logout" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
