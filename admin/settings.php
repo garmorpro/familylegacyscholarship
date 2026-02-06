@@ -146,9 +146,9 @@ try {
     </div>
 
     <!-- Left Border Alert -->
-    <div style="
+<div style="
     display: flex;
-    align-items: flex-start;
+    align-items: center;  /* vertically center the icon */
     gap: 12px;
     border-left: 5px solid rgb(62,163,45);   /* green left border */
     background-color: rgb(242,253,244);      /* subtle light green background */
@@ -176,6 +176,10 @@ try {
         </div>
     </div>
 </div>
+
+
+
+
 
 </div>
 
