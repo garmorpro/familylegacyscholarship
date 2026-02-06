@@ -4,6 +4,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php'; // Composer autoload
 require '../app/db.php'; // your PDO connection
+require_once '../app/require_admin.php';
 
 if (!isset($_GET['id'])) {
     die("Recommendation ID missing.");
