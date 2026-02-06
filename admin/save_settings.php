@@ -28,19 +28,18 @@ try {
                 $value = str_replace(['$', ','], '', $value);
             }
 
-            // If empty, store as NULL in DB
             $value = $value !== '' ? $value : null;
 
-            // Update setting in DB
-            $stmt = $pdo->prepare("
-                UPDATE settings
-                SET setting_value = :value, updated_at = NOW()
-                WHERE setting_key = :key
-            ");
-            $stmt->execute([
-                ':value' => $value,
-                ':key'   => $key
-            ]);
+$stmt = $pdo->prepare("
+    UPDATE settings
+    SET setting_value = :value, updated_at = NOW()
+    WHERE setting_key = :key
+");
+$stmt->execute([
+    ':value' => $value,
+    ':key'   => $key
+]);
+
         }
     }
 
