@@ -346,7 +346,7 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
     if (now < applicationOpen) {
       countdownBoxes.style.display = "none";
       countdownMessage.style.display = "block";
-      countdownMessage.innerText = "Applications not yet open";
+      countdownMessage.innerText = "Applications is closed";
       return;
     }
 
