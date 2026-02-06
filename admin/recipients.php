@@ -164,6 +164,16 @@ try {
   </div>
 </div>
 
+<script>
+var uploadModal = document.getElementById('uploadPictureModal');
+uploadModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget; // Row that triggered modal
+    var recipientId = button.getAttribute('data-recipient-id');
+    document.getElementById('recipient_id').value = recipientId;
+});
+</script>
+
+
 
                     <td style="width: 20px;"></td>
 
