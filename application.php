@@ -202,7 +202,7 @@ require_once 'path.php';
 <hr>
 
 <div class="d-flex justify-content-center">
-<a href="/application-form.php" class="btn mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>Start Your Application</a>
+<a href="<?= BASE_URL ?>/application-form.php" class="btn mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>Start Your Application</a>
 </div>
 
 

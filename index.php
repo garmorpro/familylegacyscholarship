@@ -190,7 +190,7 @@ if ($today < $applicationOpen) {
 
 <?php if ($today >= $applicationOpen && $today <= $applicationClose) {
 ?>
-    <a href="/application-form.php"
+    <a href="<?= BASE_URL ?>/application-form.php"
        class="btn mt-4"
        style="background-color: rgb(7, 5, 55); color:white; font-size: 18px !important;">
         <i class="bi bi-file-earmark-text me-2"></i>
@@ -224,7 +224,7 @@ if ($today < $applicationOpen) {
       </li>
     </ul>
 
-  <a href="/eligibility.html" class="card-link text-decoration-none">View Full Eligibility Requirements <i class="bi bi-arrow-right-short"></i></a>
+  <a href="<?= BASE_URL ?>/eligibility.php" class="card-link text-decoration-none">View Full Eligibility Requirements <i class="bi bi-arrow-right-short"></i></a>
   </div>
 </div>
 
@@ -235,7 +235,7 @@ if ($today < $applicationOpen) {
 <div class="row g-3">
   <!-- Card 1 -->
   <div class="col-12 col-md-4">
-    <a href="/about.html" style="text-decoration: none; color: inherit;">
+    <a href="<?= BASE_URL ?>/about.php" style="text-decoration: none; color: inherit;">
       <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
         <div class="card-body">
           <h6 class="card-title" style="font-size: 18px;">About the Scholarship</h6>
@@ -247,7 +247,7 @@ if ($today < $applicationOpen) {
 
   <!-- Card 2 -->
   <div class="col-12 col-md-4">
-    <a href="/eligibility.html" style="text-decoration: none; color: inherit;">
+    <a href="<?= BASE_URL ?>/eligibility.php" style="text-decoration: none; color: inherit;">
       <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
         <div class="card-body">
           <h6 class="card-title" style="font-size: 18px;">Eligibility & Criteria</h6>
@@ -259,7 +259,7 @@ if ($today < $applicationOpen) {
 
   <!-- Card 3 -->
   <div class="col-12 col-md-4">
-    <a href="/application.html" style="text-decoration: none; color: inherit;">
+    <a href="<?= BASE_URL ?>/application.php" style="text-decoration: none; color: inherit;">
       <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
         <div class="card-body">
           <h6 class="card-title" style="font-size: 18px;">Application Process</h6>
