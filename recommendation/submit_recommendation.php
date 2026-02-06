@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id' => $rec['id']
         ]);
 
+        // Update status in local variable so page reflects completion immediately
+        $rec['status'] = 'completed';
         $success = "Thank you! Your recommendation has been submitted.";
     }
 }
@@ -71,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .scholarship-header h1 {
     font-size: 1.8rem;
     margin: 0;
-    color: #000000; /* pink/purple accent */
+    color: #000000;
   }
   .form-container {
     background-color: #ffffff;
@@ -124,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
     <?php else: ?>
+        <!-- Show info only when completed -->
         <div class="alert alert-info">You have already submitted this recommendation.</div>
     <?php endif; ?>
 
