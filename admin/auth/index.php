@@ -150,15 +150,15 @@ button:hover {
 <?php endif; ?>
 
 
-  <form method="POST" action="process_login.php">
+  <form method="POST" action="process_login.php" autocomplete="off">
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required autofocus>
+      <input type="email" id="email" name="email" required autofocus autocomplete="off">
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
+      <input type="password" id="password" name="password" required autocomplete="new-password">
     </div>
 
     <button type="submit">Sign In</button>
