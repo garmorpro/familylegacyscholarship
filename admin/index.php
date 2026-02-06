@@ -216,110 +216,110 @@ try {
 
 <!-- STATUS ROW -->
 
-    <div class="row g-3 mb-3">
-
-    <!-- Open Applications -->
-    <div class="col-md-4 col-lg-3">
+    <div class="row g-3 mb-4">
+    
+        <!-- Open Applications -->
+        <div class="col-md-4 col-lg-3">
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+                 style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+    
+                <div class="d-flex align-items-center">
+                    <div class="me-3 d-flex align-items-center justify-content-center"
+                         style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
+                        <i class="bi bi-inbox-fill text-primary"></i>
+                    </div>
+    
+                    <div>
+                        <div class="fw-semibold">Open</div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            Awaiting review
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="fs-4 fw-bold text-primary">
+                    <?= $statusCounts['submitted'] ?>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Reviewed Applications -->
+        <div class="col-md-4 col-lg-3">
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+                 style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+    
+                <div class="d-flex align-items-center">
+                    <div class="me-3 d-flex align-items-center justify-content-center"
+                         style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(108,117,125,0.15);">
+                        <i class="bi bi-eye-fill text-secondary"></i>
+                    </div>
+    
+                    <div>
+                        <div class="fw-semibold">Reviewed</div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            Initial review
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="fs-4 fw-bold text-secondary">
+                    <?= $statusCounts['reviewed'] ?>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Selected Applications -->
+        <div class="col-md-4 col-lg-3">
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+                 style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+    
+                <div class="d-flex align-items-center">
+                    <div class="me-3 d-flex align-items-center justify-content-center"
+                         style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(25,135,84,0.15);">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                    </div>
+    
+                    <div>
+                        <div class="fw-semibold">Final Review</div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            Further review
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="fs-4 fw-bold text-success">
+                    <?= $statusCounts['final_review'] ?>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Total Applications -->
+        <div class="col-md-4 col-lg-3">
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
+    
             <div class="d-flex align-items-center">
                 <div class="me-3 d-flex align-items-center justify-content-center"
-                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
-                    <i class="bi bi-inbox-fill text-primary"></i>
+                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(255,159,67,0.15);">
+                    <i class="bi bi-collection-fill" style="color: rgb(255,159,67);"></i>
                 </div>
-
+    
                 <div>
-                    <div class="fw-semibold">Open</div>
+                    <div class="fw-semibold">Total</div>
                     <div class="text-muted" style="font-size: 13px;">
-                        Awaiting review
+                        All applications
                     </div>
                 </div>
             </div>
-
-            <div class="fs-4 fw-bold text-primary">
-                <?= $statusCounts['submitted'] ?>
+    
+            <div class="fs-4 fw-bold" style="color: rgb(255,159,67);">
+                <?= $totalApplications ?>
             </div>
         </div>
     </div>
-
-    <!-- Reviewed Applications -->
-    <div class="col-md-4 col-lg-3">
-        <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
-             style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
-            <div class="d-flex align-items-center">
-                <div class="me-3 d-flex align-items-center justify-content-center"
-                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(108,117,125,0.15);">
-                    <i class="bi bi-eye-fill text-secondary"></i>
-                </div>
-
-                <div>
-                    <div class="fw-semibold">Reviewed</div>
-                    <div class="text-muted" style="font-size: 13px;">
-                        Initial review
-                    </div>
-                </div>
-            </div>
-
-            <div class="fs-4 fw-bold text-secondary">
-                <?= $statusCounts['reviewed'] ?>
-            </div>
-        </div>
+    
+    
     </div>
-
-    <!-- Selected Applications -->
-    <div class="col-md-4 col-lg-3">
-        <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
-             style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
-            <div class="d-flex align-items-center">
-                <div class="me-3 d-flex align-items-center justify-content-center"
-                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(25,135,84,0.15);">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                </div>
-
-                <div>
-                    <div class="fw-semibold">Selected</div>
-                    <div class="text-muted" style="font-size: 13px;">
-                        Further review
-                    </div>
-                </div>
-            </div>
-
-            <div class="fs-4 fw-bold text-success">
-                <?= $statusCounts['selected'] ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- Rejected Applications -->
-    <div class="col-md-4 col-lg-3">
-        <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
-             style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
-            <div class="d-flex align-items-center">
-                <div class="me-3 d-flex align-items-center justify-content-center"
-                     style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(220,53,69,0.12);">
-                    <i class="bi bi-x-circle-fill text-danger"></i>
-                </div>
-
-                <div>
-                    <div class="fw-semibold">Rejected</div>
-                    <div class="text-muted" style="font-size: 13px;">
-                        Not selected
-                    </div>
-                </div>
-            </div>
-
-            <div class="fs-4 fw-bold text-danger">
-                <?= $statusCounts['rejected'] ?>
-            </div>
-        </div>
-    </div>
-
-</div>
-
 
 
 <!-- END STATUS ROW -->
