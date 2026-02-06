@@ -100,6 +100,12 @@ function getSetting($key, $default = '') {
         padding:0;
      ">
 
+     <?php
+$applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
+$applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
+$applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
+?>
+
 
   <!-- Text with padding preserved -->
   <div class="card-body text-center">
@@ -108,7 +114,7 @@ function getSetting($key, $default = '') {
     <div class="mb-2">
       <span class="badge rounded-pill mb-1" style="background-color: rgb(226,251,232); color: rgb(43,101,54); font-weight: 400 !important;"><i class="bi bi-check2-circle"></i> Applications Now Open</span> <br>
     <p class="text-muted" style="font-size: 12px;">
-      Class of 2026
+      Class of <?= $applicationCloseYear ?>
     </p>
     </div>
 
@@ -313,11 +319,6 @@ function getSetting($key, $default = '') {
   });
 </script>
 
-<?php
-$applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
-$applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
-?>
-
 <script>
   // Get dates from PHP
   const applicationOpen = new Date("<?= $applicationOpen ?>T00:00:00").getTime();
@@ -327,12 +328,12 @@ $applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
     const now = new Date().getTime();
 
     if (now < applicationOpen) {
-      document.getElementById("countdown").innerText = "Applications not yet open";
+      document.getElementById("countdown").innerText = "Applications is closed";
       return;
     }
 
     if (now > applicationClose) {
-      document.getElementById("countdown").innerText = "Application closed";
+      document.getElementById("countdown").innerText = "Application is closed";
       return;
     }
 
