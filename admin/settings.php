@@ -191,12 +191,21 @@ try {
         </h4>
         <!-- Application Period -->
         <div style="margin-bottom: 15px;">
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Application Period</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="date" id="application_open" name="application_open" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-                <input type="date" id="application_closed" name="application_closed" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-            </div>
+    <div style="display: flex; gap: 10px;">
+        <!-- Open Date -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <label for="application_open" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Open Date</label>
+            <input type="date" id="application_open" name="application_open" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
+
+        <!-- Close Date -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <label for="application_closed" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Close Date</label>
+            <input type="date" id="application_closed" name="application_closed" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+        </div>
+    </div>
+</div>
+
         <span class="text-muted" style="font-size: 14px;">
             Set the dates when students can submit applications
         </span>
@@ -212,13 +221,13 @@ try {
     <div style="display: flex; gap: 10px;">
         <!-- Start Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_start" style="font-weight: 500; margin-bottom: 3px;">Start Date</label>
+            <label for="review_start" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Start Date</label>
             <input type="date" id="review_start" name="review_start" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
 
         <!-- End Date -->
         <div style="flex: 1; display: flex; flex-direction: column;">
-            <label for="review_end" style="font-weight: 500; margin-bottom: 3px;">End Date</label>
+            <label for="review_end" style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">End Date</label>
             <input type="date" id="review_end" name="review_end" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
     </div>
@@ -235,7 +244,7 @@ try {
         </h4>
 
         <!-- Recipient Announcement -->
-        <div class="w-25" style="margin-bottom: 15px;">
+        <div class="w-50" style="margin-bottom: 15px;">
             <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
             <input type="date" id="announcement_date" name="announcement_date" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
         </div>
