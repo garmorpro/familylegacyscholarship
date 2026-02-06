@@ -449,7 +449,22 @@ switch ($status) {
                     $essayText = $application['essay'] ?? '';
                     $wordCount = str_word_count($essayText);
                 ?>
-                <div class="mb-2 badge rounded-pill text-bg-light" style="font-size: 12px !important; margin-top: -15px !important; margin-bottom: 15px !important;"><span class="fw-semibold">Word Count:</span> <?= $wordCount ?></div>
+                <div style="
+    font-size: 13px;
+    padding: 0.35rem 0.8rem;
+    border-radius: 50rem;
+    background: linear-gradient(135deg, #eeb7d1, #d63384);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 0;
+    margin-bottom: 15px;
+">
+    <span style="font-weight: 600;">Word Count:</span> <?= $wordCount ?>
+</div>
+
                 <div><?= nl2br(htmlspecialchars($essayText)) ?></div>
             </div>
         </div>
