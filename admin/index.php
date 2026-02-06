@@ -293,28 +293,53 @@ if ($applicationClose) {
 
 
 <!-- Bulk Actions Button -->
-<div class="d-flex justify-content-end gap-2 mb-2">
+<div class="d-flex justify-content-end align-items-center gap-2 mb-3">
 
     <?php if ($applicationsClosed): ?>
         <button
-            class="btn btn-danger shadow-sm"
-            style="font-size: 14px !important;"
+            class="btn btn-danger-soft"
             onclick="confirmClearApplications()"
         >
-            <i class="bi bi-trash3"></i> Clear Applications
+            <i class="bi bi-trash3 me-1"></i>
+            Clear Applications
         </button>
     <?php endif; ?>
 
     <div class="dropdown">
-        <button class="btn btn-light shadow-sm" type="button" id="bulkActionsBtn" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-lightning-fill"></i> Bulk Actions
+        <button
+            class="btn btn-action"
+            type="button"
+            id="bulkActionsBtn"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+        >
+            <i class="bi bi-lightning-fill me-1"></i>
+            Bulk Actions
+            <i class="bi bi-chevron-down ms-1 small"></i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bulkActionsBtn">
-            <li><a class="dropdown-item" href="#" onclick="performBulkAction('delete'); return false;">Delete</a></li>
-            <li><a class="dropdown-item" href="#" onclick="performBulkAction('select'); return false;">Mark as Selected</a></li>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2"
+                   href="#"
+                   onclick="performBulkAction('delete'); return false;">
+                    <i class="bi bi-trash text-danger"></i>
+                    Delete
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2"
+                   href="#"
+                   onclick="performBulkAction('select'); return false;">
+                    <i class="bi bi-check-circle text-success"></i>
+                    Mark as Selected
+                </a>
+            </li>
         </ul>
     </div>
+
 </div>
+
 
 
     <div class="mt-4 bg-white shadow-sm"
