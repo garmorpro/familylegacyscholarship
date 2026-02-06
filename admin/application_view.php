@@ -343,36 +343,6 @@ switch ($status) {
 </div>
 
 
-<?php if ($status === 'completed'): ?>
-<div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="recModalLabel<?= $recommendation['id'] ?>">Recommendation from <?= htmlspecialchars($recommendation['recommender_name']) ?></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <?php
-            // Fetch the actual recommendation content from the database
-            $recContentStmt = $pdo->prepare("
-                SELECT content
-                FROM recommendations
-                WHERE id = :rec_id
-            ");
-            $recContentStmt->execute([':rec_id' => $recommendation['id']]);
-            $recContent = $recContentStmt->fetchColumn();
-            echo nl2br(htmlspecialchars($recContent ?? 'No content available.'));
-        ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<?php endif; ?>
-
-
                 </div>
 
                 <div class="mb-2">
