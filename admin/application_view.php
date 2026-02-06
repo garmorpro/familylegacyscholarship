@@ -450,20 +450,23 @@ switch ($status) {
                     $wordCount = str_word_count($essayText);
                 ?>
                 <div style="
-    font-size: 13px;
-    padding: 0.35rem 0.8rem;
-    border-radius: 50rem;
-    background: linear-gradient(135deg, #b7c0ee, rgb(49,108,244));
+    font-size: 14px;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #b7c0ee, #316cf4);
     color: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
     margin-top: 0;
     margin-bottom: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 ">
     <span style="font-weight: 600;">Word Count:</span> <?= $wordCount ?>
 </div>
+
 
                 <div><?= nl2br(htmlspecialchars($essayText)) ?></div>
             </div>
