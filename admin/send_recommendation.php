@@ -3,7 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require __DIR__ . '/../vendor/autoload.php';
-require '../app/db.php'; // your PDO connection
+require __DIR__ . '/../app/db.php';
 
 if (!isset($_GET['id'])) {
     die("Recommendation ID missing.");
