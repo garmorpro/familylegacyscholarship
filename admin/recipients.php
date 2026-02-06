@@ -145,9 +145,7 @@ try {
                         <div class="fw-semibold">
                             <?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?>
                         </div>
-                        <!-- <div class="text-muted" style="font-size: 13px;">
-                            GPA: <?= //htmlspecialchars($rec['gpa']) ?>
-                        </div> -->
+                      
                     </td>
 
                     <!-- Contact -->
@@ -171,26 +169,7 @@ try {
                         <?= date('Y', strtotime($rec['application_year'])) ?>
                     </td>
 
-                    <!-- Status -->
-                    <!-- <td>
-                        <span class="badge
-                            <?php
-                                // echo match ($app['application_status']) {
-                                //     'submitted' => 'bg-primary-subtle text-primary',
-                                //     'reviewed'  => 'bg-secondary-subtle text-secondary',
-                                //     'final_review' => 'bg-success-subtle text-success',
-                                //     'final_recipient' => 'bg-info-subtle text-info',
-                                //     default => 'bg-light text-dark'
-                                // };
-                            ?>">
-                            <?= //ucwords(str_replace('_', ' ', $app['application_status'])) ?>
-                        </span>
-                    </td> -->
-
-                    <!-- Chevron -->
-                    <!-- <td class="text-end text-muted">
-                        <i class="bi bi-chevron-right"></i>
-                    </td> -->
+                    
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>
