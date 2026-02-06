@@ -439,7 +439,7 @@ switch ($status) {
         <!-- Essay Card -->
 <div class="card mb-3 shadow-sm" style="border-radius: 12px; border: none; overflow: hidden;">
     <!-- Card Header -->
-    <div class="card-header bg-white d-flex align-items-center gap-2" style="padding: 20px 10px; border-bottom: 1px solid #e9ecef;">
+    <div class="card-header bg-white d-flex align-items-center gap-2" style="padding: 20px 10px;">
         <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 6px;">
             <i class="bi bi-file-earmark-text text-white"></i>
         </div>
@@ -457,18 +457,10 @@ switch ($status) {
         ">
             <?= $wordCount ?> words
         </span>
-        <br>
-        
-        <div>
-            <p>
-                tell me a
-            </p>
-        </div>
     </div>
-    
 
     <!-- Card Body -->
-    <div class="card-body" style="padding: 20px 25px; background-color: #f8f9fa; border-radius: 0 0 12px 12px;">
+    <div class="card-body" style="padding: 20px 25px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; border-radius: 0 0 12px 12px;">
         <div style="line-height: 1.6; color: #343a40; font-size: 14px;">
             <?= nl2br(htmlspecialchars($essayText)) ?>
         </div>
