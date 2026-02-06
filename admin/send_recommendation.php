@@ -43,7 +43,7 @@ try {
     $mail->Port       = 587;
 
     // Recipients
-    $mail->setFrom('noreply@morganserver.com', 'TheMorganLegacy');
+    $mail->setFrom('garrett@morganserver.com', 'TheMorganLegacy');
     $mail->addAddress($rec['recommender_email'], $rec['recommender_name']);
 
     // Content
