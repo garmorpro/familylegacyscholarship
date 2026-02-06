@@ -137,12 +137,25 @@ function getSetting($key, $default = '') {
             Award Information
          </h4>
         <!-- Award Information -->
-<div class="w-50" style="margin-bottom: 15px;">
+<div class="w-50" style="margin-bottom: 15px; position: relative;">
     <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
-    <input type="number" step="0.01" id="award_amount" name="award_amount" 
-           value="<?= getSetting('award_amount') ?>" 
-           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+    
+    <!-- Input with $ prefix -->
+    <div style="position: relative;">
+        <span style="
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: #495057;
+        ">$</span>
+        <input type="number" step="0.01" id="award_amount" name="award_amount" 
+               value="<?= getSetting('award_amount') ?>" 
+               style="width: 100%; padding: 8px 12px 8px 24px; border-radius: 6px; border: 1px solid #ced4da;">
+    </div>
 </div>
+
 
         <hr>
 
