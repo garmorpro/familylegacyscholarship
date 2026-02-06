@@ -115,7 +115,7 @@ try {
     <table class="table table-hover mb-0 align-middle" id="applicationsTable">
         <thead class="table-light">
             <tr>
-                <!-- <th style="width: 40px;"></th> -->
+                <th style="width: 20px;"></th>
                 <th>Applicant</th>
                 <th>Contact</th>
                 <th>Intended School</th>
@@ -135,6 +135,7 @@ try {
         <?php else: ?>
             <?php foreach ($recipients as $rec): ?>
                 <tr>
+                    <td style="width: 20px;"></td>
 
                     <!-- Name + GPA -->
                     <td>
