@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once __DIR__ . '/app/db.php';
-require_once __DIR__ . '/path.php';
+require_once 'db.php';
+require_once '../path.php';
 
 // Check if user is logged in as admin
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
