@@ -167,8 +167,13 @@ try {
 
                     <!-- Date Submitted -->
                     <td>
-                        <?= htmlspecialchars($rec['recipient_picture']) ?>
+                        <?php if (!empty($rec['recipient_picture'])): ?>
+                            <span class="badge rounded-pill bg-success text-white">Uploaded</span>
+                        <?php else: ?>
+                            <span class="badge rounded-pill bg-secondary text-white">Not Yet</span>
+                        <?php endif; ?>
                     </td>
+
 
                     
                 </tr>
