@@ -100,10 +100,10 @@ function getSetting($key, $default = '') {
 
 <!-- Top header remains white -->
   <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
-    <div class="mb-1">
+    <div class="">
         <!-- Back link -->
         <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none text-muted d-inline-flex align-items-center">
-            <i class="bi bi-arrow-left me-1"></i> Back to applications
+            <i class="bi bi-arrow-left me-1"></i> Back to application portal
         </a>
     </div>
 
