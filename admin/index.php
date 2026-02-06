@@ -354,26 +354,24 @@ if ($applicationClose) {
 
 
 <!-- Bulk Actions Button -->
-<div class="d-flex justify-content-end align-items-center gap-2 mb-3">
+<div class="d-flex justify-content-end align-items-center gap-2 mb-3 flex-wrap">
 
+    <!-- Search Bar -->
+    <input type="text" id="searchInput" class="form-control form-control-sm"
+           placeholder="Search applicants..." style="width: 220px;">
+
+    <!-- Clear Applications -->
     <?php if ($applicationsClosed): ?>
-        <button
-            class="btn btn-danger-soft"
-            onclick="confirmClearApplications()"
-        >
+        <button class="btn btn-danger-soft" onclick="confirmClearApplications()">
             <i class="bi bi-trash3 me-1"></i>
             Clear Applications
         </button>
     <?php endif; ?>
 
+    <!-- Bulk Actions Dropdown -->
     <div class="dropdown">
-        <button
-            class="btn btn-action"
-            type="button"
-            id="bulkActionsBtn"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-        >
+        <button class="btn btn-action" type="button" id="bulkActionsBtn"
+                data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-lightning-fill me-1"></i>
             Bulk Actions
             <i class="bi bi-chevron-down ms-1 small"></i>
@@ -382,32 +380,29 @@ if ($applicationClose) {
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
             <li>
                 <a class="dropdown-item d-flex align-items-center gap-2"
-                   href="#"
-                   onclick="performBulkAction('delete'); return false;">
+                   href="#" onclick="performBulkAction('delete'); return false;">
                     <i class="bi bi-trash text-danger"></i>
                     Delete
                 </a>
             </li>
             <li>
                 <a class="dropdown-item d-flex align-items-center gap-2"
-                   href="#"
-                   onclick="performBulkAction('select'); return false;">
+                   href="#" onclick="performBulkAction('select'); return false;">
                     <i class="bi bi-check-circle text-success"></i>
                     Advance to Final Review
                 </a>
             </li>
         </ul>
     </div>
-
 </div>
+
 
 
 
     <div class="mt-4 bg-white shadow-sm"
      style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
-
-    <table class="table table-hover mb-0 align-middle">
+    <table class="table table-hover mb-0 align-middle" id="applicationsTable">
         <thead class="table-light">
             <tr>
                 <th style="width: 40px;"></th>
@@ -429,23 +424,17 @@ if ($applicationClose) {
             </tr>
         <?php else: ?>
             <?php foreach ($applications as $app): ?>
-                <tr style="cursor: pointer; background-color: pink !important;"
+                <tr style="cursor: pointer;"
                     onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
 
                     <!-- Checkbox -->
                     <td>
-                        <input
-                            type="checkbox"
-                            class="form-check-input app-checkbox"
-                            data-id="<?= (int)$app['id'] ?>"
-                            data-name="<?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>"
-                            onclick="event.stopPropagation()"
-                        >
-
-
+                        <input type="checkbox"
+                               class="form-check-input app-checkbox"
+                               data-id="<?= (int)$app['id'] ?>"
+                               data-name="<?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>"
+                               onclick="event.stopPropagation()">
                     </td>
-
-
 
                     <!-- Name + GPA -->
                     <td>
@@ -485,9 +474,9 @@ if ($applicationClose) {
                                 echo match ($app['application_status']) {
                                     'submitted' => 'bg-primary-subtle text-primary',
                                     'reviewed'  => 'bg-secondary-subtle text-secondary',
-                                    'final_review'  => 'bg-success-subtle text-success',
-                                    'final_recipient'  => 'bg-success-subtle text-success',
-                                    default     => 'bg-light text-dark'
+                                    'final_review' => 'bg-success-subtle text-success',
+                                    'final_recipient' => 'bg-success text-white',
+                                    default => 'bg-light text-dark'
                                 };
                             ?>">
                             <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
@@ -504,6 +493,7 @@ if ($applicationClose) {
         </tbody>
     </table>
 </div>
+
 
 
 
@@ -554,6 +544,18 @@ if ($applicationClose) {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#applicationsTable tbody tr');
+
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+    });
+});
+</script>
+
 <script>
     function performBulkAction(action) {
     // Collect selected applications
