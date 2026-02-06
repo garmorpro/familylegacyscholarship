@@ -13,10 +13,10 @@ if (!isset($pdo)) {
 try {
     $recipientsStmt = $pdo->query("SELECT * FROM recipients ORDER BY application_year DESC");
     $recipients = $recipientsStmt->fetchAll(PDO::FETCH_ASSOC);
-
 } catch (Exception $e) {
     $recipients = [];
 }
+
 
 ?>
 
