@@ -75,7 +75,7 @@ function insert_application_with_recommendation(PDO $pdo, array $data) {
             ':recommender_name'           => $data['recommender_name'],
             ':recommender_email'          => $data['recommender_email'],
             ':recommender_relationship'   => $data['recommender_relationship'],
-            ':status'                     => 'pending'
+            ':status'                     => 'not_sent'
         ]);
 
         $pdo->commit();
