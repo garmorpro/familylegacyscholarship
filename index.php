@@ -143,16 +143,12 @@ $today = date('Y-m-d');
 
   <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
-    <div class="card modern-card p-2 border-0 shadow-sm rounded-3">
-      <div class="d-flex align-items-center">
-        <div class="icon-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center">
-          <i class="bi bi-currency-dollar fs-5"></i>
-        </div>
-        <div>
-          <div class="text-muted small mb-1">Award Amount</div>
-          <div class="fw-semibold">$<?= number_format(getSetting('award_amount', 0)) ?></div>
-        </div>
+    <div class="card modern-vertical-card text-center p-3 border-0 shadow-sm rounded-4">
+      <div class="icon-container bg-primary text-white mb-2 mx-auto d-flex align-items-center justify-content-center">
+        <i class="bi bi-currency-dollar fs-3"></i>
       </div>
+      <div class="text-uppercase text-muted small mb-1">Award Amount</div>
+      <div class="fw-bold fs-5">$<?= number_format(getSetting('award_amount', 0)) ?></div>
     </div>
   </div>
 
@@ -175,34 +171,29 @@ $today = date('Y-m-d');
   ?>
 
   <div class="col-12 col-md-6">
-    <div class="card modern-card p-2 border-0 shadow-sm rounded-3">
-      <div class="d-flex align-items-center">
-        <div class="icon-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center">
-          <i class="bi bi-calendar2 fs-5"></i>
-        </div>
-        <div>
-          <div class="text-muted small mb-1"><?= $label ?></div>
-          <div class="fw-semibold"><?= date("F j, Y", strtotime($dateToShow)) ?></div>
-        </div>
+    <div class="card modern-vertical-card text-center p-3 border-0 shadow-sm rounded-4">
+      <div class="icon-container bg-success text-white mb-2 mx-auto d-flex align-items-center justify-content-center">
+        <i class="bi bi-calendar2 fs-3"></i>
       </div>
+      <div class="text-uppercase text-muted small mb-1"><?= $label ?></div>
+      <div class="fw-bold fs-5"><?= date("F j, Y", strtotime($dateToShow)) ?></div>
     </div>
   </div>
 
 </div>
 
 <style>
-.modern-card {
-    transition: transform 0.15s, box-shadow 0.15s;
+.modern-vertical-card {
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-.modern-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+.modern-vertical-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
-.icon-circle {
-    width: 40px;
-    height: 40px;
+.icon-container {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    flex-shrink: 0;
 }
 </style>
 
