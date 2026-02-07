@@ -175,10 +175,10 @@ if ($today < $applicationOpen) {
 <div class="col-12 col-md-6">
     <div class="card mt-0" style="border: none !important; height: 75px;">
       <div class="card-body">
-        <h4 class="card-title" style="font-size: 18px;">
+        <h4 class="card-title text-center" style="font-size: 18px;">
           <i class="bi bi-calendar2 me-2" style="color: rgb(45,92,242);"></i><?= $label ?>
         </h4>
-        <p class="card-text text-muted" style="font-size: 16px !important;">
+        <p class="card-text text-muted text-cetner" style="font-size: 16px !important;">
           <?= date("F j, Y", strtotime($dateToShow)) ?>
         </p>
       </div>
