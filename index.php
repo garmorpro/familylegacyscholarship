@@ -95,15 +95,16 @@ $today = date('Y-m-d');
 
 
 
-    
 
-    <div class="card countdown-card mx-auto p-3 border-0 rounded-4" style="background-color: #070537; color: white; max-width: 500px;">
-  <div class="card-body text-center">
-    <p class="mb-3 small">
+
+    <div class="card countdown-card mx-auto p-2 border-0 rounded-3" style="background-color: #070537; color: white; max-width: 420px;">
+  <div class="card-body text-center p-2">
+
+    <p class="mb-2 small">
       <i class="bi bi-clock me-1"></i> Time remaining to submit your application:
     </p>
 
-    <div id="countdown-container" class="d-flex gap-3 flex-wrap justify-content-center">
+    <div id="countdown-container" class="d-flex gap-2 justify-content-center flex-wrap">
 
       <!-- Countdown boxes -->
       <div class="text-center">
@@ -129,53 +130,55 @@ $today = date('Y-m-d');
     </div>
 
     <!-- Closed / not open message -->
-    <div id="countdown-message" class="text-center mt-3 d-none text-danger fw-bold">
+    <div id="countdown-message" class="text-center mt-2 d-none fw-semibold text-danger">
       Application is closed
     </div>
+
   </div>
 </div>
 
 <style>
 .countdown-card {
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .count-box {
-  background: linear-gradient(135deg, #2d5cf2, #6096f3);
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 1.3rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
+    background: #1a1a6c; /* flat, not gradient */
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #fff;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .count-box:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
 }
 
 .count-label {
-  font-size: 12px;
-  margin-top: 4px;
-  color: #ddd;
+    font-size: 11px;
+    margin-top: 2px;
+    color: #ccc;
 }
 
 @media (max-width: 480px) {
-  .count-box {
-    width: 50px;
-    height: 50px;
-    font-size: 1.1rem;
-  }
-  .count-label {
-    font-size: 11px;
-  }
+    .count-box {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    .count-label {
+        font-size: 10px;
+    }
 }
 </style>
+
 
 
 
