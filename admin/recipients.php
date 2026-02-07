@@ -1,6 +1,6 @@
 <?php
 require_once '../app/db.php';
-// require_once '../app/require_admin.php';
+require_once '../app/require_admin.php';
 
 require_once '../path.php';
 // Ensure PDO exists
