@@ -140,52 +140,56 @@ $today = date('Y-m-d');
 </div>
 
 <div class="row g-3 mb-3">
+
   <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
-    <div class="card mb-0" style="border: none !important; height: 75px;">
-      <div class="card-body">
-        <h4 class="card-title" style="font-size: 18px;">
-          <i class="bi bi-currency-dollar me-2"  style="color: rgb(45,92,242);"></i>Award Amount
-        </h4>
-        <p class="card-text text-muted" style="font-size: 16px !important;">
-          $<?= number_format(getSetting('award_amount', 0)) ?>
-        </p>
+    <div class="card shadow-sm rounded-3 h-100 border-0">
+      <div class="card-body d-flex align-items-center">
+        <i class="bi bi-currency-dollar me-3 fs-2 text-primary"></i>
+        <div>
+          <h5 class="card-title mb-1 fw-semibold">Award Amount</h5>
+          <p class="card-text text-muted fs-5 mb-0">
+            $<?= number_format(getSetting('award_amount', 0)) ?>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Card 2: Application Deadline -->
   <?php
-$applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
-$applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
-$today = date('Y-m-d');
+    $applicationOpen = getSetting('application_open');   
+    $applicationClose = getSetting('application_closed'); 
+    $today = date('Y-m-d');
 
-if ($today < $applicationOpen) {
-    $label = "Application Opens";
-    $dateToShow = $applicationOpen;
-} elseif ($today > $applicationClose) {
-    $label = "Application Opens";
-    $dateToShow = $applicationOpen; // you could also say "Applications closed" if preferred
-} else {
-    $label = "Application Deadline";
-    $dateToShow = $applicationClose;
-}
-?>
+    if ($today < $applicationOpen) {
+        $label = "Application Opens";
+        $dateToShow = $applicationOpen;
+    } elseif ($today > $applicationClose) {
+        $label = "Applications Closed";
+        $dateToShow = $applicationClose; 
+    } else {
+        $label = "Application Deadline";
+        $dateToShow = $applicationClose;
+    }
+  ?>
 
-<div class="col-12 col-md-6">
-    <div class="card mt-0" style="border: none !important; height: 75px;">
-      <div class="card-body">
-        <h4 class="card-title text-center" style="font-size: 18px;">
-          <i class="bi bi-calendar2 me-2" style="color: rgb(45,92,242);"></i><?= $label ?>
-        </h4>
-        <p class="card-text text-muted text-cetner" style="font-size: 16px !important;">
-          <?= date("F j, Y", strtotime($dateToShow)) ?>
-        </p>
+  <div class="col-12 col-md-6">
+    <div class="card shadow-sm rounded-3 h-100 border-0">
+      <div class="card-body d-flex align-items-center">
+        <i class="bi bi-calendar2 me-3 fs-2 text-primary"></i>
+        <div>
+          <h5 class="card-title mb-1 fw-semibold"><?= $label ?></h5>
+          <p class="card-text text-muted fs-5 mb-0">
+            <?= date("F j, Y", strtotime($dateToShow)) ?>
+          </p>
+        </div>
       </div>
     </div>
-</div>
+  </div>
 
 </div>
+
 
 
 <?php if ($today >= $applicationOpen && $today <= $applicationClose) {
