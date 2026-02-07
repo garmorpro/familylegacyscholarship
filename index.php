@@ -139,18 +139,18 @@ $today = date('Y-m-d');
   </div>
 </div>
 
-<div class="row g-4 mb-3">
+<div class="row g-3 mb-3">
 
   <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
-    <div class="card modern-card p-3 border-0 rounded-4 shadow-sm">
+    <div class="card modern-card p-3 border-0 rounded-3 shadow-sm">
       <div class="d-flex align-items-center">
         <div class="icon-container bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-          <i class="bi bi-currency-dollar fs-4"></i>
+          <i class="bi bi-currency-dollar fs-5"></i>
         </div>
         <div>
-          <h6 class="mb-1 text-uppercase text-muted fw-medium">Award Amount</h6>
-          <h3 class="mb-0 fw-bold">$<?= number_format(getSetting('award_amount', 0)) ?></h3>
+          <p class="mb-1 text-uppercase text-muted fw-medium small">Award Amount</p>
+          <p class="mb-0 fw-semibold fs-6">$<?= number_format(getSetting('award_amount', 0)) ?></p>
         </div>
       </div>
     </div>
@@ -175,14 +175,14 @@ $today = date('Y-m-d');
   ?>
 
   <div class="col-12 col-md-6">
-    <div class="card modern-card p-3 border-0 rounded-4 shadow-sm">
+    <div class="card modern-card p-3 border-0 rounded-3 shadow-sm">
       <div class="d-flex align-items-center">
         <div class="icon-container bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-          <i class="bi bi-calendar2 fs-4"></i>
+          <i class="bi bi-calendar2 fs-5"></i>
         </div>
         <div>
-          <h6 class="mb-1 text-uppercase text-muted fw-medium"><?= $label ?></h6>
-          <h3 class="mb-0 fw-bold"><?= date("F j, Y", strtotime($dateToShow)) ?></h3>
+          <p class="mb-1 text-uppercase text-muted fw-medium small"><?= $label ?></p>
+          <p class="mb-0 fw-semibold fs-6"><?= date("F j, Y", strtotime($dateToShow)) ?></p>
         </div>
       </div>
     </div>
@@ -190,18 +190,18 @@ $today = date('Y-m-d');
 
 </div>
 
-<!-- Optional CSS -->
+<!-- CSS -->
 <style>
 .modern-card {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .modern-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.08);
 }
 .icon-container {
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     flex-shrink: 0;
 }
 </style>
