@@ -139,18 +139,18 @@ $today = date('Y-m-d');
   </div>
 </div>
 
-<div class="row g-3 mb-3">
+<div class="row g-4 mb-3">
 
   <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
-    <div class="card shadow-sm rounded-3 h-100 border-0">
-      <div class="card-body d-flex align-items-center">
-        <i class="bi bi-currency-dollar me-3 fs-2 text-primary"></i>
+    <div class="card modern-card p-3 border-0 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center">
+        <div class="icon-container bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+          <i class="bi bi-currency-dollar fs-4"></i>
+        </div>
         <div>
-          <h5 class="card-title mb-1 fw-semibold">Award Amount</h5>
-          <p class="card-text text-muted fs-5 mb-0">
-            $<?= number_format(getSetting('award_amount', 0)) ?>
-          </p>
+          <h6 class="mb-1 text-uppercase text-muted fw-medium">Award Amount</h6>
+          <h3 class="mb-0 fw-bold">$<?= number_format(getSetting('award_amount', 0)) ?></h3>
         </div>
       </div>
     </div>
@@ -175,20 +175,36 @@ $today = date('Y-m-d');
   ?>
 
   <div class="col-12 col-md-6">
-    <div class="card shadow-sm rounded-3 h-100 border-0">
-      <div class="card-body d-flex align-items-center">
-        <i class="bi bi-calendar2 me-3 fs-2 text-primary"></i>
+    <div class="card modern-card p-3 border-0 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center">
+        <div class="icon-container bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+          <i class="bi bi-calendar2 fs-4"></i>
+        </div>
         <div>
-          <h5 class="card-title mb-1 fw-semibold"><?= $label ?></h5>
-          <p class="card-text text-muted fs-5 mb-0">
-            <?= date("F j, Y", strtotime($dateToShow)) ?>
-          </p>
+          <h6 class="mb-1 text-uppercase text-muted fw-medium"><?= $label ?></h6>
+          <h3 class="mb-0 fw-bold"><?= date("F j, Y", strtotime($dateToShow)) ?></h3>
         </div>
       </div>
     </div>
   </div>
 
 </div>
+
+<!-- Optional CSS -->
+<style>
+.modern-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.modern-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+.icon-container {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+}
+</style>
 
 
 
