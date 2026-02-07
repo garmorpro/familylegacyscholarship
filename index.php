@@ -92,52 +92,98 @@ $today = date('Y-m-d');
       </p>
     </div>
 
-    <div class="card countdown-card mx-auto" style="background-color: rgb(7,5,55); color: white; border: none; padding: .5rem !important;">
+
+
+
+    
+
+    <div class="card countdown-card mx-auto p-3 border-0 rounded-4" style="background-color: #070537; color: white; max-width: 500px;">
   <div class="card-body text-center">
-    <p style="font-size: 14px;">
-      <i class="bi bi-clock"></i> Time remaining to submit your application:
+    <p class="mb-3 small">
+      <i class="bi bi-clock me-1"></i> Time remaining to submit your application:
     </p>
 
-    <div id="countdown-container" class="d-flex gap-2 flex-wrap justify-content-center position-relative">
+    <div id="countdown-container" class="d-flex gap-3 flex-wrap justify-content-center">
 
-  <!-- Countdown boxes -->
-  <div id="countdown-boxes" class="d-flex gap-2 flex-wrap justify-content-center">
-    <div class="text-center">
-      <div class="count-box" id="days">0</div>
-      <div style="font-size: 12px;">Days</div>
+      <!-- Countdown boxes -->
+      <div class="text-center">
+        <div class="count-box" id="days">0</div>
+        <div class="count-label">Days</div>
+      </div>
+
+      <div class="text-center">
+        <div class="count-box" id="hours">0</div>
+        <div class="count-label">Hours</div>
+      </div>
+
+      <div class="text-center">
+        <div class="count-box" id="minutes">0</div>
+        <div class="count-label">Minutes</div>
+      </div>
+
+      <div class="text-center">
+        <div class="count-box" id="seconds">0</div>
+        <div class="count-label">Seconds</div>
+      </div>
+
     </div>
 
-    <div class="text-center">
-      <div class="count-box" id="hours">0</div>
-      <div style="font-size: 12px;">Hours</div>
+    <!-- Closed / not open message -->
+    <div id="countdown-message" class="text-center mt-3 d-none text-danger fw-bold">
+      Application is closed
     </div>
-
-    <div class="text-center">
-      <div class="count-box" id="minutes">0</div>
-      <div style="font-size: 12px;">Minutes</div>
-    </div>
-
-    <div class="text-center">
-      <div class="count-box" id="seconds">0</div>
-      <div style="font-size: 12px;">Seconds</div>
-    </div>
-  </div>
-
-  <!-- Closed / not open message -->
-  <div id="countdown-message" class="text-center" style="
-      display: none;
-      font-size: 20px;
-      font-weight: 600;
-      color: rgb(220,53,69); /* red color */
-      width: 100%;
-    ">
-    Application is closed
-  </div>
-
-</div>
-
   </div>
 </div>
+
+<style>
+.countdown-card {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.count-box {
+  background: linear-gradient(135deg, #2d5cf2, #6096f3);
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.count-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+.count-label {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #ddd;
+}
+
+@media (max-width: 480px) {
+  .count-box {
+    width: 50px;
+    height: 50px;
+    font-size: 1.1rem;
+  }
+  .count-label {
+    font-size: 11px;
+  }
+}
+</style>
+
+
+
+
+
+
+
+
 
 <div class="row g-3 mb-3">
 
