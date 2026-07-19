@@ -113,7 +113,7 @@ foreach ($recommendations as $rec) {
         $mail->Port       = $config['smtp']['port'];
 
         // Recipients
-        $mail->setFrom('scholarship@themorganlegacy.com', 'The Morgan Legacy Scholarship');
+        $mail->setFrom('scholarship@themorganlegacy.com', 'The Morgan Legacy');
         $mail->addAddress($rec['recommender_email'], $rec['recommender_name']);
 
         // Attach logo
