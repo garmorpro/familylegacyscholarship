@@ -59,7 +59,19 @@ function getSetting($key, $default = '') {
      <?php
 $applicationOpen = getSetting('application_open');   // e.g., 2026-02-15
 $applicationClose = getSetting('application_closed'); // e.g., 2026-04-15
-$applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
+$applicationCloseYear = $applicationClose ? date("Y", strtotime($applicationClose)) : date("Y");
+
+$today = date('Y-m-d');
+
+if (empty($applicationOpen) || empty($applicationClose)) {
+    $cycleState = 'unset';      // dates not configured yet
+} elseif ($today < $applicationOpen) {
+    $cycleState = 'not_open';   // hasn't opened yet — distinct from "closed"
+} elseif ($today > $applicationClose) {
+    $cycleState = 'closed';
+} else {
+    $cycleState = 'open';
+}
 ?>
 
 
@@ -68,21 +80,29 @@ $applicationCloseYear = date("Y", strtotime($applicationClose)); // e.g., "2026"
     <h2 class="card-title">Supporting Excellence at Battery Creek High School</h2>
     <p class="card-text">Honoring character, leadership, and a commitment to growth for graduating seniors pursuing higher education.</p>
     <div class="mb-2">
-      <?php
-$today = date('Y-m-d');
-?>
-
-<?php if ($today >= $applicationOpen && $today <= $applicationClose): ?>
+<?php if ($cycleState === 'open'): ?>
   <span class="badge rounded-pill mb-1"
         style="background-color: rgb(226,251,232); color: rgb(43,101,54); font-weight: 400 !important;">
     <i class="bi bi-check2-circle me-1"></i>
     Applications Now Open
   </span>
-<?php else: ?>
+<?php elseif ($cycleState === 'not_open'): ?>
+  <span class="badge rounded-pill mb-1"
+        style="background-color: rgb(255,247,224); color: rgb(146,108,17); font-weight: 400 !important;">
+    <i class="bi bi-hourglass-split me-1"></i>
+    Opens <?= date("M j", strtotime($applicationOpen)) ?>
+  </span>
+<?php elseif ($cycleState === 'closed'): ?>
   <span class="badge rounded-pill mb-1"
         style="background-color: rgb(253,235,235); color: rgb(153,27,27); font-weight: 400 !important;">
     <i class="bi bi-x-circle me-1"></i>
     Application Closed
+  </span>
+<?php else: ?>
+  <span class="badge rounded-pill mb-1"
+        style="background-color: rgb(241,242,246); color: rgb(90,97,110); font-weight: 400 !important;">
+    <i class="bi bi-calendar2 me-1"></i>
+    Dates Coming Soon
   </span>
 <?php endif; ?>
 
@@ -94,47 +114,60 @@ $today = date('Y-m-d');
 
     <div class="card countdown-card mx-auto" style="background-color: rgb(7,5,55); color: white; border: none; padding: .5rem !important;">
   <div class="card-body text-center">
-    <p style="font-size: 14px;">
-      <i class="bi bi-clock"></i> Time remaining to submit your application:
-    </p>
 
-    <div id="countdown-container" class="d-flex gap-2 flex-wrap justify-content-center position-relative">
+    <?php if ($cycleState === 'open' || $cycleState === 'not_open'): ?>
+      <?php
+        $countdownTarget = $cycleState === 'open'
+            ? $applicationClose . 'T23:59:59'
+            : $applicationOpen . 'T00:00:00';
+        $countdownLabel = $cycleState === 'open'
+            ? 'Time remaining to submit your application:'
+            : 'Applications open in:';
+      ?>
+      <p style="font-size: 14px;">
+        <i class="bi bi-clock"></i> <?= $countdownLabel ?>
+      </p>
 
-  <!-- Countdown boxes -->
-  <div id="countdown-boxes" class="d-flex gap-2 flex-wrap justify-content-center">
-    <div class="text-center">
-      <div class="count-box" id="days">0</div>
-      <div style="font-size: 12px;">Days</div>
-    </div>
+      <div id="countdown-boxes" class="d-flex gap-2 flex-wrap justify-content-center" data-target="<?= htmlspecialchars($countdownTarget) ?>">
+        <div class="text-center">
+          <div class="count-box" id="days">0</div>
+          <div style="font-size: 12px;">Days</div>
+        </div>
+        <div class="text-center">
+          <div class="count-box" id="hours">0</div>
+          <div style="font-size: 12px;">Hours</div>
+        </div>
+        <div class="text-center">
+          <div class="count-box" id="minutes">0</div>
+          <div style="font-size: 12px;">Minutes</div>
+        </div>
+        <div class="text-center">
+          <div class="count-box" id="seconds">0</div>
+          <div style="font-size: 12px;">Seconds</div>
+        </div>
+      </div>
 
-    <div class="text-center">
-      <div class="count-box" id="hours">0</div>
-      <div style="font-size: 12px;">Hours</div>
-    </div>
+      <p class="mt-2 mb-0" style="font-size: 12px; opacity: .75;">
+        <?= $cycleState === 'open'
+            ? 'Deadline: ' . date('F j, Y', strtotime($applicationClose))
+            : 'Opens ' . date('F j, Y', strtotime($applicationOpen)) ?>
+      </p>
 
-    <div class="text-center">
-      <div class="count-box" id="minutes">0</div>
-      <div style="font-size: 12px;">Minutes</div>
-    </div>
+    <?php elseif ($cycleState === 'closed'): ?>
+      <i class="bi bi-check2-circle" style="font-size: 28px; opacity: .85;"></i>
+      <p class="mt-2 mb-1" style="font-size: 16px; font-weight: 600;">
+        This year's application window has closed.
+      </p>
+      <p class="mb-0" style="font-size: 13px; opacity: .75;">
+        Thank you to everyone who applied &mdash; stay tuned for next year's dates.
+      </p>
 
-    <div class="text-center">
-      <div class="count-box" id="seconds">0</div>
-      <div style="font-size: 12px;">Seconds</div>
-    </div>
-  </div>
-
-  <!-- Closed / not open message -->
-  <div id="countdown-message" class="text-center" style="
-      display: none;
-      font-size: 20px;
-      font-weight: 600;
-      color: rgb(220,53,69); /* red color */
-      width: 100%;
-    ">
-    Application is closed
-  </div>
-
-</div>
+    <?php else: ?>
+      <i class="bi bi-calendar2" style="font-size: 28px; opacity: .85;"></i>
+      <p class="mt-2 mb-0" style="font-size: 14px;">
+        Application dates haven't been announced yet. Check back soon!
+      </p>
+    <?php endif; ?>
 
   </div>
 </div>
@@ -154,19 +187,18 @@ $today = date('Y-m-d');
 
   <!-- Card 2: Application Deadline -->
   <?php
-    $applicationOpen = getSetting('application_open');   
-    $applicationClose = getSetting('application_closed'); 
-    $today = date('Y-m-d');
-
-    if ($today < $applicationOpen) {
+    if ($cycleState === 'not_open') {
         $label = "Application Opens";
         $dateToShow = $applicationOpen;
-    } elseif ($today > $applicationClose) {
+    } elseif ($cycleState === 'closed') {
         $label = "Applications Closed";
-        $dateToShow = $applicationClose; 
-    } else {
+        $dateToShow = $applicationClose;
+    } elseif ($cycleState === 'open') {
         $label = "Application Deadline";
         $dateToShow = $applicationClose;
+    } else {
+        $label = "Dates Coming Soon";
+        $dateToShow = null;
     }
   ?>
 
@@ -176,7 +208,7 @@ $today = date('Y-m-d');
         <i class="bi bi-calendar2 fs-3"></i>
       </div>
       <div class="text-uppercase text-muted small mb-1"><?= $label ?></div>
-      <div class="fw-bold fs-5"><?= date("F j, Y", strtotime($dateToShow)) ?></div>
+      <div class="fw-bold fs-5"><?= $dateToShow ? date("F j, Y", strtotime($dateToShow)) : 'TBD' ?></div>
     </div>
   </div>
 
@@ -213,16 +245,14 @@ $today = date('Y-m-d');
 
 
 
-<?php if ($today >= $applicationOpen && $today <= $applicationClose) {
-?>
+<?php if ($cycleState === 'open'): ?>
     <a href="<?= BASE_URL ?>/application-form.php"
        class="btn mt-4"
        style="background-color: rgb(7, 5, 55); color:white; font-size: 18px !important;">
         <i class="bi bi-file-earmark-text me-2"></i>
         Start Your Application
     </a>
-<?php
-}
+<?php endif;
 ?>
   </div>
 </div>
@@ -330,49 +360,34 @@ $today = date('Y-m-d');
 </script>
 
 <script>
-  const applicationOpen = new Date("<?= $applicationOpen ?>T00:00:00").getTime();
-  const applicationClose = new Date("<?= $applicationClose ?>T23:59:59").getTime();
-
+  // The countdown-boxes element only exists when the server has decided
+  // there's an active countdown to show (either "opens in" or "deadline in").
+  // In every other state, PHP renders a static message instead — no more
+  // fighting Bootstrap's !important display utilities to hide/show things.
   const countdownBoxes = document.getElementById("countdown-boxes");
-  const countdownMessage = document.getElementById("countdown-message");
 
-  function updateCountdown() {
-    const now = new Date().getTime();
+  if (countdownBoxes) {
+    const target = new Date(countdownBoxes.dataset.target).getTime();
 
-    if (now < applicationOpen) {
-      countdownBoxes.style.display = "none";
-      countdownMessage.style.display = "block";
-      countdownMessage.innerText = "Application is closed";
-      return;
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = Math.max(target - now, 0);
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours;
+      document.getElementById("minutes").innerText = minutes;
+      document.getElementById("seconds").innerText = seconds;
     }
 
-    if (now > applicationClose) {
-      countdownBoxes.style.display = "none";
-      countdownMessage.style.display = "block";
-      countdownMessage.innerText = "Application is closed";
-      return;
-    }
-
-    // Applications are open → show countdown
-    countdownBoxes.style.display = "flex";
-    countdownMessage.style.display = "none";
-
-    const distance = applicationClose - now;
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById("days").innerText = days;
-    document.getElementById("hours").innerText = hours;
-    document.getElementById("minutes").innerText = minutes;
-    document.getElementById("seconds").innerText = seconds;
+    // Update every second
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
   }
-
-  // Update every second
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
 </script>
 
 
