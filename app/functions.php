@@ -119,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: thank_you.php");
         exit();
     } catch (PDOException $e) {
-        echo "Error submitting application: " . $e->getMessage();
+        error_log("Error submitting application: " . $e->getMessage());
+        echo "Sorry, something went wrong submitting your application. Please try again, and contact us if the problem continues.";
         exit();
     }
 }

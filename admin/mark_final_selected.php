@@ -26,6 +26,6 @@ try {
     exit;
 
 } catch (Exception $e) {
-    // Handle errors
-    echo "Error updating application status: " . $e->getMessage();
+    error_log("mark_final_selected.php error: " . $e->getMessage());
+    echo "Something went wrong updating this application. Please try again.";
 }

@@ -64,10 +64,14 @@ try {
     header("Location: settings.php?success=1");
     exit;
 
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    error_log("save_settings.php database error: " . $e->getMessage());
+    header("Location: settings.php?error=" . urlencode("A database error occurred saving settings."));
+    exit;
 } catch (Exception $e) {
     $pdo->rollBack();
-    // Redirect back with error message
-    $error = urlencode($e->getMessage());
-    header("Location: settings.php?error=$error");
+    // Our own validation messages (e.g. "Invalid value for award amount.") — safe to show as-is.
+    header("Location: settings.php?error=" . urlencode($e->getMessage()));
     exit;
 }

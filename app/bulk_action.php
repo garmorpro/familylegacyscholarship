@@ -92,6 +92,10 @@ try {
 
     echo json_encode(['success' => true, 'message' => $message]);
 
+} catch (PDOException $e) {
+    error_log("bulk_action.php database error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'A database error occurred. Please try again.']);
 } catch (Exception $e) {
+    // Our own validation messages (e.g. "No applications selected") — safe to show as-is.
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
