@@ -2,6 +2,45 @@
 require_once 'app/db.php';
 require_once 'path.php';
 
+// Pull the actual dates set in the admin Settings page, rather than
+// hardcoding them here where they'd inevitably go stale.
+try {
+    $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    $settings = [];
+    while ($row = $settingsStmt->fetch(PDO::FETCH_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (Exception $e) {
+    $settings = [];
+}
+
+function formatTimelineDate(?string $value): string {
+    if (empty($value)) {
+        return 'To be announced';
+    }
+    $timestamp = strtotime($value);
+    return $timestamp ? date('F j, Y', $timestamp) : 'To be announced';
+}
+
+function formatTimelineRange(?string $start, ?string $end): string {
+    $hasStart = !empty($start);
+    $hasEnd = !empty($end);
+    if (!$hasStart && !$hasEnd) {
+        return 'To be announced';
+    }
+    if ($hasStart && !$hasEnd) {
+        return formatTimelineDate($start) . ' onward';
+    }
+    if (!$hasStart && $hasEnd) {
+        return 'Through ' . formatTimelineDate($end);
+    }
+    return formatTimelineDate($start) . ' &ndash; ' . formatTimelineDate($end);
+}
+
+$applicationOpenDate  = formatTimelineDate($settings['application_open'] ?? null);
+$applicationCloseDate = formatTimelineDate($settings['application_closed'] ?? null);
+$reviewPeriodRange    = formatTimelineRange($settings['review_start'] ?? null, $settings['review_end'] ?? null);
+$announcementDate     = formatTimelineDate($settings['announcement_date'] ?? null);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +105,7 @@ require_once 'path.php';
   <div class="col-12 d-flex align-items-start mb-3">
     <div class="number-circle me-3">3</div>
     <div>
-      <h6 class="mb-1">Write Your Essay</h6>
+      <h6 class="mb-1">Write Your Essay(s)</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
         Respond thoughtfully to the essay prompt(s). This is your opportunity to share your story, goals, and what makes you a strong candidate.
       </p>
@@ -90,7 +129,7 @@ require_once 'path.php';
     <div>
       <h6 class="mb-1">Submit Before the Deadline</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
-        Ensure all materials are submitted by <strong>April 15, 2026</strong>. Late applications will not be accepted.
+        Ensure all materials are submitted by <strong><?= $applicationCloseDate ?></strong>. Late applications will not be accepted.
       </p>
     </div>
   </div>
@@ -159,7 +198,7 @@ require_once 'path.php';
     <div>
       <h6 class="mb-1">Applications Open</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
-        February 1, 2026
+        <?= $applicationOpenDate ?>
       </p>
     </div>
   </div>
@@ -170,7 +209,7 @@ require_once 'path.php';
     <div>
       <h6 class="mb-1">Application Deadline</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
-        April 15, 2026
+        <?= $applicationCloseDate ?>
       </p>
     </div>
   </div>
@@ -181,7 +220,7 @@ require_once 'path.php';
     <div>
       <h6 class="mb-1">Estimated Review Period</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
-        April 16 - May 15, 2026
+        <?= $reviewPeriodRange ?>
       </p>
     </div>
   </div>
@@ -192,7 +231,7 @@ require_once 'path.php';
     <div>
       <h6 class="mb-1">Recipient Announcement</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
-        May 20, 2026
+        <?= $announcementDate ?>
       </p>
     </div>
   </div>
