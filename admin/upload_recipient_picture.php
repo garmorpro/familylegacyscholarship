@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recipientId = $_POST['recipient_id'] ?? null;
     if (!$recipientId || !ctype_digit((string)$recipientId)) die("Recipient ID missing");
 
+    // Note the existing picture (if any) so it can be removed after a
+    // successful replace — never trust a filename from the request itself.
+    $existingStmt = $pdo->prepare("SELECT recipient_picture FROM recipients WHERE id = :id");
+    $existingStmt->execute([':id' => $recipientId]);
+    $existingPicture = $existingStmt->fetchColumn();
+
     if (!isset($_FILES['recipient_picture'])) {
         die("No file uploaded.");
     }
@@ -83,7 +89,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     } catch (PDOException $e) {
         error_log("Database error saving recipient picture: " . $e->getMessage());
+        // The new file is already on disk but the DB wasn't updated to point
+        // at it — clean it up rather than leaving an orphaned upload.
+        @unlink($targetFile);
         die("Database error saving picture.");
+    }
+
+    // Now that the DB points at the new file, remove the old one (if this
+    // was a replace, not a first upload).
+    if ($existingPicture && $existingPicture !== $filename) {
+        $oldFile = $uploadDir . $existingPicture;
+        if (is_file($oldFile)) {
+            @unlink($oldFile);
+        }
     }
 
     // Redirect back to recipients page

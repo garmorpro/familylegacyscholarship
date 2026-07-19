@@ -162,15 +162,20 @@ try {
             <div class="modal-body">
                 <input type="hidden" name="recipient_id" id="recipient_id">
 
-                <!-- File input container -->
-                <div class="mb-3" id="fileInputContainer">
-                    <label for="recipient_picture" class="form-label">Choose an image</label>
-                    <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
+                <!-- Current picture preview -->
+                <div class="mb-3 d-none text-center" id="currentPictureContainer">
+                    <img id="currentPictureImg" src="" alt="Current picture"
+                         style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid #dee2e6;">
+                    <div class="text-muted mt-1" style="font-size: 12px;">Current picture</div>
                 </div>
 
-                <!-- Message container -->
-                <div class="alert alert-info d-none" id="alreadyUploadedMessage">
-                    This recipient already has a picture uploaded. <br><br>If you want to change the picture uploaded, please reach out to Garrett Morgan.
+                <!-- File input container -->
+                <div class="mb-2" id="fileInputContainer">
+                    <label for="recipient_picture" class="form-label" id="fileInputLabel">Choose an image</label>
+                    <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
+                </div>
+                <div class="text-muted d-none" id="replaceHint" style="font-size: 12px;">
+                    Uploading a new image will replace the current one.
                 </div>
             </div>
             <div class="modal-footer">
@@ -192,20 +197,26 @@ try {
 
         document.getElementById('recipient_id').value = recipientId;
 
-        var fileInputContainer = document.getElementById('fileInputContainer');
-        var alreadyUploadedMessage = document.getElementById('alreadyUploadedMessage');
-        var uploadButton = document.getElementById('uploadButton');
+        var currentPictureContainer = document.getElementById('currentPictureContainer');
+        var currentPictureImg = document.getElementById('currentPictureImg');
+        var fileInputLabel = document.getElementById('fileInputLabel');
+        var replaceHint = document.getElementById('replaceHint');
+        var fileInput = document.getElementById('recipient_picture');
+
+        fileInput.value = ''; // clear any previously chosen file from a prior open
 
         if (recipientPicture) {
-            // Recipient already has a picture
-            fileInputContainer.classList.add('d-none');
-            alreadyUploadedMessage.classList.remove('d-none');
-            uploadButton.disabled = true; // disable upload
+            // Recipient already has a picture — show it, and let uploading a
+            // new one replace it.
+            currentPictureImg.src = '../uploads/recipients/' + recipientPicture;
+            currentPictureContainer.classList.remove('d-none');
+            fileInputLabel.textContent = 'Replace image';
+            replaceHint.classList.remove('d-none');
         } else {
-            // No picture yet
-            fileInputContainer.classList.remove('d-none');
-            alreadyUploadedMessage.classList.add('d-none');
-            uploadButton.disabled = false;
+            currentPictureContainer.classList.add('d-none');
+            currentPictureImg.src = '';
+            fileInputLabel.textContent = 'Choose an image';
+            replaceHint.classList.add('d-none');
         }
     });
     </script>
@@ -222,6 +233,7 @@ try {
 
 
 
+</div>
 </div>
 </main>
 
