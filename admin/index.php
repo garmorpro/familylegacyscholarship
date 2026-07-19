@@ -172,7 +172,7 @@ try {
 
 <!-- STATUS ROW -->
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3 mb-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-3">
 
         <!-- Open Applications -->
         <div>
@@ -249,31 +249,6 @@ try {
             </div>
         </div>
 
-        <!-- Recipients -->
-        <div>
-            <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
-                 style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-
-                <div class="d-flex align-items-center">
-                    <div class="me-3 d-flex align-items-center justify-content-center"
-                         style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,202,240,0.15);">
-                        <i class="bi bi-award-fill text-info"></i>
-                    </div>
-
-                    <div>
-                        <div class="fw-semibold">Recipients</div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            Final recipient
-                        </div>
-                    </div>
-                </div>
-
-                <div class="fs-4 fw-bold text-info">
-                    <?= $statusCounts['final_recipient'] ?>
-                </div>
-            </div>
-        </div>
-
         <!-- Total Applications -->
         <div>
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
@@ -312,7 +287,6 @@ try {
             <div style="width: <?= round($statusCounts['submitted'] / $totalApplications * 100, 2) ?>%; background: #0d6efd;"></div>
             <div style="width: <?= round($statusCounts['reviewed'] / $totalApplications * 100, 2) ?>%; background: #6c757d;"></div>
             <div style="width: <?= round($statusCounts['final_review'] / $totalApplications * 100, 2) ?>%; background: #198754;"></div>
-            <div style="width: <?= round($statusCounts['final_recipient'] / $totalApplications * 100, 2) ?>%; background: #0dcaf0;"></div>
         </div>
         <?php else: ?>
         <div class="text-muted" style="font-size: 13px;">No applications yet.</div>
@@ -321,7 +295,6 @@ try {
             <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0d6efd;margin-right:5px;"></span>Submitted <strong><?= $statusCounts['submitted'] ?></strong></div>
             <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6c757d;margin-right:5px;"></span>Reviewed <strong><?= $statusCounts['reviewed'] ?></strong></div>
             <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#198754;margin-right:5px;"></span>Final Review <strong><?= $statusCounts['final_review'] ?></strong></div>
-            <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0dcaf0;margin-right:5px;"></span>Final Recipient <strong><?= $statusCounts['final_recipient'] ?></strong></div>
         </div>
     </div>
 
