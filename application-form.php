@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="alert alert-warning d-flex align-items-start gap-2" role="alert">
         <i class="bi bi-exclamation-triangle-fill mt-1"></i>
         <div>
-            <strong>Heads up:</strong> this form does not save your progress. If you navigate away or close this page before submitting, your responses will be lost. We recommend drafting your essay in a separate document first, then pasting it in here before you submit.
+            <strong>Heads up:</strong> this form does not save your progress. If you navigate away or close this page before submitting, your responses will be lost. We recommend drafting your essay(s) in a separate document first, then pasting them in here before you submit.
         </div>
     </div>
 
