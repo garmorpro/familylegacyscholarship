@@ -41,7 +41,7 @@ require_once 'path.php';
 
     <h4 class="pt-3 pb-3">Our Connection to Battery Creek</h4>
     <p>
-        The Morgan family has deep roots in the Beaufort community and Battery Creek High School. All eight of our children attended and graduated from Battery Creek, and both parents volunteered at the school every single year along the way. We saw firsthand the dedication of its teachers and the potential of its students.
+        The Morgan family has deep roots in the Beaufort community and Battery Creek High School. All eight Morgan children attended and graduated from Battery Creek, with both parents volunteering at the school every single year along the way. Together, we saw firsthand the dedication of its teachers and the potential of its students.
     </p>
     <p>
         Battery Creek High School shaped who we are as a family, and we are committed to giving back to the students who walk its halls today.
