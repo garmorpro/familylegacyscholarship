@@ -2,6 +2,12 @@
 require_once 'app/db.php';
 require_once 'path.php';
 
+try {
+    $recipientsStmt = $pdo->query("SELECT * FROM recipients ORDER BY application_year DESC, created_at DESC");
+    $recipients = $recipientsStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $recipients = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,19 +36,60 @@ require_once 'path.php';
                 <i class="bi bi-award me-2 text-primary"></i>Scholarship Recipients
             </h2>
 
-            <div class="d-flex flex-column mt-4 px-5">
-                <i class="bi bi-award text-muted text-center mb-2" style="font-size: 48px;"></i>
-                <h4 class="text-center">
-                    Building Our Legacy
-                </h4>
-                <p class="text-center">
-                    We're excited to announce our first scholarship recipient soon. This page will feature the outstanding students who have been awarded the Morgan Family Legacy Scholarship.
-                </p>
-                <p class="text-muted text-center mb-5" style="font-size: 14px;">
-                    Check back after our first award cycle is complete to learn about our recipients and their educational journeys.
-                </p>
-
-            </div>
+            <?php if (empty($recipients)): ?>
+                <div class="d-flex flex-column mt-4 px-5">
+                    <i class="bi bi-award text-muted text-center mb-2" style="font-size: 48px;"></i>
+                    <h4 class="text-center">
+                        Building Our Legacy
+                    </h4>
+                    <p class="text-center">
+                        We're excited to announce our first scholarship recipient soon. This page will feature the outstanding students who have been awarded the Morgan Family Legacy Scholarship.
+                    </p>
+                    <p class="text-muted text-center mb-5" style="font-size: 14px;">
+                        Check back after our first award cycle is complete to learn about our recipients and their educational journeys.
+                    </p>
+                </div>
+            <?php else: ?>
+                <div class="row g-4 mt-2 mb-4">
+                    <?php foreach ($recipients as $rec): ?>
+                        <?php
+                            $recName = trim(($rec['first_name'] ?? '') . ' ' . ($rec['last_name'] ?? ''));
+                            $initials = strtoupper(substr($rec['first_name'] ?? '', 0, 1) . substr($rec['last_name'] ?? '', 0, 1));
+                            $hasPhoto = !empty($rec['recipient_picture']);
+                        ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+                                <?php if ($hasPhoto): ?>
+                                    <img src="uploads/recipients/<?= htmlspecialchars($rec['recipient_picture']) ?>"
+                                         alt="<?= htmlspecialchars($recName) ?>"
+                                         style="width: 100%; height: 220px; object-fit: cover;">
+                                <?php else: ?>
+                                    <div style="width: 100%; height: 220px; background: rgb(7,5,55); display: flex; align-items: center; justify-content: center;">
+                                        <span style="color: #fff; font-size: 48px; font-weight: 600; letter-spacing: 1px;">
+                                            <?= htmlspecialchars($initials ?: '?') ?>
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-semibold mb-1"><?= htmlspecialchars($recName) ?></h5>
+                                    <?php if (!empty($rec['application_year'])): ?>
+                                        <div class="text-muted mb-2" style="font-size: 13px;">Class of <?= htmlspecialchars($rec['application_year']) ?></div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($rec['intended_school']) || !empty($rec['intended_major'])): ?>
+                                        <div style="font-size: 14px;">
+                                            <?= htmlspecialchars($rec['intended_school'] ?? '') ?>
+                                            <?php if (!empty($rec['intended_school']) && !empty($rec['intended_major'])): ?>
+                                                &bull;
+                                            <?php endif; ?>
+                                            <?= htmlspecialchars($rec['intended_major'] ?? '') ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <hr>
             <p class="text-muted text-center" style="font-size: 14px;">
