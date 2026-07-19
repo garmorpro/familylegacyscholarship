@@ -149,14 +149,14 @@ try {
 <body class="d-flex flex-column min-vh-100">
 
 
-<?php include_once ROOT_PATH . '/assets/includes/header.php'; ?>
+<?php include_once ROOT_PATH . '/assets/includes/admin_header.php'; ?>
 
 
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
 <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
-  
+
 
   <!-- Text with padding preserved -->
   <div class="card-body">
@@ -166,24 +166,6 @@ try {
         <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Application Portal</h3>
         <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Review and manage scholarship applications</h5>
     </div>
-
-    <!-- Right: Settings Icon -->
-     <div class="" style="display: flex;">
-        <button class="btn btn-action me-2" onclick="window.location.href='<?= BASE_URL ?>/admin/recipients.php'">
-            <i class="bi bi-people me-1"></i>
-            Recipients
-        </button>
-        <button class="btn btn-action me-3" onclick="window.location.href='<?= BASE_URL ?>/admin/settings.php'">
-            <i class="bi bi-gear me-1"></i>
-            Settings
-        </button>
-        
-        <a href="<?= BASE_URL ?>/admin/auth/logout.php" title="Logout" style="color: #495057; font-size: 1.25rem; display: flex; align-items: center;">
-            <i class="bi bi-box-arrow-in-left"></i>
-        </a>
-    </div>
-     <!-- <a href="/admin/auth/logout.php">Logout</a> -->
-    
 </div>
 
 
@@ -610,26 +592,6 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 }
 
 </script>
-
-
-<script>
-  // Get current page path
-  const currentPath = window.location.pathname;
-
-  // Select all navbar links
-  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-
-  navLinks.forEach(link => {
-    // Remove any existing active class
-    link.classList.remove('active');
-
-    // If the link href matches the current path, add active
-    if (link.getAttribute('href') === currentPath) {
-      link.classList.add('active');
-    }
-  });
-</script>
-
 
 
 

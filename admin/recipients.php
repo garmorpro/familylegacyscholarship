@@ -37,7 +37,7 @@ try {
 <body class="d-flex flex-column min-vh-100">
 
 
-<?php include_once ROOT_PATH . '/assets/includes/header.php'; ?>
+<?php include_once ROOT_PATH . '/assets/includes/admin_header.php'; ?>
 
 
 <main class="flex-fill">
@@ -236,23 +236,6 @@ try {
 
 
 
-<script>
-  // Get current page path
-  const currentPath = window.location.pathname;
-
-  // Select all navbar links
-  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-
-  navLinks.forEach(link => {
-    // Remove any existing active class
-    link.classList.remove('active');
-
-    // If the link href matches the current path, add active
-    if (link.getAttribute('href') === currentPath) {
-      link.classList.add('active');
-    }
-  });
-</script>
 
 
 
