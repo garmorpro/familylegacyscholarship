@@ -7,12 +7,18 @@ error_reporting(0);
 header('Content-Type: application/json');
 
 require_once '../app/db.php'; // make sure $pdo is initialized
+require_once '../app/require_admin.php'; // this endpoint performs destructive DB writes — must be admin-only
+require_once '../app/csrf.php';
 
 try {
     $input = json_decode(file_get_contents('php://input'), true);
 
     if (!$input) {
         throw new Exception('No input received or invalid JSON.');
+    }
+
+    if (!csrf_verify($input['csrf_token'] ?? null)) {
+        throw new Exception('Security check failed (invalid or expired token). Please refresh the page and try again.');
     }
 
     $action = $input['action'] ?? null;

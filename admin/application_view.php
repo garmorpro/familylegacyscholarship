@@ -2,6 +2,7 @@
 require_once '../app/db.php';
 require_once '../path.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 
 /**
  * Status counts + total
@@ -136,6 +137,7 @@ try {
     <?php if ($application['application_status'] === 'submitted'): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_reviewed.php" class="d-inline">
+                <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">Mark Reviewed</button>
             </form>
@@ -150,6 +152,7 @@ try {
     <?php if ($application['application_status'] === 'final_review' && $finalCount === 0): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_final_selected.php" class="d-inline">
+                <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
                 <button type="submit" class="btn btn-outline-success btn-sm">
                     Designate Final Recipient
@@ -286,9 +289,9 @@ switch ($status) {
 <div class="d-flex gap-1">
     <?php if ($status === 'not_sent'): ?>
         <!-- Not sent: show clickable icon that triggers alert -->
-        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
+        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"
        style="cursor:pointer;"
-       onclick="window.location.href='send_recommendation.php?id=<?= $recommendation['id'] ?>'">
+       onclick="window.location.href='send_recommendation.php?id=<?= $recommendation['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>'">
     </i>
     <?php elseif ($status === 'completed'): ?>
         <!-- Completed: open modal -->

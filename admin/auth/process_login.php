@@ -2,6 +2,7 @@
 session_start();
 
 require_once '../../app/db.php';
+require_once '../../app/csrf.php';
 require_once '../../path.php';
 require_once '../../vendor/autoload.php'; // PHPMailer autoload
 
@@ -11,6 +12,11 @@ use PHPMailer\PHPMailer\Exception;
 // Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ' . BASE_URL . '/admin/auth/');
+    exit;
+}
+
+if (!csrf_verify($_POST['csrf_token'] ?? null)) {
+    header('Location: ' . BASE_URL . '/admin/auth/?error=invalid');
     exit;
 }
 

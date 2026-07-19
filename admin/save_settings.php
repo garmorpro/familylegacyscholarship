@@ -1,7 +1,7 @@
 <?php
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
-
+require_once '../app/csrf.php';
 
 // Ensure PDO exists
 if (!isset($pdo)) {
@@ -11,6 +11,8 @@ if (!isset($pdo)) {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die("Invalid request method.");
 }
+
+csrf_require();
 
 // Allowed keys to update
 $allowedSettings = [

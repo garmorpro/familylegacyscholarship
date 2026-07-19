@@ -1,6 +1,9 @@
 <?php
 require '../app/db.php'; // Make sure this points to your PDO connection
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
+
+csrf_require();
 
 // Check if ID is provided
 if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {

@@ -5,9 +5,15 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php'; // Composer autoload
 require '../app/db.php'; // your PDO connection
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 
 if (!isset($_GET['id'])) {
     die("Recommendation ID missing.");
+}
+
+if (!csrf_verify($_GET['csrf_token'] ?? null)) {
+    http_response_code(403);
+    die('Security check failed (invalid or expired token). Please go back, refresh the page, and try again.');
 }
 
 $recId = (int)$_GET['id'];

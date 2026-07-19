@@ -1,6 +1,7 @@
 <?php
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 
 require_once '../path.php';
 // Ensure PDO exists
@@ -100,6 +101,7 @@ try {
                       <div class="modal-dialog">
                         <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
                           <div class="modal-content">
+                            <?= csrf_field() ?>
                             <div class="modal-header">
                               <h5 class="modal-title" id="uploadPictureLabel">Upload Recipient Picture</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

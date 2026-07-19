@@ -1,8 +1,11 @@
 <?php
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_require();
+
     $recipientId = $_POST['recipient_id'] ?? null;
     if (!$recipientId || !ctype_digit((string)$recipientId)) die("Recipient ID missing");
 

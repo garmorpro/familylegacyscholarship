@@ -1,7 +1,6 @@
 <?php
 session_start();
-
-
+require_once '../../app/csrf.php';
 
 $errorMessage = '';
 
@@ -153,6 +152,7 @@ button:hover {
 
 
   <form method="POST" action="process_login.php">
+    <?= csrf_field() ?>
     <div class="form-group">
       <label for="email">Email</label>
       <input type="email" id="email" name="email" required autofocus>

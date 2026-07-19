@@ -1,4 +1,11 @@
 <?php
+session_start();
+require_once 'app/csrf.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_require();
+}
+
 require_once 'app/functions.php';
 require_once 'path.php';
 
@@ -43,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </h4>
 
     <form method="POST" action="" class="container py-4">
+  <?= csrf_field() ?>
 
   <!-- Section: Personal Information -->
   <h5>Personal Information</h5>

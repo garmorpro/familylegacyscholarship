@@ -1,6 +1,7 @@
 <?php
 require_once '../app/functions.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 
 require_once '../path.php';
 // Ensure PDO exists
@@ -104,6 +105,7 @@ function getSetting($key, $default = '') {
 
     <!-- Settings Form -->
     <form method="POST" action="save_settings.php" style="margin-top: 20px;">
+        <?= csrf_field() ?>
         <!-- Award Information -->
          <h4>
             Award Information

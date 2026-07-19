@@ -2,6 +2,7 @@
 session_start();
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 require_once '../path.php';
 
 /**
@@ -81,6 +82,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
@@ -573,10 +575,11 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // Send AJAX request
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             fetch('/app/bulk_action.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({action, ids: selectedIds})
+                body: JSON.stringify({action, ids: selectedIds, csrf_token: csrfToken})
             })
             .then(res => res.json())
             .then(data => {
