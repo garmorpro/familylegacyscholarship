@@ -122,6 +122,9 @@ $recStatusStmt = $pdo->prepare("SELECT status FROM recommendations WHERE scholar
 $recStatusStmt->execute([':id' => $appId]);
 $recommendationStatus = $recStatusStmt->fetchColumn(); // false | 'not_sent' | 'sent' | 'completed'
 $recommendationReceived = ($recommendationStatus === 'completed');
+
+// Archived applications are read-only history — no status-changing actions
+$isArchived = $application && !empty($application['archived_at']);
 ?>
 
 <?php if ($application): ?>
@@ -131,16 +134,26 @@ $recommendationReceived = ($recommendationStatus === 'completed');
     <div class="col-md-6">
         <h2 class="fw-semibold mb-1">
             <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
+            <?php if ($isArchived): ?>
+                <span class="badge bg-secondary-subtle text-secondary ms-2" style="font-size: 12px; vertical-align: middle;">
+                    <i class="bi bi-archive me-1"></i>Archived
+                </span>
+            <?php endif; ?>
         </h2>
         <div class="text-muted">
             <?= htmlspecialchars($application['intended_major']) ?> &bull; <?= htmlspecialchars($application['intended_school']) ?>
         </div>
+        <?php if ($isArchived): ?>
+            <div class="text-muted mt-1" style="font-size: 13px;">
+                Archived <?= date('M j, Y', strtotime($application['archived_at'])) ?> — this record is read-only.
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Right: Reviewed button + Submission Date & Status -->
 <div class="col-md-6 text-md-end mt-3 mt-md-0">
 
-    <?php if ($application['application_status'] === 'submitted'): ?>
+    <?php if (!$isArchived && $application['application_status'] === 'submitted'): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_reviewed.php" class="d-inline">
                 <?= csrf_field() ?>
@@ -150,7 +163,7 @@ $recommendationReceived = ($recommendationStatus === 'completed');
         </div>
     <?php endif; ?>
 
-    <?php if ($application['application_status'] === 'reviewed'): ?>
+    <?php if (!$isArchived && $application['application_status'] === 'reviewed'): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_final_review.php" class="d-inline">
                 <?= csrf_field() ?>
@@ -161,12 +174,14 @@ $recommendationReceived = ($recommendationStatus === 'completed');
     <?php endif; ?>
 
     <?php
-    // Check if any application has already been selected as final recipient
-    $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient'");
+    // Check if any *active* (non-archived) application has already been
+    // selected as final recipient — archived recipients from past cycles
+    // don't count, or a new cycle could never designate a recipient again.
+    $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL");
     $finalCount = (int) $stmt->fetchColumn();
     ?>
 
-    <?php if ($application['application_status'] === 'final_review' && $finalCount === 0): ?>
+    <?php if (!$isArchived && $application['application_status'] === 'final_review' && $finalCount === 0): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
             <form method="POST" action="mark_final_selected.php" class="d-inline"
                 <?php if (!$recommendationReceived): ?>

@@ -13,11 +13,11 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 $appId = (int)$_POST['id'];
 
 try {
-    // Only advance applications that are actually still 'reviewed'
+    // Only advance applications that are actually still 'reviewed' and active
     $stmt = $pdo->prepare("
         UPDATE scholarship_applications
         SET application_status = 'final_review'
-        WHERE id = :id AND application_status = 'reviewed'
+        WHERE id = :id AND application_status = 'reviewed' AND archived_at IS NULL
     ");
     $stmt->execute([':id' => $appId]);
 

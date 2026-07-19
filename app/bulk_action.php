@@ -52,7 +52,7 @@ try {
         $stmt = $pdo->prepare("
             UPDATE scholarship_applications
             SET application_status = 'final_review'
-            WHERE id IN ($placeholders) AND application_status = 'reviewed'
+            WHERE id IN ($placeholders) AND application_status = 'reviewed' AND archived_at IS NULL
         ");
         $stmt->execute($ids);
         $advancedCount = $stmt->rowCount();
@@ -63,42 +63,27 @@ try {
             $message .= " " . $skippedCount . " skipped (not in \"Reviewed\" status).";
         }
 
-    } elseif ($action === 'bulk_delete') {
-    // Step 1: Get all applications with application_status = 'final_recipient'
-    $stmt = $pdo->prepare("SELECT * FROM scholarship_applications WHERE application_status = 'final_recipient'");
-    $stmt->execute();
-    $finalRecipients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } elseif ($action === 'archive') {
+        // The recipients record is now created at the moment a final
+        // recipient is designated (see mark_final_selected.php), so this no
+        // longer needs to copy anything — it just archives the round.
+        // Require a final recipient to have been chosen before archiving,
+        // as a server-side backstop to the button only being shown then.
+        $checkStmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL");
+        if ((int) $checkStmt->fetchColumn() === 0) {
+            throw new Exception('Cannot archive until a final recipient has been selected for this round.');
+        }
 
-    // Step 2: Insert each into the recipients table
-    $insertStmt = $pdo->prepare("
-        INSERT INTO recipients 
-        (first_name, last_name, email, phone, expected_graduation_year, intended_school, intended_major, additional_information, date_submitted, application_year, created_at, updated_at)
-        VALUES 
-        (:first_name, :last_name, :email, :phone, :expected_graduation_year, :intended_school, :intended_major, :additional_information, :date_submitted, :application_year, NOW(), NOW())
-    ");
+        $stmt = $pdo->prepare("
+            UPDATE scholarship_applications
+            SET archived_at = NOW()
+            WHERE archived_at IS NULL
+        ");
+        $stmt->execute();
+        $archivedCount = $stmt->rowCount();
 
-    foreach ($finalRecipients as $app) {
-        $insertStmt->execute([
-            ':first_name' => $app['first_name'],
-            ':last_name' => $app['last_name'],
-            ':email' => $app['email'],
-            ':phone' => $app['phone'],
-            ':expected_graduation_year' => $app['expected_graduation_year'],
-            ':intended_school' => $app['intended_school'],
-            ':intended_major' => $app['intended_major'],
-            ':additional_information' => $app['additional_information'],
-            ':date_submitted' => $app['submitted_at'],
-            ':application_year' => date('Y')
-        ]);
-    }
-
-    // Step 3: Delete all applications except final recipients
-    $stmt = $pdo->prepare("DELETE FROM scholarship_applications");
-    $stmt->execute();
-    $deletedCount = $stmt->rowCount();
-
-    $message = $deletedCount . " application(s) deleted and " . count($finalRecipients) . " recipient saved.";
-} else {
+        $message = $archivedCount . " application(s) archived. They're kept on file and no longer appear on the active dashboard.";
+    } else {
         throw new Exception('Invalid action: ' . $action);
     }
 

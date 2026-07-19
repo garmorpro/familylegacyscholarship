@@ -12,6 +12,7 @@ try {
     $countsStmt = $pdo->query("
         SELECT application_status, COUNT(*) AS total
         FROM scholarship_applications
+        WHERE archived_at IS NULL
         GROUP BY application_status
     ");
 
@@ -46,7 +47,7 @@ try {
  */
 try {
     $applicationsStmt = $pdo->query("
-        SELECT 
+        SELECT
             id,
             first_name,
             last_name,
@@ -58,6 +59,7 @@ try {
             application_status,
             submitted_at
         FROM scholarship_applications
+        WHERE archived_at IS NULL
         ORDER BY
             CASE application_status
                 WHEN 'final_recipient' THEN 1
@@ -304,27 +306,12 @@ try {
 <!-- TABLE -->
 
 <?php
-// Fetch application_close date
-$stmt = $pdo->prepare("
-    SELECT setting_value
-    FROM settings
-    WHERE setting_key = 'application_closed'
-    LIMIT 1
-");
-$stmt->execute();
-$applicationClose = $stmt->fetchColumn();
-
-// Determine if applications are closed
-$applicationsClosed = false;
-if ($applicationClose) {
-    $applicationsClosed = (new DateTime() > new DateTime($applicationClose));
-}
-
-// Name of the current final recipient (if any), so the "Clear Applications"
-// confirmation can say exactly who's being preserved.
+// Name of the current final recipient (if any). Once one exists, the round
+// is effectively decided and the "Archive Applications" action becomes
+// available — this is also used in its confirmation message.
 $finalRecipientName = null;
 if ($statusCounts['final_recipient'] > 0) {
-    $frStmt = $pdo->query("SELECT first_name, last_name FROM scholarship_applications WHERE application_status = 'final_recipient' LIMIT 1");
+    $frStmt = $pdo->query("SELECT first_name, last_name FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL LIMIT 1");
     $frRow = $frStmt->fetch(PDO::FETCH_ASSOC);
     if ($frRow) {
         $finalRecipientName = $frRow['first_name'] . ' ' . $frRow['last_name'];
@@ -345,14 +332,14 @@ if ($statusCounts['final_recipient'] > 0) {
 
     <!-- Right side: Buttons -->
     <div class="d-flex align-items-center gap-2">
-        <!-- Clear Applications -->
-        <?php if ($applicationsClosed): ?>
-            <button class="btn btn-danger-soft"
+        <!-- Archive Applications: appears once a final recipient has been chosen -->
+        <?php if ($statusCounts['final_recipient'] > 0): ?>
+            <button class="btn btn-action"
                     data-total="<?= (int)$totalApplications ?>"
                     data-recipient-name="<?= htmlspecialchars($finalRecipientName ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                    onclick="performBulkAction('bulk_delete', this.dataset.total, this.dataset.recipientName || null)">
-                <i class="bi bi-trash3 me-1"></i>
-                Clear Applications
+                    onclick="performBulkAction('archive', this.dataset.total, this.dataset.recipientName || null)">
+                <i class="bi bi-archive me-1"></i>
+                Archive Applications
             </button>
         <?php endif; ?>
 
@@ -550,8 +537,8 @@ document.getElementById('applicationsTable').addEventListener('change', function
     const selectedIds = selectedCheckboxes.map(cb => cb.dataset.id);
     const selectedNames = selectedCheckboxes.map(cb => cb.dataset.name);
 
-    // Only require selection for actions other than bulk_delete
-    if (action !== 'bulk_delete' && selectedIds.length === 0) {
+    // Only require selection for actions other than archive (which applies to everything)
+    if (action !== 'archive' && selectedIds.length === 0) {
         Swal.fire({
             icon: 'info',
             title: 'No applications selected',
@@ -600,16 +587,16 @@ document.getElementById('applicationsTable').addEventListener('change', function
                 This action is permanent.
             </p>
         `;
-    } else if (action === 'bulk_delete') {
-        title = 'Delete All Applications';
+    } else if (action === 'archive') {
+        title = 'Archive Applications';
         const recipientNote = recipientName
-            ? `<p>Your final recipient, <strong>${escapeHtml(recipientName)}</strong>, has already been saved to the Recipients page and will not be lost.</p>`
+            ? `<p><strong>${escapeHtml(recipientName)}</strong> is this round's final recipient and already appears on your Recipients page.</p>`
             : '';
         htmlMessage = `
-            <p>This will permanently delete all <strong>${escapeHtml(String(total))}</strong> application(s) from this cycle.</p>
+            <p>This will archive all <strong>${escapeHtml(String(total))}</strong> application(s) from this cycle. Nothing is deleted — they'll just move off the active dashboard and into Archives, kept on file for your records.</p>
             ${recipientNote}
-            <p style="color: red; font-weight: bold; font-size: 16px;">
-                This action <u>cannot</u> be undone.
+            <p class="text-muted" style="font-size: 13px;">
+                You'll get a clean dashboard for next cycle's applications.
             </p>
         `;
     }
@@ -618,7 +605,7 @@ document.getElementById('applicationsTable').addEventListener('change', function
     Swal.fire({
         title: title,
         html: htmlMessage,
-        icon: 'warning',
+        icon: action === 'archive' ? 'question' : 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, proceed',
         cancelButtonText: 'Cancel',
