@@ -42,12 +42,12 @@ $mail = new PHPMailer(true);
 try {
     // SMTP settings
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
+    $mail->Host       = $config['smtp']['host'];
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'garrett.morgan.pro@gmail.com';
-    $mail->Password   = '***REMOVED-SMTP-PASSWORD***';
+    $mail->Username   = $config['smtp']['username'];
+    $mail->Password   = $config['smtp']['password'];
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
+    $mail->Port       = $config['smtp']['port'];
 
     // Recipients
     $mail->setFrom('noreply@morganserver.com', 'TheMorganLegacy');

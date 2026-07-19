@@ -1,10 +1,16 @@
 <?php
 // db.php
-$host = 'localhost';           // your Ubuntu server host
-$db   = 'morgan_legacy_scholarship';
-$user = 'dbadmin';
-$pass = '***REMOVED-DB-PASSWORD***';
-$port = 5432;
+$configPath = __DIR__ . '/config.local.php';
+if (!file_exists($configPath)) {
+    die("Missing app/config.local.php. Copy app/config.local.example.php to app/config.local.php and fill in real credentials.");
+}
+$config = require $configPath;
+
+$host = $config['db']['host'];
+$db   = $config['db']['name'];
+$user = $config['db']['user'];
+$pass = $config['db']['pass'];
+$port = $config['db']['port'];
 
 $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 

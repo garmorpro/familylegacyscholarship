@@ -1,0 +1,11 @@
+# Secrets — never commit real credentials. See app/config.local.example.php.
+app/config.local.php
+.env
+
+# Dependencies
+/vendor/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
