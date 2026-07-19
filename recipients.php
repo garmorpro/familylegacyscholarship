@@ -50,7 +50,7 @@ try {
                     </p>
                 </div>
             <?php else: ?>
-                <div class="row g-4 mt-2 mb-4">
+                <div class="row g-4 mt-2 mb-4 justify-content-center">
                     <?php foreach ($recipients as $rec): ?>
                         <?php
                             $recName = trim(($rec['first_name'] ?? '') . ' ' . ($rec['last_name'] ?? ''));
@@ -58,31 +58,34 @@ try {
                             $hasPhoto = !empty($rec['recipient_picture']);
                         ?>
                         <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 shadow-sm" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
-                                <?php if ($hasPhoto): ?>
-                                    <img src="uploads/recipients/<?= htmlspecialchars($rec['recipient_picture']) ?>"
-                                         alt="<?= htmlspecialchars($recName) ?>"
-                                         style="width: 100%; height: 220px; object-fit: cover;">
-                                <?php else: ?>
-                                    <div style="width: 100%; height: 220px; background: rgb(7,5,55); display: flex; align-items: center; justify-content: center;">
-                                        <span style="color: #fff; font-size: 48px; font-weight: 600; letter-spacing: 1px;">
-                                            <?= htmlspecialchars($initials ?: '?') ?>
-                                        </span>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="card-body">
-                                    <h5 class="card-title fw-semibold mb-1"><?= htmlspecialchars($recName) ?></h5>
-                                    <?php if (!empty($rec['application_year'])): ?>
-                                        <div class="text-muted mb-2" style="font-size: 13px;">Class of <?= htmlspecialchars($rec['application_year']) ?></div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($rec['intended_school']) || !empty($rec['intended_major'])): ?>
-                                        <div style="font-size: 14px;">
-                                            <?= htmlspecialchars($rec['intended_school'] ?? '') ?>
-                                            <?php if (!empty($rec['intended_school']) && !empty($rec['intended_major'])): ?>
-                                                &bull;
-                                            <?php endif; ?>
-                                            <?= htmlspecialchars($rec['intended_major'] ?? '') ?>
+                            <div class="card h-100 shadow-sm" style="border-radius: 14px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+                                <div style="position: relative; width: 100%; aspect-ratio: 4 / 5; background: rgb(7,5,55);">
+                                    <?php if ($hasPhoto): ?>
+                                        <img src="uploads/recipients/<?= htmlspecialchars($rec['recipient_picture']) ?>"
+                                             alt="<?= htmlspecialchars($recName) ?>"
+                                             loading="lazy"
+                                             style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                    <?php else: ?>
+                                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                            <span style="color: #fff; font-size: 56px; font-weight: 600; letter-spacing: 1px;">
+                                                <?= htmlspecialchars($initials ?: '?') ?>
+                                            </span>
                                         </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($rec['application_year'])): ?>
+                                        <span style="position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.94); color: rgb(7,5,55); font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 999px; letter-spacing: .02em;">
+                                            Class of <?= htmlspecialchars($rec['application_year']) ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="card-body text-center" style="padding: 22px 20px;">
+                                    <h5 class="fw-semibold mb-0" style="font-size: 19px; color: #212529;"><?= htmlspecialchars($recName) ?></h5>
+                                    <div style="width: 34px; height: 3px; background: rgb(197,160,89); margin: 10px auto 12px; border-radius: 2px;"></div>
+                                    <?php if (!empty($rec['intended_school'])): ?>
+                                        <div class="fw-medium" style="font-size: 14.5px; color: #212529;"><?= htmlspecialchars($rec['intended_school']) ?></div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($rec['intended_major'])): ?>
+                                        <div class="text-muted" style="font-size: 13px;"><?= htmlspecialchars($rec['intended_major']) ?></div>
                                     <?php endif; ?>
                                 </div>
                             </div>
