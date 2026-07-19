@@ -50,7 +50,7 @@ try {
     $mail->Port       = $config['smtp']['port'];
 
     // Recipients
-    $mail->setFrom('noreply@morganserver.com', 'TheMorganLegacy');
+    $mail->setFrom('scholarship@themorganlegacy.com', 'The Morgan Legacy Scholarship');
     $mail->addAddress($rec['recommender_email'], $rec['recommender_name']);
 
     // Content

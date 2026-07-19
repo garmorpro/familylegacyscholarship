@@ -94,7 +94,7 @@ try {
                 $mail->Port       = $config['smtp']['port'];
 
                 // Recipients
-                $mail->setFrom('garrett@morganserver.com', 'TheMorganLegacy');
+                $mail->setFrom('scholarship@themorganlegacy.com', 'The Morgan Legacy Scholarship');
                 $mail->addAddress($admin['email']);
 
                 // Content
