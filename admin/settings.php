@@ -106,135 +106,123 @@ function getSetting($key, $default = '') {
     <!-- Settings Form -->
     <form method="POST" action="save_settings.php" style="margin-top: 20px;">
         <?= csrf_field() ?>
-        <!-- Award Information -->
-         <h4>
-            Award Information
-         </h4>
-        <!-- Award Information -->
-<div class="w-50" style="margin-bottom: 15px; position: relative;">
-    <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
-    
-    <div style="position: relative;">
-        <span style="
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: 600;
-            color: #495057;
-        ">$</span>
-        <input type="text" id="award_amount" name="award_amount" 
-               value="<?= getSetting('award_amount') ?>" 
-               style="width: 100%; padding: 8px 20px 8px 24px; border-radius: 6px; border: 1px solid #ced4da;">
-    </div>
-</div>
 
+        <div class="row g-3 mb-3">
+            <!-- Award -->
+            <div class="col-lg-6">
+                <div class="card h-100 shadow-sm" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">Award</h5>
 
+                        <div style="position: relative;">
+                            <label for="award_amount" style="font-weight: 600; display: block; margin-bottom: 5px;">Award Amount ($)</label>
+                            <div style="position: relative;">
+                                <span style="
+                                    position: absolute;
+                                    left: 12px;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                    font-weight: 600;
+                                    color: #495057;
+                                ">$</span>
+                                <input type="text" id="award_amount" name="award_amount"
+                                       value="<?= getSetting('award_amount') ?>"
+                                       style="width: 100%; padding: 8px 20px 8px 24px; border-radius: 6px; border: 1px solid #ced4da;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <hr>
+            <!-- Notifications -->
+            <div class="col-lg-6">
+                <div class="card h-100 shadow-sm" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">Notifications</h5>
 
-        <h4>
-            Application Period
-        </h4>
-        <!-- Application Period -->
-<div style="display: flex; gap: 10px; margin-bottom: 15px;">
-    <div style="flex: 1; display: flex; flex-direction: column;">
-        <label for="application_open" style="font-weight: 600; margin-bottom: 3px;">Open Date</label>
-        <input type="date" id="application_open" name="application_open" 
-               value="<?= getSetting('application_open') ?>" 
-               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-    </div>
-    <div style="flex: 1; display: flex; flex-direction: column;">
-        <label for="application_closed" style="font-weight: 600; margin-bottom: 3px;">Close Date</label>
-        <input type="date" id="application_closed" name="application_closed" 
-               value="<?= getSetting('application_closed') ?>" 
-               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-    </div>
-</div>
+                        <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
+                        <input type="email" id="notification_email" name="notification_email"
+                               value="<?= getSetting('notification_email') ?>"
+                               placeholder="admin@domain.com"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                        <div class="text-muted mt-2" style="font-size: 13px;">
+                            Where application and recommendation notifications are sent.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <span class="text-muted" style="font-size: 14px;">
-            Set the dates when students can submit applications
-        </span>
+        <!-- Timeline -->
+        <div class="card shadow-sm mb-4" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Timeline</h5>
 
-        <hr>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="application_open" style="font-weight: 600; display: block; margin-bottom: 3px;">Application Opens</label>
+                        <input type="date" id="application_open" name="application_open"
+                               value="<?= getSetting('application_open') ?>"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="application_closed" style="font-weight: 600; display: block; margin-bottom: 3px;">Application Closes</label>
+                        <input type="date" id="application_closed" name="application_closed"
+                               value="<?= getSetting('application_closed') ?>"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                    </div>
+                </div>
+                <div class="text-muted mt-2 mb-3" style="font-size: 13px;">
+                    Set the dates when students can submit applications.
+                </div>
 
-        <h4>
-            Review Period
-        </h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="review_start" style="font-weight: 600; display: block; margin-bottom: 3px;">Review Begins</label>
+                        <input type="date" id="review_start" name="review_start"
+                               value="<?= getSetting('review_start') ?>"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="review_end" style="font-weight: 600; display: block; margin-bottom: 3px;">Review Ends</label>
+                        <input type="date" id="review_end" name="review_end"
+                               value="<?= getSetting('review_end') ?>"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                    </div>
+                </div>
+                <div class="text-muted mt-2 mb-3" style="font-size: 13px;">
+                    Estimated period for reviewing and evaluating applications.
+                </div>
 
-        <!-- Review Period -->
-<div style="display: flex; gap: 10px; margin-bottom: 15px;">
-    <div style="flex: 1; display: flex; flex-direction: column;">
-        <label for="review_start" style="font-weight: 600; margin-bottom: 3px;">Start Date</label>
-        <input type="date" id="review_start" name="review_start" 
-               value="<?= getSetting('review_start') ?>" 
-               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-    </div>
-    <div style="flex: 1; display: flex; flex-direction: column;">
-        <label for="review_end" style="font-weight: 600; margin-bottom: 3px;">End Date</label>
-        <input type="date" id="review_end" name="review_end" 
-               value="<?= getSetting('review_end') ?>" 
-               style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-    </div>
-</div>
-
-        <span class="text-muted" style="font-size: 14px;">
-            Estimated period for reviewing and evaluating applications
-        </span>
-
-        <hr>
-
-        <h4>
-            Recipient Announcement
-        </h4>
-
-        <!-- Recipient Announcement -->
-        <div class="w-50" style="margin-bottom: 15px;">
-    <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 5px;">Announcement Date</label>
-    <input type="date" id="announcement_date" name="announcement_date" 
-           value="<?= getSetting('announcement_date') ?>" 
-           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-</div>
-
-        <span class="text-muted" style="font-size: 14px;">
-            Date when scholarship recipients will be announced
-        </span>
-
-        <hr>
-
-        <h4>
-            Notification Settings
-        </h4>
-
-        <!-- Notification Email -->
-        <div style="margin-bottom: 20px;">
-    <label for="notification_email" style="font-weight: 600; display: block; margin-bottom: 5px;">Notification Email</label>
-    <input type="email" id="notification_email" name="notification_email" 
-           value="<?= getSetting('notification_email') ?>" 
-           placeholder="admin@domain.com" 
-           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-</div>
-
-        <span class="text-muted" style="font-size: 14px;">
-            Email address for receiving application notifications and updates
-        </span>
-
-        <br>
-        <div class="mt-4"></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="announcement_date" style="font-weight: 600; display: block; margin-bottom: 3px;">Recipient Announced</label>
+                        <input type="date" id="announcement_date" name="announcement_date"
+                               value="<?= getSetting('announcement_date') ?>"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                    </div>
+                </div>
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    Date when the scholarship recipient will be announced.
+                </div>
+            </div>
+        </div>
 
         <!-- Submit Button -->
-        <button type="submit" style="
-            padding: 10px 20px;
-            background-color: #0d6efd;
-            color: #fff;
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        " onmouseover="this.style.backgroundColor='#0b5ed7'" onmouseout="this.style.backgroundColor='#0d6efd'">
-            Save Settings
-        </button>
+        <div class="d-flex justify-content-end">
+            <button type="submit" style="
+                padding: 10px 20px;
+                background-color: #0d6efd;
+                color: #fff;
+                font-weight: 600;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            " onmouseover="this.style.backgroundColor='#0b5ed7'" onmouseout="this.style.backgroundColor='#0d6efd'">
+                Save Settings
+            </button>
+        </div>
     </form>
 
   </div>
@@ -242,6 +230,7 @@ function getSetting($key, $default = '') {
 
 
 
+</div>
 </div>
 </main>
 
