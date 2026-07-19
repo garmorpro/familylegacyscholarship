@@ -116,6 +116,12 @@ try {
 } catch (Exception $e) {
     $application = null;
 }
+
+// Recommendation status, used to inform (not block) review actions below
+$recStatusStmt = $pdo->prepare("SELECT status FROM recommendations WHERE scholarship_application_id = :id LIMIT 1");
+$recStatusStmt->execute([':id' => $appId]);
+$recommendationStatus = $recStatusStmt->fetchColumn(); // false | 'not_sent' | 'sent' | 'completed'
+$recommendationReceived = ($recommendationStatus === 'completed');
 ?>
 
 <?php if ($application): ?>
@@ -143,15 +149,30 @@ try {
             </form>
         </div>
     <?php endif; ?>
+
+    <?php if ($application['application_status'] === 'reviewed'): ?>
+        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
+            <form method="POST" action="mark_final_review.php" class="d-inline">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn btn-outline-primary btn-sm">Advance to Final Review</button>
+            </form>
+        </div>
+    <?php endif; ?>
+
     <?php
     // Check if any application has already been selected as final recipient
     $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient'");
     $finalCount = (int) $stmt->fetchColumn();
     ?>
-    
+
     <?php if ($application['application_status'] === 'final_review' && $finalCount === 0): ?>
         <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
-            <form method="POST" action="mark_final_selected.php" class="d-inline">
+            <form method="POST" action="mark_final_selected.php" class="d-inline"
+                <?php if (!$recommendationReceived): ?>
+                onsubmit="return confirm('This applicant\'s recommendation hasn\'t been received yet. Designate them as the final recipient anyway?');"
+                <?php endif; ?>
+            >
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
                 <button type="submit" class="btn btn-outline-success btn-sm">
@@ -161,6 +182,18 @@ try {
         </div>
     <?php endif; ?>
 
+    <?php if (in_array($application['application_status'], ['submitted', 'reviewed', 'final_review'], true)): ?>
+        <div class="mb-2" style="font-size: 13px;">
+            <span class="text-muted">Recommendation:</span>
+            <?php if ($recommendationStatus === 'completed'): ?>
+                <span class="text-success fw-semibold">Received</span>
+            <?php elseif ($recommendationStatus === 'sent'): ?>
+                <span class="text-secondary fw-semibold">Sent, awaiting response</span>
+            <?php else: ?>
+                <span class="text-danger fw-semibold">Not sent yet</span>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <div>
         <span class="fw-semibold me-2">Submission Date:</span>

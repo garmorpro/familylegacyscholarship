@@ -13,21 +13,16 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 $appId = (int)$_POST['id'];
 
 try {
-    // Only designate applications that are in 'final_review', and only if no
-    // final recipient has already been chosen this round.
+    // Only advance applications that are actually still 'reviewed'
     $stmt = $pdo->prepare("
         UPDATE scholarship_applications
-        SET application_status = 'final_recipient'
-        WHERE id = :id
-          AND application_status = 'final_review'
-          AND NOT EXISTS (
-              SELECT 1 FROM scholarship_applications WHERE application_status = 'final_recipient'
-          )
+        SET application_status = 'final_review'
+        WHERE id = :id AND application_status = 'reviewed'
     ");
     $stmt->execute([':id' => $appId]);
 
     if ($stmt->rowCount() === 0) {
-        error_log("mark_final_selected.php: no-op for id={$appId}, not eligible (wrong status or recipient already chosen)");
+        error_log("mark_final_review.php: no-op for id={$appId}, not in 'reviewed' status");
     }
 
     // Redirect back to the application details page
@@ -35,6 +30,6 @@ try {
     exit;
 
 } catch (Exception $e) {
-    error_log("mark_final_selected.php error: " . $e->getMessage());
+    error_log("mark_final_review.php error: " . $e->getMessage());
     echo "Something went wrong updating this application. Please try again.";
 }

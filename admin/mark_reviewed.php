@@ -13,13 +13,17 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 $appId = (int)$_POST['id'];
 
 try {
-    // Update the application status to 'reviewed'
+    // Only advance applications that are actually still 'submitted'
     $stmt = $pdo->prepare("
         UPDATE scholarship_applications
         SET application_status = 'reviewed'
-        WHERE id = :id
+        WHERE id = :id AND application_status = 'submitted'
     ");
     $stmt->execute([':id' => $appId]);
+
+    if ($stmt->rowCount() === 0) {
+        error_log("mark_reviewed.php: no-op for id={$appId}, not in 'submitted' status");
+    }
 
     // Redirect back to the application details page
     header("Location: /admin/application_view.php?id=" . $appId);

@@ -46,10 +46,22 @@ try {
             throw new Exception('No applications selected to advance.');
         }
 
+        // Only advance applications actually in 'reviewed' status — otherwise
+        // a still-'submitted' application could skip the review step entirely.
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $stmt = $pdo->prepare("UPDATE scholarship_applications SET application_status = 'final_review' WHERE id IN ($placeholders)");
+        $stmt = $pdo->prepare("
+            UPDATE scholarship_applications
+            SET application_status = 'final_review'
+            WHERE id IN ($placeholders) AND application_status = 'reviewed'
+        ");
         $stmt->execute($ids);
-        $message = count($ids) . " application(s) advanced to final review.";
+        $advancedCount = $stmt->rowCount();
+        $skippedCount = count($ids) - $advancedCount;
+
+        $message = $advancedCount . " application(s) advanced to final review.";
+        if ($skippedCount > 0) {
+            $message .= " " . $skippedCount . " skipped (not in \"Reviewed\" status).";
+        }
 
     } elseif ($action === 'bulk_delete') {
     // Step 1: Get all applications with application_status = 'final_recipient'

@@ -319,23 +319,38 @@ $applicationsClosed = false;
 if ($applicationClose) {
     $applicationsClosed = (new DateTime() > new DateTime($applicationClose));
 }
+
+// Name of the current final recipient (if any), so the "Clear Applications"
+// confirmation can say exactly who's being preserved.
+$finalRecipientName = null;
+if ($statusCounts['final_recipient'] > 0) {
+    $frStmt = $pdo->query("SELECT first_name, last_name FROM scholarship_applications WHERE application_status = 'final_recipient' LIMIT 1");
+    $frRow = $frStmt->fetch(PDO::FETCH_ASSOC);
+    if ($frRow) {
+        $finalRecipientName = $frRow['first_name'] . ' ' . $frRow['last_name'];
+    }
+}
 ?>
 
 
 <!-- Bulk Actions Button -->
 <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
 
-    <!-- Left side: Search Bar -->
-    <div>
+    <!-- Left side: Search Bar + selection indicator -->
+    <div class="d-flex align-items-center gap-2">
         <input type="text" id="searchInput" class="form-control form-control-sm"
                placeholder="Search applicants..." style="width: 260px; padding-top: 8px !important; padding-bottom: 8px !important; border-radius: 20px !important;">
+        <span id="selectionIndicator" class="badge rounded-pill bg-primary-subtle text-primary d-none" style="font-size: 12px; font-weight: 600;"></span>
     </div>
 
     <!-- Right side: Buttons -->
     <div class="d-flex align-items-center gap-2">
         <!-- Clear Applications -->
         <?php if ($applicationsClosed): ?>
-            <button class="btn btn-danger-soft" onclick="performBulkAction('bulk_delete')">
+            <button class="btn btn-danger-soft"
+                    data-total="<?= (int)$totalApplications ?>"
+                    data-recipient-name="<?= htmlspecialchars($finalRecipientName ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                    onclick="performBulkAction('bulk_delete', this.dataset.total, this.dataset.recipientName || null)">
                 <i class="bi bi-trash3 me-1"></i>
                 Clear Applications
             </button>
@@ -503,7 +518,33 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 </script>
 
 <script>
-    function performBulkAction(action) {
+// Keep a live "N selected" indicator so selection state is visible before
+// the Bulk Actions menu is even opened.
+function updateSelectionIndicator() {
+    const count = document.querySelectorAll('.app-checkbox:checked').length;
+    const indicator = document.getElementById('selectionIndicator');
+    if (count > 0) {
+        indicator.textContent = count + ' selected';
+        indicator.classList.remove('d-none');
+    } else {
+        indicator.classList.add('d-none');
+    }
+}
+document.getElementById('applicationsTable').addEventListener('change', function(e) {
+    if (e.target.classList.contains('app-checkbox')) {
+        updateSelectionIndicator();
+    }
+});
+</script>
+
+<script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str ?? '';
+        return div.innerHTML;
+    }
+
+    function performBulkAction(action, total, recipientName) {
     // Collect selected applications
     const selectedCheckboxes = Array.from(document.querySelectorAll('.app-checkbox:checked'));
     const selectedIds = selectedCheckboxes.map(cb => cb.dataset.id);
@@ -520,7 +561,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     }
 
     // Build HTML list of names using Bootstrap list group
-    const nameList = selectedNames.map(name => `<li class="list-group-item p-2">${name}</li>`).join('');
+    const nameList = selectedNames.map(name => `<li class="list-group-item p-2">${escapeHtml(name)}</li>`).join('');
 
     // Build title/message based on action
     let title, htmlMessage;
@@ -529,8 +570,8 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
         htmlMessage = `
             <p>Are you sure you want to delete the following applications?</p>
             <ul class="list-group" style="
-                max-height: 200px; 
-                overflow-y: auto; 
+                max-height: 200px;
+                overflow-y: auto;
                 margin-top: 10px;
                 margin-bottom: 15px;
             ">
@@ -545,21 +586,28 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
         htmlMessage = `
             <p>Are you sure you want to advance the following applications to final review?</p>
             <ul class="list-group" style="
-                max-height: 200px; 
-                overflow-y: auto; 
+                max-height: 200px;
+                overflow-y: auto;
                 margin-top: 10px;
                 margin-bottom: 15px;
             ">
                 ${nameList}
             </ul>
+            <p class="text-muted" style="font-size: 13px;">
+                Only applications currently marked "Reviewed" will actually advance — anything still "Submitted" will be skipped.
+            </p>
             <p style="color: orange; font-weight: bold; font-size: 16px;">
                 This action is permanent.
             </p>
         `;
     } else if (action === 'bulk_delete') {
         title = 'Delete All Applications';
+        const recipientNote = recipientName
+            ? `<p>Your final recipient, <strong>${escapeHtml(recipientName)}</strong>, has already been saved to the Recipients page and will not be lost.</p>`
+            : '';
         htmlMessage = `
-            <p>Are you sure you want to delete all current applications?</p>
+            <p>This will permanently delete all <strong>${escapeHtml(String(total))}</strong> application(s) from this cycle.</p>
+            ${recipientNote}
             <p style="color: red; font-weight: bold; font-size: 16px;">
                 This action <u>cannot</u> be undone.
             </p>
