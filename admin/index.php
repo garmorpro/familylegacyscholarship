@@ -35,7 +35,8 @@ try {
     $statusCounts = [
         'submitted' => 0,
         'reviewed'  => 0,
-        'final_review'  => 0
+        'final_review'  => 0,
+        'final_recipient' => 0
     ];
     $totalApplications = 0;
 }
@@ -171,19 +172,19 @@ try {
 
 <!-- STATUS ROW -->
 
-    <div class="row g-3 mb-4">
-    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3 mb-3">
+
         <!-- Open Applications -->
-        <div class="col-md-4 col-lg-3">
+        <div>
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-    
+
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,110,253,0.1);">
                         <i class="bi bi-inbox-fill text-primary"></i>
                     </div>
-    
+
                     <div>
                         <div class="fw-semibold">Open</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -191,24 +192,24 @@ try {
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="fs-4 fw-bold text-primary">
                     <?= $statusCounts['submitted'] ?>
                 </div>
             </div>
         </div>
-    
+
         <!-- Reviewed Applications -->
-        <div class="col-md-4 col-lg-3">
+        <div>
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-    
+
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(108,117,125,0.15);">
                         <i class="bi bi-eye-fill text-secondary"></i>
                     </div>
-    
+
                     <div>
                         <div class="fw-semibold">Reviewed</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -216,24 +217,24 @@ try {
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="fs-4 fw-bold text-secondary">
                     <?= $statusCounts['reviewed'] ?>
                 </div>
             </div>
         </div>
-    
+
         <!-- Selected Applications -->
-        <div class="col-md-4 col-lg-3">
+        <div>
             <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
                  style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-    
+
                 <div class="d-flex align-items-center">
                     <div class="me-3 d-flex align-items-center justify-content-center"
                          style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(25,135,84,0.15);">
                         <i class="bi bi-check-circle-fill text-success"></i>
                     </div>
-    
+
                     <div>
                         <div class="fw-semibold">Final Review</div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -241,24 +242,49 @@ try {
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="fs-4 fw-bold text-success">
                     <?= $statusCounts['final_review'] ?>
                 </div>
             </div>
         </div>
-    
+
+        <!-- Recipients -->
+        <div>
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
+                 style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+
+                <div class="d-flex align-items-center">
+                    <div class="me-3 d-flex align-items-center justify-content-center"
+                         style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(13,202,240,0.15);">
+                        <i class="bi bi-award-fill text-info"></i>
+                    </div>
+
+                    <div>
+                        <div class="fw-semibold">Recipients</div>
+                        <div class="text-muted" style="font-size: 13px;">
+                            Final recipient
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fs-4 fw-bold text-info">
+                    <?= $statusCounts['final_recipient'] ?>
+                </div>
+            </div>
+        </div>
+
         <!-- Total Applications -->
-        <div class="col-md-4 col-lg-3">
+        <div>
         <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm"
              style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
-    
+
             <div class="d-flex align-items-center">
                 <div class="me-3 d-flex align-items-center justify-content-center"
                      style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(255,159,67,0.15);">
                     <i class="bi bi-collection-fill" style="color: rgb(255,159,67);"></i>
                 </div>
-    
+
                 <div>
                     <div class="fw-semibold">Total</div>
                     <div class="text-muted" style="font-size: 13px;">
@@ -266,16 +292,38 @@ try {
                     </div>
                 </div>
             </div>
-    
+
             <div class="fs-4 fw-bold" style="color: rgb(255,159,67);">
                 <?= $totalApplications ?>
             </div>
         </div>
     </div>
-    
-    
+
     </div>
 
+    <!-- PIPELINE BAR -->
+    <div class="p-3 bg-white shadow-sm mb-4" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+        <div class="d-flex justify-content-between align-items-baseline mb-2">
+            <div class="fw-semibold" style="font-size: 14px;">Review Pipeline</div>
+            <div class="text-muted" style="font-size: 12px;"><?= $totalApplications ?> total</div>
+        </div>
+        <?php if ($totalApplications > 0): ?>
+        <div class="d-flex" style="height: 8px; border-radius: 999px; overflow: hidden; background: #f1f3f5;">
+            <div style="width: <?= round($statusCounts['submitted'] / $totalApplications * 100, 2) ?>%; background: #0d6efd;"></div>
+            <div style="width: <?= round($statusCounts['reviewed'] / $totalApplications * 100, 2) ?>%; background: #6c757d;"></div>
+            <div style="width: <?= round($statusCounts['final_review'] / $totalApplications * 100, 2) ?>%; background: #198754;"></div>
+            <div style="width: <?= round($statusCounts['final_recipient'] / $totalApplications * 100, 2) ?>%; background: #0dcaf0;"></div>
+        </div>
+        <?php else: ?>
+        <div class="text-muted" style="font-size: 13px;">No applications yet.</div>
+        <?php endif; ?>
+        <div class="d-flex flex-wrap gap-3 mt-2">
+            <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0d6efd;margin-right:5px;"></span>Submitted <strong><?= $statusCounts['submitted'] ?></strong></div>
+            <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6c757d;margin-right:5px;"></span>Reviewed <strong><?= $statusCounts['reviewed'] ?></strong></div>
+            <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#198754;margin-right:5px;"></span>Final Review <strong><?= $statusCounts['final_review'] ?></strong></div>
+            <div style="font-size: 12px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0dcaf0;margin-right:5px;"></span>Final Recipient <strong><?= $statusCounts['final_recipient'] ?></strong></div>
+        </div>
+    </div>
 
 <!-- END STATUS ROW -->
 
