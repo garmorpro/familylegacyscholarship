@@ -9,6 +9,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once 'app/functions.php';
 require_once 'path.php';
 
+// Pull the essay prompt from Settings, so admin can change it without a
+// code change. Falls back to a sensible default if it's never been set.
+try {
+    $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    $settings = [];
+    while ($row = $settingsStmt->fetch(PDO::FETCH_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (Exception $e) {
+    $settings = [];
+}
+
+function getSetting($key, $default = '') {
+    global $settings;
+    return isset($settings[$key]) ? htmlspecialchars($settings[$key], ENT_QUOTES, 'UTF-8') : $default;
+}
+
+const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.';
+
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -186,7 +205,7 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="essay" class="form-label">In 500&ndash;750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship. <span class="text-danger">*</span></label>
+      <label for="essay" class="form-label"><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?> <span class="text-danger">*</span></label>
       <textarea class="form-control" id="essay" rows="6" name="essay" required></textarea>
       <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0</span> words</div>
     </div>

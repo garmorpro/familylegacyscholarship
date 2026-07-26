@@ -27,6 +27,10 @@ function getSetting($key, $default = '') {
     global $settings;
     return isset($settings[$key]) ? htmlspecialchars($settings[$key], ENT_QUOTES, 'UTF-8') : $default;
 }
+
+// Matches the fallback used on application-form.php, so the field here
+// shows the real current prompt even before it's ever been explicitly saved.
+const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.';
 ?>
 
 
@@ -149,6 +153,21 @@ function getSetting($key, $default = '') {
                             Where application and recommendation notifications are sent.
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Essay Prompt -->
+        <div class="card shadow-sm mb-3" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Essay</h5>
+
+                <label for="essay_prompt" style="font-weight: 600; display: block; margin-bottom: 5px;">Essay Prompt</label>
+                <textarea id="essay_prompt" name="essay_prompt" rows="3"
+                          style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;"
+                ><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?></textarea>
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    Shown to applicants above the essay field on the application form. Word count guidance can be included right in the prompt text.
                 </div>
             </div>
         </div>

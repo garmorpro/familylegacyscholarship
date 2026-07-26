@@ -22,7 +22,8 @@ $allowedSettings = [
     'review_start',
     'review_end',
     'announcement_date',
-    'notification_email'
+    'notification_email',
+    'essay_prompt'
 ];
 
 try {
