@@ -423,17 +423,13 @@ phoneInput.addEventListener('input', function(e) {
     const steps = document.querySelectorAll('#submit-steps .step');
     const submitButton = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', function () {
-      // Native "required" validation has already passed by the time this
-      // fires, so it's safe to show the overlay unconditionally here.
-      overlay.classList.remove('d-none');
-      submitButton.disabled = true; // guard against double submission
+    const STEP_INTERVAL_MS = 1100;
+    // Time for the last checkmark to land (steps.length intervals), plus a
+    // beat afterward so the fully-green state is actually seen before
+    // moving on — not just however long the real request happens to take.
+    const MIN_DISPLAY_MS = steps.length * STEP_INTERVAL_MS + 600;
 
-      // Staged progress display. This is a perceived-progress illusion —
-      // there's no way to know real server-side progress mid-request, so
-      // this just ticks through at a fixed pace while the actual POST is
-      // in flight. The overlay stays up for exactly as long as that POST
-      // takes; this loop never blocks or delays the real submission.
+    function runStepAnimation() {
       let i = 0;
       function advance() {
         if (i > 0) {
@@ -443,10 +439,65 @@ phoneInput.addEventListener('input', function(e) {
         if (i < steps.length) {
           steps[i].classList.add('active');
           i++;
-          setTimeout(advance, 1100);
+          setTimeout(advance, STEP_INTERVAL_MS);
         }
       }
       advance();
+    }
+
+    function showError(message) {
+      overlay.classList.add('d-none');
+      submitButton.disabled = false;
+
+      let alertBox = document.getElementById('submit-error-alert');
+      if (!alertBox) {
+        alertBox = document.createElement('div');
+        alertBox.id = 'submit-error-alert';
+        alertBox.className = 'alert alert-danger mt-3';
+        form.insertBefore(alertBox, form.firstChild);
+      }
+      alertBox.textContent = message;
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    form.addEventListener('submit', function (event) {
+      // Native "required" validation has already passed by the time this
+      // fires. Take over the actual submission via fetch so we control
+      // when navigation happens — a plain form POST would let the browser
+      // navigate away the instant the server responds, which could cut
+      // the step animation short if the server is fast.
+      event.preventDefault();
+
+      overlay.classList.remove('d-none');
+      submitButton.disabled = true; // guard against double submission
+      runStepAnimation();
+
+      const minDisplay = new Promise((resolve) => setTimeout(resolve, MIN_DISPLAY_MS));
+      const submission = fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      });
+
+      Promise.all([submission, minDisplay])
+        .then(([response]) => {
+          if (response.redirected) {
+            // Success: the server issued its normal redirect to
+            // thank_you.php. Follow it now that the animation has had
+            // time to finish.
+            window.location.href = response.url;
+            return;
+          }
+          // No redirect means the server hit its error path and echoed a
+          // plain message instead. Show it inline — the form's data is
+          // still intact since we never navigated away, so nothing the
+          // applicant typed gets lost.
+          return response.text().then(function (text) {
+            showError(text || 'Something went wrong submitting your application. Please try again.');
+          });
+        })
+        .catch(function () {
+          showError('Something went wrong submitting your application. Please check your connection and try again.');
+        });
     });
   })();
 </script>
