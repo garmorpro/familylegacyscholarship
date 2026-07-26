@@ -49,6 +49,125 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Application Form - Morgan Legacy Scholarship</title>
+    <style>
+        /* ---------- Submission loading overlay ---------- */
+        #submit-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(120% 120% at 50% 0%, #1d1b4d 0%, #070537 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 2000;
+        }
+        #submit-overlay .panel {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #submit-overlay .crest {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 22px;
+        }
+        #submit-overlay .spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid rgba(197,160,89,0.22);
+            border-top-color: #C5A059;
+            animation: submit-spin 1s linear infinite;
+            margin-bottom: 26px;
+        }
+        @keyframes submit-spin { to { transform: rotate(360deg); } }
+        #submit-overlay h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 8px;
+            color: #ECEDF6;
+            text-wrap: balance;
+        }
+        #submit-overlay .sub {
+            font-size: 14px;
+            color: #A6A8C9;
+            margin: 0 0 30px;
+            line-height: 1.5;
+        }
+        #submit-overlay .steps {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+        #submit-overlay .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #A6A8C9;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        #submit-overlay .step.active {
+            background: rgba(255,255,255,0.06);
+            color: #ECEDF6;
+        }
+        #submit-overlay .step.done { color: #ECEDF6; }
+        #submit-overlay .step-marker {
+            flex: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        #submit-overlay .step.active .step-marker { border-color: #C5A059; }
+        #submit-overlay .step.active .step-marker::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #C5A059;
+            animation: submit-pulse 1.1s ease-in-out infinite;
+        }
+        @keyframes submit-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.85); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        #submit-overlay .step.done .step-marker {
+            border-color: #5FBE87;
+            background: #5FBE87;
+        }
+        #submit-overlay .step.done .step-marker::after {
+            content: "";
+            width: 5px;
+            height: 9px;
+            border-right: 2px solid #070537;
+            border-bottom: 2px solid #070537;
+            transform: rotate(45deg) translate(-1px, -1px);
+            border-radius: 0;
+            background: none;
+            animation: none;
+        }
+        #submit-overlay .footnote {
+            font-size: 12.5px;
+            color: #A6A8C9;
+            opacity: 0.85;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #submit-overlay * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -75,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <form method="POST" action="" class="container py-4">
+    <form method="POST" action="" class="container py-4" id="applicationForm">
   <?= csrf_field() ?>
 
   <p class="text-muted mb-3" style="font-size: 13px;"><span class="text-danger">*</span> Required</p>
@@ -261,6 +380,76 @@ phoneInput.addEventListener('input', function(e) {
   </div>
 
 </form>
+
+<div id="submit-overlay" class="d-none" role="status" aria-live="polite">
+  <div class="panel">
+    <svg class="crest" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="42" height="42" rx="9" fill="#0E0C46" stroke="#3A366E" stroke-width="1"/>
+      <path d="M22 10 L33 17 L33 18.5 L11 18.5 L11 17 Z" fill="#C5A059"/>
+      <rect x="14" y="20" width="4" height="13" fill="#ECEDF6"/>
+      <rect x="20" y="20" width="4" height="13" fill="#ECEDF6"/>
+      <rect x="26" y="20" width="4" height="13" fill="#ECEDF6"/>
+      <rect x="11" y="33" width="22" height="2.5" fill="#C5A059"/>
+    </svg>
+
+    <div class="spinner"></div>
+
+    <h1>Submitting your application&hellip;</h1>
+    <p class="sub">Please don&rsquo;t close this page &mdash; this will only take a moment.</p>
+
+    <div class="steps" id="submit-steps">
+      <div class="step">
+        <div class="step-marker"></div>
+        <span>Saving your responses</span>
+      </div>
+      <div class="step">
+        <div class="step-marker"></div>
+        <span>Notifying your recommender</span>
+      </div>
+      <div class="step">
+        <div class="step-marker"></div>
+        <span>Finishing up</span>
+      </div>
+    </div>
+
+    <p class="footnote">Next: you'll land on a confirmation page with your application ID.</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const form = document.getElementById('applicationForm');
+    const overlay = document.getElementById('submit-overlay');
+    const steps = document.querySelectorAll('#submit-steps .step');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function () {
+      // Native "required" validation has already passed by the time this
+      // fires, so it's safe to show the overlay unconditionally here.
+      overlay.classList.remove('d-none');
+      submitButton.disabled = true; // guard against double submission
+
+      // Staged progress display. This is a perceived-progress illusion —
+      // there's no way to know real server-side progress mid-request, so
+      // this just ticks through at a fixed pace while the actual POST is
+      // in flight. The overlay stays up for exactly as long as that POST
+      // takes; this loop never blocks or delays the real submission.
+      let i = 0;
+      function advance() {
+        if (i > 0) {
+          steps[i - 1].classList.remove('active');
+          steps[i - 1].classList.add('done');
+        }
+        if (i < steps.length) {
+          steps[i].classList.add('active');
+          i++;
+          setTimeout(advance, 1100);
+        }
+      }
+      advance();
+    });
+  })();
+</script>
 
 <script>
   // Word count for essay
