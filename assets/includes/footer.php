@@ -5,7 +5,7 @@
     <div class="mb-3">
       <p class="mb-0" style="font-size: 14px;">
         <strong>Contact:</strong> 
-        <a href="mailto:scholarship@morganlegacy.com" class="text-decoration-none text-dark footer-link">scholarship@morganlegacy.com</a>
+        <a href="mailto:scholarship@themorganlegacy.com" class="text-decoration-none text-dark footer-link">scholarship@themorganlegacy.com</a>
       </p>
     </div>
 
