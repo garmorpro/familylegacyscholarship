@@ -70,8 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
         }
         #submit-overlay .crest {
-            width: 44px;
-            height: 44px;
+            height: 56px;
+            width: auto;
             margin-bottom: 22px;
         }
         #submit-overlay .spinner {
@@ -383,14 +383,7 @@ phoneInput.addEventListener('input', function(e) {
 
 <div id="submit-overlay" class="d-none" role="status" aria-live="polite">
   <div class="panel">
-    <svg class="crest" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="1" width="42" height="42" rx="9" fill="#0E0C46" stroke="#3A366E" stroke-width="1"/>
-      <path d="M22 10 L33 17 L33 18.5 L11 18.5 L11 17 Z" fill="#C5A059"/>
-      <rect x="14" y="20" width="4" height="13" fill="#ECEDF6"/>
-      <rect x="20" y="20" width="4" height="13" fill="#ECEDF6"/>
-      <rect x="26" y="20" width="4" height="13" fill="#ECEDF6"/>
-      <rect x="11" y="33" width="22" height="2.5" fill="#C5A059"/>
-    </svg>
+    <img class="crest" src="assets/images/logo.png" alt="Morgan Legacy Scholarship">
 
     <div class="spinner"></div>
 
