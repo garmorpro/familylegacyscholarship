@@ -412,7 +412,7 @@ phoneInput.addEventListener('input', function(e) {
       </div>
     </div>
 
-    <p class="footnote">Next: you'll land on a confirmation page with your application ID.</p>
+    <p class="footnote">Next: you'll land on a confirmation page letting you know your application was received.</p>
   </div>
 </div>
 
