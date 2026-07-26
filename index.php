@@ -176,12 +176,13 @@ if (empty($applicationOpen) || empty($applicationClose)) {
 
   <!-- Card 1: Award Amount -->
   <div class="col-12 col-md-6">
-    <div class="card modern-vertical-card text-center p-3 border-0 shadow-sm rounded-4">
-      <div class="icon-container bg-gradient-primary text-white mb-2 mx-auto d-flex align-items-center justify-content-center">
-        <i class="bi bi-currency-dollar fs-3"></i>
+    <div class="card modern-vertical-card text-center p-4 border-0 shadow-sm" style="border-radius: 16px;">
+      <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; border-radius: 50%; background: rgb(7,5,55);">
+        <i class="bi bi-currency-dollar" style="font-size: 1.4rem; color: rgb(197,160,89);"></i>
       </div>
-      <div class="text-uppercase text-muted small mb-1">Award Amount</div>
-      <div class="fw-bold fs-5">$<?= number_format(getSetting('award_amount', 0)) ?></div>
+      <div class="text-uppercase text-muted mb-1" style="letter-spacing: .06em; font-size: 11px;">Award Amount</div>
+      <div class="fw-bold" style="font-size: 1.6rem; color: rgb(7,5,55);">$<?= number_format(getSetting('award_amount', 0)) ?></div>
+      <div style="width: 28px; height: 3px; background: rgb(197,160,89); margin: 12px auto 0; border-radius: 2px;"></div>
     </div>
   </div>
 
@@ -203,12 +204,13 @@ if (empty($applicationOpen) || empty($applicationClose)) {
   ?>
 
   <div class="col-12 col-md-6">
-    <div class="card modern-vertical-card text-center p-3 border-0 shadow-sm rounded-4">
-      <div class="icon-container bg-gradient-success text-white mb-2 mx-auto d-flex align-items-center justify-content-center">
-        <i class="bi bi-calendar2 fs-3"></i>
+    <div class="card modern-vertical-card text-center p-4 border-0 shadow-sm" style="border-radius: 16px;">
+      <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; border-radius: 50%; background: rgb(7,5,55);">
+        <i class="bi bi-calendar2" style="font-size: 1.4rem; color: rgb(197,160,89);"></i>
       </div>
-      <div class="text-uppercase text-muted small mb-1"><?= $label ?></div>
-      <div class="fw-bold fs-5"><?= $dateToShow ? date("F j, Y", strtotime($dateToShow)) : 'TBD' ?></div>
+      <div class="text-uppercase text-muted mb-1" style="letter-spacing: .06em; font-size: 11px;"><?= $label ?></div>
+      <div class="fw-bold" style="font-size: 1.6rem; color: rgb(7,5,55);"><?= $dateToShow ? date("F j, Y", strtotime($dateToShow)) : 'TBD' ?></div>
+      <div style="width: 28px; height: 3px; background: rgb(197,160,89); margin: 12px auto 0; border-radius: 2px;"></div>
     </div>
   </div>
 
@@ -223,23 +225,6 @@ if (empty($applicationOpen) || empty($applicationClose)) {
 .modern-vertical-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 20px rgba(0,0,0,0.1);
-}
-
-/* Icon circle with gradient */
-.icon-container {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    font-size: 1.2rem;
-}
-
-/* Gradients for icon backgrounds */
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #2d5cf2, #6096f3);
-}
-.bg-gradient-success {
-    background: linear-gradient(135deg, #28a745, #71d88c);
 }
 </style>
 
