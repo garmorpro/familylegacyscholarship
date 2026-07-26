@@ -161,22 +161,22 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="extracurricular" class="form-label">Extracurricular Activities, Clubs, Sports</label>
-      <textarea class="form-control" id="extracurricular" name="extracurricular" rows="2"></textarea>
+      <label for="extracurricular" class="form-label">Extracurricular Activities, Clubs, Sports <span class="text-danger">*</span></label>
+      <textarea class="form-control" id="extracurricular" name="extracurricular" rows="2" required></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="leadership" class="form-label">Leadership Roles & Responsibilities</label>
-      <textarea class="form-control" id="leadership" name="leadership" rows="2"></textarea>
+      <label for="leadership" class="form-label">Leadership Roles & Responsibilities <span class="text-danger">*</span></label>
+      <textarea class="form-control" id="leadership" name="leadership" rows="2" required></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="communityService" class="form-label">Community Service & Volunteer Work</label>
-      <textarea class="form-control" id="communityService" name="community_service" rows="2"></textarea>
+      <label for="communityService" class="form-label">Community Service & Volunteer Work <span class="text-danger">*</span></label>
+      <textarea class="form-control" id="communityService" name="community_service" rows="2" required></textarea>
     </div>
   </div>
 
