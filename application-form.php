@@ -59,28 +59,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" action="" class="container py-4">
   <?= csrf_field() ?>
 
+  <p class="text-muted mb-3" style="font-size: 13px;"><span class="text-danger">*</span> Required</p>
+
   <!-- Section: Personal Information -->
   <h5>Personal Information</h5>
   <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <label for="firstName" class="form-label">First Name</label>
+      <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
       <input type="text" class="form-control" id="firstName" name="first_name" placeholder="John" required>
     </div>
     <div class="col-md-6">
-      <label for="lastName" class="form-label">Last Name</label>
+      <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
       <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Doe" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <label for="email" class="form-label">Email Address</label>
+      <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
       <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
     </div>
     <div class="col-md-6">
-  <label for="phone" class="form-label">Phone Number</label>
+  <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
   <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890" maxlength="14" required>
 </div>
 
@@ -114,11 +116,11 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <label for="gradYear" class="form-label">Expected Graduation Year</label>
+      <label for="gradYear" class="form-label">Expected Graduation Year <span class="text-danger">*</span></label>
       <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" placeholder="<?php echo date('Y')+3; ?>" required>
     </div>
     <div class="col-md-6">
-      <label for="gpa" class="form-label">Current Weighted GPA</label>
+      <label for="gpa" class="form-label">Current Weighted GPA <span class="text-danger">*</span></label>
       <input type="text" class="form-control" id="gpa" name="gpa" placeholder="4.0" required>
     </div>
   </div>
@@ -129,7 +131,7 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <label for="institutionType" class="form-label">Type of Institution</label>
+      <label for="institutionType" class="form-label">Type of Institution <span class="text-danger">*</span></label>
       <select class="form-select" id="institutionType" name="institution_type" required>
         <option value="">Select...</option>
         <option value="4-Year College/University">4-Year College/University</option>
@@ -141,14 +143,14 @@ phoneInput.addEventListener('input', function(e) {
       </select>
     </div>
     <div class="col-md-6">
-      <label for="intendedSchool" class="form-label">Intended School/Institution Name</label>
+      <label for="intendedSchool" class="form-label">Intended School/Institution Name <span class="text-danger">*</span></label>
       <input type="text" class="form-control" id="intendedSchool" name="intended_school" placeholder="School Name" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="intendedMajor" class="form-label">Intended Major/Program of Study</label>
+      <label for="intendedMajor" class="form-label">Intended Major/Program of Study <span class="text-danger">*</span></label>
       <input type="text" class="form-control" id="intendedMajor" name="intended_major" placeholder="Major/Program" required>
     </div>
   </div>
@@ -184,7 +186,7 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="essay" class="form-label">In 500&ndash;750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.</label>
+      <label for="essay" class="form-label">In 500&ndash;750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship. <span class="text-danger">*</span></label>
       <textarea class="form-control" id="essay" rows="6" name="essay" required></textarea>
       <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0</span> words</div>
     </div>
@@ -198,18 +200,18 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <label for="recommenderName" class="form-label">Recommender's Name</label>
+      <label for="recommenderName" class="form-label">Recommender's Name <span class="text-danger">*</span></label>
       <input type="text" class="form-control" name="recommender_name" id="recommenderName" required>
     </div>
     <div class="col-md-6">
-      <label for="recommenderEmail" class="form-label">Recommender's Email</label>
+      <label for="recommenderEmail" class="form-label">Recommender's Email <span class="text-danger">*</span></label>
       <input type="email" class="form-control" name="recommender_email" id="recommenderEmail" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <label for="relationship" class="form-label">Relationship to You</label>
+      <label for="relationship" class="form-label">Relationship to You <span class="text-danger">*</span></label>
       <input type="text" class="form-control" name="recommender_relationship" id="relationship" required>
     </div>
   </div>

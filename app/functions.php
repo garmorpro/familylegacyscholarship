@@ -1,6 +1,7 @@
 <?php
 // functions.php
 require_once 'db.php';
+require_once __DIR__ . '/recommendation_mailer.php';
 
 /**
  * Insert application + recommendation in a single transaction
@@ -78,9 +79,11 @@ function insert_application_with_recommendation(PDO $pdo, array $data) {
             ':status'                     => 'not_sent'
         ]);
 
+        $recommendation_id = $pdo->lastInsertId();
+
         $pdo->commit();
 
-        return $application_id;
+        return ['application_id' => $application_id, 'recommendation_id' => $recommendation_id];
 
     } catch (PDOException $e) {
         $pdo->rollBack();
@@ -115,7 +118,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     try {
-        insert_application_with_recommendation($pdo, $data);
+        $result = insert_application_with_recommendation($pdo, $data);
+
+        // Best-effort: email the recommender immediately. If this fails
+        // (bad address, SMTP hiccup), the recommendation stays 'not_sent'
+        // and gets picked up later by the send_not_sent_recommendations.php
+        // cron job as a fallback — it must never block the applicant's
+        // submission, since their data is already safely saved.
+        try {
+            send_recommendation_request_email($pdo, $config, $result['recommendation_id']);
+        } catch (Throwable $e) {
+            error_log("Auto-send recommendation email failed: " . $e->getMessage());
+        }
+
         header("Location: thank_you.php");
         exit();
     } catch (PDOException $e) {
