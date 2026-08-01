@@ -26,10 +26,13 @@ $allowedSettings = [
     'essay_prompt'
 ];
 
-try {
-    $pdo->beginTransaction();
+// Each field is validated and saved independently, so one bad field
+// (e.g. a non-numeric award amount) can't silently roll back every other
+// change in the same submission -- previously a single throw here aborted
+// the whole transaction, including fields that had nothing wrong with them.
+$fieldErrors = [];
 
-    // Prepare statement once
+try {
     $stmt = $pdo->prepare("
         UPDATE settings
         SET setting_value = :value, updated_at = NOW()
@@ -37,42 +40,36 @@ try {
     ");
 
     foreach ($allowedSettings as $key) {
-        if (isset($_POST[$key])) {
-            $value = trim($_POST[$key]);
-
-            // For numeric fields like award_amount, remove $ and commas
-            if ($key === 'award_amount') {
-                $value = str_replace(['$', ','], '', $value);
-
-                // Optional: ensure numeric
-                if (!is_numeric($value)) {
-                    throw new Exception("Invalid value for award amount.");
-                }
-            }
-
-            // Never store NULL in NOT NULL column, store empty string instead
-            $valueToSave = $value !== '' ? $value : '';
-
-            $stmt->bindValue(':value', $valueToSave, PDO::PARAM_STR);
-            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
-            $stmt->execute();
+        if (!isset($_POST[$key])) {
+            continue;
         }
+
+        $value = trim($_POST[$key]);
+
+        // For numeric fields like award_amount, remove $ and commas
+        if ($key === 'award_amount') {
+            $value = str_replace(['$', ','], '', $value);
+
+            if ($value !== '' && !is_numeric($value)) {
+                $fieldErrors[] = "Award amount must be a number -- that field was left unchanged.";
+                continue; // skip only this field; keep saving the rest
+            }
+        }
+
+        $stmt->bindValue(':value', $value, PDO::PARAM_STR);
+        $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+        $stmt->execute();
     }
 
-    $pdo->commit();
-
-    // Redirect back with success
-    header("Location: settings.php?success=1");
+    if ($fieldErrors) {
+        header("Location: settings.php?error=" . urlencode(implode(' ', $fieldErrors)));
+    } else {
+        header("Location: settings.php?success=1");
+    }
     exit;
 
 } catch (PDOException $e) {
-    $pdo->rollBack();
     error_log("save_settings.php database error: " . $e->getMessage());
     header("Location: settings.php?error=" . urlencode("A database error occurred saving settings."));
-    exit;
-} catch (Exception $e) {
-    $pdo->rollBack();
-    // Our own validation messages (e.g. "Invalid value for award amount.") — safe to show as-is.
-    header("Location: settings.php?error=" . urlencode($e->getMessage()));
     exit;
 }

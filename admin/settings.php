@@ -78,6 +78,18 @@ const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself,
         </div>
     </div>
 
+    <?php if (!empty($_GET['error'])): ?>
+        <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div><?= htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+    <?php elseif (!empty($_GET['success'])): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>Settings saved.</div>
+        </div>
+    <?php endif; ?>
+
     <!-- Left Border Alert -->
     <div style="
         display: flex;
