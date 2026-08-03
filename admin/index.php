@@ -238,8 +238,8 @@ try {
 
 /* Row-level context action buttons */
 .row-action-btn {
-    font-size: 12.5px;
-    padding: 6px 14px;
+    font-size: 12px;
+    padding: 6px 11px;
     border-radius: 7px;
     font-weight: 600;
     border: none;
@@ -520,16 +520,16 @@ if ($statusCounts['final_recipient'] > 0) {
     <div class="mt-4 bg-white shadow-sm"
      style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
 
-    <table class="table table-hover mb-0 align-middle" id="applicationsTable">
+    <table class="table table-hover mb-0 align-middle" id="applicationsTable" style="table-layout: fixed;">
         <thead class="table-light">
             <tr>
                 <th style="width: 40px;"></th>
                 <th>Applicant</th>
-                <th>Contact</th>
-                <th>Intended School</th>
-                <th>Submitted</th>
-                <th>Progress</th>
-                <th style="width: 190px;">Action</th>
+                <th style="width: 190px;">Contact</th>
+                <th style="width: 190px;">Intended School</th>
+                <th style="width: 105px;">Submitted</th>
+                <th style="width: 95px;">Progress</th>
+                <th style="width: 195px;">Action</th>
             </tr>
         </thead>
 
@@ -560,8 +560,8 @@ if ($statusCounts['final_recipient'] > 0) {
                     </td>
 
                     <!-- Name + GPA -->
-                    <td>
-                        <div class="fw-semibold">
+                    <td style="overflow: hidden;">
+                        <div class="fw-semibold text-truncate">
                             <?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>
                         </div>
                         <div class="text-muted" style="font-size: 13px;">
@@ -570,36 +570,35 @@ if ($statusCounts['final_recipient'] > 0) {
                     </td>
 
                     <!-- Contact -->
-                    <td>
-                        <div><?= htmlspecialchars($app['email']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
+                    <td style="overflow: hidden;">
+                        <div class="text-truncate"><?= htmlspecialchars($app['email']) ?></div>
+                        <div class="text-muted text-truncate" style="font-size: 13px;">
                             <?= htmlspecialchars($app['phone']) ?>
                         </div>
                     </td>
 
                     <!-- Intended School -->
-                    <td>
-                        <div><?= htmlspecialchars($app['intended_school']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
+                    <td style="overflow: hidden;">
+                        <div class="text-truncate"><?= htmlspecialchars($app['intended_school']) ?></div>
+                        <div class="text-muted text-truncate" style="font-size: 13px;">
                             <?= htmlspecialchars($app['intended_major']) ?>
                         </div>
                     </td>
 
                     <!-- Date Submitted -->
-                    <td>
+                    <td style="white-space: nowrap;">
                         <?= date('M j, Y', strtotime($app['submitted_at'])) ?>
                     </td>
 
                     <!-- Progress -->
                     <td>
-                        <div class="dot-stepper">
+                        <div class="dot-stepper" title="<?= $stageIdx !== false ? $stageLabels[$stageIdx] : ucwords(str_replace('_', ' ', $app['application_status'])) ?>">
                             <?php foreach ($stageOrder as $i => $stage): ?>
                                 <?php if ($i > 0): ?>
                                     <div class="line <?= $i <= $stageIdx ? 'done' : '' ?>"></div>
                                 <?php endif; ?>
                                 <div class="dot <?= $i < $stageIdx ? 'done' : ($i === $stageIdx ? 'current' : '') ?>"></div>
                             <?php endforeach; ?>
-                            <span class="stage-label"><?= $stageIdx !== false ? $stageLabels[$stageIdx] : ucwords(str_replace('_', ' ', $app['application_status'])) ?></span>
                         </div>
                     </td>
 

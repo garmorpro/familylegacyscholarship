@@ -82,15 +82,16 @@ try {
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
         /* Application status stepper */
-        .app-stepper { display:flex; align-items:flex-start; max-width: 560px; margin: 8px auto 0; }
+        .app-stepper { display:flex; align-items:flex-start; max-width: 340px; margin: 4px auto 0; }
         .app-stepitem { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
-        .app-connector { position:absolute; top:17px; left:calc(-50% + 17px); width: calc(100% - 34px); height:3px; background:#eee; z-index:0; }
+        .app-connector { position:absolute; top:10px; left:calc(-50% + 11px); width: calc(100% - 22px); height:2px; background:#eee; z-index:0; }
         .app-connector.done { background:#C5A059; }
-        .app-circle { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; z-index:1; background:#eee; color:#adb0b8; }
+        .app-circle { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:10.5px; z-index:1; background:#eee; color:#adb0b8; }
         .app-circle.done { background:#C5A059; color:#fff; }
-        .app-circle.current { background: rgb(7,5,55); color:#fff; box-shadow: 0 0 0 5px rgba(7,5,55,0.12); }
+        .app-circle.current { background: rgb(7,5,55); color:#fff; box-shadow: 0 0 0 4px rgba(7,5,55,0.12); }
         .app-circle.complete { background:#198754; color:#fff; }
-        .app-steplabel { font-size:12.5px; font-weight:600; margin-top:8px; color:#495057; }
+        .app-circle i { font-size: 9px; }
+        .app-steplabel { font-size:10.5px; font-weight:600; margin-top:5px; color:#495057; }
         .app-steplabel.pending { color:#adb0b8; }
 
         .btn-stage-cta { border:none; padding: 11px 26px; border-radius:8px; font-weight:600; font-size:14.5px; }
@@ -209,7 +210,7 @@ $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE applica
 $finalCount = (int) $stmt->fetchColumn();
 ?>
 
-<div class="pb-4">
+<div class="pb-3">
     <div class="app-stepper">
         <?php foreach ($stageOrder as $i => $stage): ?>
             <div class="app-stepitem">
@@ -243,7 +244,7 @@ $finalCount = (int) $stmt->fetchColumn();
             <i class="bi bi-lock-fill me-1"></i>This record is archived and read-only.
         </div>
     <?php elseif ($application['application_status'] === 'submitted'): ?>
-        <div class="text-center mt-3">
+        <div class="text-center mt-2">
             <form method="POST" action="mark_reviewed.php" class="d-inline">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
@@ -251,7 +252,7 @@ $finalCount = (int) $stmt->fetchColumn();
             </form>
         </div>
     <?php elseif ($application['application_status'] === 'reviewed'): ?>
-        <div class="text-center mt-3">
+        <div class="text-center mt-2">
             <form method="POST" action="mark_final_review.php" class="d-inline">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= $application['id'] ?>">
@@ -260,7 +261,7 @@ $finalCount = (int) $stmt->fetchColumn();
         </div>
     <?php elseif ($application['application_status'] === 'final_review'): ?>
         <?php if ($finalCount === 0): ?>
-            <div class="text-center mt-3">
+            <div class="text-center mt-2">
                 <form method="POST" action="mark_final_selected.php" id="designateForm" class="d-inline">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
