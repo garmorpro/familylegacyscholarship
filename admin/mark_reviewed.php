@@ -25,8 +25,12 @@ try {
         error_log("mark_reviewed.php: no-op for id={$appId}, not in 'submitted' status");
     }
 
-    // Redirect back to the application details page
-    header("Location: /admin/application_view.php?id=" . $appId);
+    // The row-level quick action in the applications table wants to stay on
+    // that page instead of jumping to the detail view.
+    $returnTo = ($_POST['return'] ?? '') === 'index'
+        ? "/admin/index.php"
+        : "/admin/application_view.php?id=" . $appId;
+    header("Location: " . $returnTo);
     exit;
 
 } catch (Exception $e) {

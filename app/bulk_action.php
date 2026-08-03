@@ -41,6 +41,27 @@ try {
         $stmt->execute($ids);
         $message = count($ids) . " application(s) deleted.";
 
+    } elseif ($action === 'mark_reviewed') {
+        if (empty($ids)) {
+            throw new Exception('No applications selected to mark reviewed.');
+        }
+
+        // Only advance applications actually in 'submitted' status.
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $pdo->prepare("
+            UPDATE scholarship_applications
+            SET application_status = 'reviewed'
+            WHERE id IN ($placeholders) AND application_status = 'submitted' AND archived_at IS NULL
+        ");
+        $stmt->execute($ids);
+        $advancedCount = $stmt->rowCount();
+        $skippedCount = count($ids) - $advancedCount;
+
+        $message = $advancedCount . " application(s) marked reviewed.";
+        if ($skippedCount > 0) {
+            $message .= " " . $skippedCount . " skipped (not in \"Submitted\" status).";
+        }
+
     } elseif ($action === 'select') {
         if (empty($ids)) {
             throw new Exception('No applications selected to advance.');

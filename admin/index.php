@@ -147,6 +147,132 @@ try {
     background: #f3f4f6;
 }
 
+/* Status filter tabs */
+.status-tabs {
+    display: flex;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid rgb(241,242,243);
+    border-radius: 10px;
+    padding: 4px;
+    width: fit-content;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.status-tab {
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.status-tab.active {
+    background: rgb(7,5,55);
+    color: #fff;
+}
+
+.status-tab .tab-count {
+    font-size: 11px;
+    background: #eee;
+    color: #555;
+    padding: 1px 7px;
+    border-radius: 20px;
+}
+
+.status-tab.active .tab-count {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* Mini progress-dot indicator in the table */
+.dot-stepper {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.dot-stepper .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e2e2e8;
+    flex-shrink: 0;
+}
+
+.dot-stepper .dot.done {
+    background: #C5A059;
+}
+
+.dot-stepper .dot.current {
+    background: rgb(7,5,55);
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 0 3px rgba(7,5,55,0.12);
+}
+
+.dot-stepper .line {
+    width: 14px;
+    height: 2px;
+    background: #e2e2e8;
+}
+
+.dot-stepper .line.done {
+    background: #C5A059;
+}
+
+.dot-stepper .stage-label {
+    font-size: 12px;
+    color: #495057;
+    font-weight: 600;
+    margin-left: 6px;
+    white-space: nowrap;
+}
+
+/* Row-level context action buttons */
+.row-action-btn {
+    font-size: 12.5px;
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-weight: 600;
+    border: none;
+    white-space: nowrap;
+}
+
+.row-action-btn.review {
+    background: rgb(233,236,255);
+    color: rgb(7,5,55);
+}
+
+.row-action-btn.review:hover {
+    background: rgb(220,224,255);
+}
+
+.row-action-btn.final {
+    background: rgba(197,160,89,0.15);
+    color: #8a6d2e;
+}
+
+.row-action-btn.final:hover {
+    background: rgba(197,160,89,0.28);
+}
+
+.row-action-btn.recipient {
+    background: rgb(7,5,55);
+    color: #fff;
+}
+
+.row-action-btn.recipient:hover {
+    background: rgb(20,16,80);
+}
+
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -319,6 +445,14 @@ if ($statusCounts['final_recipient'] > 0) {
 }
 ?>
 
+<!-- Status filter tabs -->
+<div class="status-tabs mb-3" id="statusTabs">
+    <div class="status-tab active" data-status="all">All <span class="tab-count"><?= $totalApplications ?></span></div>
+    <div class="status-tab" data-status="submitted">Submitted <span class="tab-count"><?= $statusCounts['submitted'] ?></span></div>
+    <div class="status-tab" data-status="reviewed">Reviewed <span class="tab-count"><?= $statusCounts['reviewed'] ?></span></div>
+    <div class="status-tab" data-status="final_review">Final Review <span class="tab-count"><?= $statusCounts['final_review'] ?></span></div>
+    <div class="status-tab" data-status="final_recipient">Recipient <span class="tab-count"><?= $statusCounts['final_recipient'] ?></span></div>
+</div>
 
 <!-- Bulk Actions Button -->
 <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
@@ -362,6 +496,13 @@ if ($statusCounts['final_recipient'] > 0) {
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2"
+                       href="#" onclick="performBulkAction('mark_reviewed'); return false;">
+                        <i class="bi bi-eye text-secondary"></i>
+                        Mark Reviewed
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2"
                        href="#" onclick="performBulkAction('select'); return false;">
                         <i class="bi bi-check-circle text-success"></i>
                         Advance to Final Review
@@ -387,8 +528,8 @@ if ($statusCounts['final_recipient'] > 0) {
                 <th>Contact</th>
                 <th>Intended School</th>
                 <th>Submitted</th>
-                <th>Status</th>
-                <th style="width: 40px;"></th>
+                <th>Progress</th>
+                <th style="width: 190px;">Action</th>
             </tr>
         </thead>
 
@@ -400,8 +541,13 @@ if ($statusCounts['final_recipient'] > 0) {
                 </td>
             </tr>
         <?php else: ?>
+            <?php
+            $stageOrder = ['submitted', 'reviewed', 'final_review', 'final_recipient'];
+            $stageLabels = ['Submitted', 'Reviewed', 'Final Review', 'Recipient'];
+            ?>
             <?php foreach ($applications as $app): ?>
-                <tr style="cursor: pointer;"
+                <?php $stageIdx = array_search($app['application_status'], $stageOrder, true); ?>
+                <tr style="cursor: pointer;" data-status="<?= htmlspecialchars($app['application_status']) ?>"
                     onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
 
                     <!-- Checkbox -->
@@ -444,25 +590,48 @@ if ($statusCounts['final_recipient'] > 0) {
                         <?= date('M j, Y', strtotime($app['submitted_at'])) ?>
                     </td>
 
-                    <!-- Status -->
+                    <!-- Progress -->
                     <td>
-                        <span class="badge
-                            <?php
-                                echo match ($app['application_status']) {
-                                    'submitted' => 'bg-primary-subtle text-primary',
-                                    'reviewed'  => 'bg-secondary-subtle text-secondary',
-                                    'final_review' => 'bg-success-subtle text-success',
-                                    'final_recipient' => 'bg-info-subtle text-info',
-                                    default => 'bg-light text-dark'
-                                };
-                            ?>">
-                            <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
-                        </span>
+                        <div class="dot-stepper">
+                            <?php foreach ($stageOrder as $i => $stage): ?>
+                                <?php if ($i > 0): ?>
+                                    <div class="line <?= $i <= $stageIdx ? 'done' : '' ?>"></div>
+                                <?php endif; ?>
+                                <div class="dot <?= $i < $stageIdx ? 'done' : ($i === $stageIdx ? 'current' : '') ?>"></div>
+                            <?php endforeach; ?>
+                            <span class="stage-label"><?= $stageIdx !== false ? $stageLabels[$stageIdx] : ucwords(str_replace('_', ' ', $app['application_status'])) ?></span>
+                        </div>
                     </td>
 
-                    <!-- Chevron -->
-                    <td class="text-end text-muted">
-                        <i class="bi bi-chevron-right"></i>
+                    <!-- Action -->
+                    <td onclick="event.stopPropagation()">
+                        <?php if ($app['application_status'] === 'submitted'): ?>
+                            <form method="POST" action="mark_reviewed.php" class="d-inline">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                <input type="hidden" name="return" value="index">
+                                <button type="submit" class="row-action-btn review">Mark Reviewed</button>
+                            </form>
+                        <?php elseif ($app['application_status'] === 'reviewed'): ?>
+                            <form method="POST" action="mark_final_review.php" class="d-inline">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                <input type="hidden" name="return" value="index">
+                                <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                            </form>
+                        <?php elseif ($app['application_status'] === 'final_review'): ?>
+                            <?php if ($statusCounts['final_recipient'] > 0): ?>
+                                <span class="text-muted" style="font-size: 12.5px;">Recipient already chosen</span>
+                            <?php else: ?>
+                                <a href="application_view.php?id=<?= $app['id'] ?>" class="row-action-btn recipient text-decoration-none d-inline-block">
+                                    Designate Recipient
+                                </a>
+                            <?php endif; ?>
+                        <?php elseif ($app['application_status'] === 'final_recipient'): ?>
+                            <span class="text-success" style="font-size: 12.5px; font-weight: 600;">
+                                <i class="bi bi-check-circle-fill me-1"></i>Selected
+                            </span>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -493,13 +662,28 @@ if ($statusCounts['final_recipient'] > 0) {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#applicationsTable tbody tr');
+// Combined status-tab + search filtering -- a row must match both to show.
+let currentStatusTab = 'all';
+
+function applyTableFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#applicationsTable tbody tr[data-status]');
 
     rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
+        const matchesTab = currentStatusTab === 'all' || row.dataset.status === currentStatusTab;
+        const matchesSearch = row.innerText.toLowerCase().includes(searchTerm);
+        row.style.display = (matchesTab && matchesSearch) ? '' : 'none';
+    });
+}
+
+document.getElementById('searchInput').addEventListener('keyup', applyTableFilters);
+
+document.querySelectorAll('.status-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        currentStatusTab = this.dataset.status;
+        applyTableFilters();
     });
 });
 </script>
@@ -566,6 +750,22 @@ document.getElementById('applicationsTable').addEventListener('change', function
             </ul>
             <p style="color: red; font-weight: bold; font-size: 16px;">
                 This action <u>cannot</u> be undone.
+            </p>
+        `;
+    } else if (action === 'mark_reviewed') {
+        title = 'Mark Applications Reviewed';
+        htmlMessage = `
+            <p>Mark the following applications as reviewed?</p>
+            <ul class="list-group" style="
+                max-height: 200px;
+                overflow-y: auto;
+                margin-top: 10px;
+                margin-bottom: 15px;
+            ">
+                ${nameList}
+            </ul>
+            <p class="text-muted" style="font-size: 13px;">
+                Only applications currently marked "Submitted" will actually advance.
             </p>
         `;
     } else if (action === 'select') {

@@ -80,6 +80,27 @@ try {
 
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
+    <style>
+        /* Application status stepper */
+        .app-stepper { display:flex; align-items:flex-start; max-width: 560px; margin: 8px auto 0; }
+        .app-stepitem { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
+        .app-connector { position:absolute; top:17px; left:calc(-50% + 17px); width: calc(100% - 34px); height:3px; background:#eee; z-index:0; }
+        .app-connector.done { background:#C5A059; }
+        .app-circle { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; z-index:1; background:#eee; color:#adb0b8; }
+        .app-circle.done { background:#C5A059; color:#fff; }
+        .app-circle.current { background: rgb(7,5,55); color:#fff; box-shadow: 0 0 0 5px rgba(7,5,55,0.12); }
+        .app-circle.complete { background:#198754; color:#fff; }
+        .app-steplabel { font-size:12.5px; font-weight:600; margin-top:8px; color:#495057; }
+        .app-steplabel.pending { color:#adb0b8; }
+
+        .btn-stage-cta { border:none; padding: 11px 26px; border-radius:8px; font-weight:600; font-size:14.5px; }
+        .btn-stage-cta.review { background: rgb(233,236,255); color: rgb(7,5,55); }
+        .btn-stage-cta.review:hover { background: rgb(220,224,255); }
+        .btn-stage-cta.final { background: rgba(197,160,89,0.18); color: #8a6d2e; }
+        .btn-stage-cta.final:hover { background: rgba(197,160,89,0.3); }
+        .btn-stage-cta.recipient { background: rgb(7,5,55); color:#fff; }
+        .btn-stage-cta.recipient:hover { background: rgb(20,16,80); }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -150,52 +171,8 @@ $isArchived = $application && !empty($application['archived_at']);
         <?php endif; ?>
     </div>
 
-    <!-- Right: Reviewed button + Submission Date & Status -->
+    <!-- Right: Submission Date & Recommendation -->
 <div class="col-md-6 text-md-end mt-3 mt-md-0">
-
-    <?php if (!$isArchived && $application['application_status'] === 'submitted'): ?>
-        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
-            <form method="POST" action="mark_reviewed.php" class="d-inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">Mark Reviewed</button>
-            </form>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!$isArchived && $application['application_status'] === 'reviewed'): ?>
-        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
-            <form method="POST" action="mark_final_review.php" class="d-inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn btn-outline-primary btn-sm">Advance to Final Review</button>
-            </form>
-        </div>
-    <?php endif; ?>
-
-    <?php
-    // Check if any *active* (non-archived) application has already been
-    // selected as final recipient — archived recipients from past cycles
-    // don't count, or a new cycle could never designate a recipient again.
-    $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL");
-    $finalCount = (int) $stmt->fetchColumn();
-    ?>
-
-    <?php if (!$isArchived && $application['application_status'] === 'final_review' && $finalCount === 0): ?>
-        <div class="mb-2" style="margin-top: -15px !important; margin-bottom: 15px !important;">
-            <form method="POST" action="mark_final_selected.php" class="d-inline"
-                <?php if (!$recommendationReceived): ?>
-                onsubmit="return confirm('This applicant\'s recommendation hasn\'t been received yet. Designate them as the final recipient anyway?');"
-                <?php endif; ?>
-            >
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn btn-outline-success btn-sm">
-                    Designate Final Recipient
-                </button>
-            </form>
-        </div>
-    <?php endif; ?>
 
     <?php if (in_array($application['application_status'], ['submitted', 'reviewed', 'final_review'], true)): ?>
         <div class="mb-2" style="font-size: 13px;">
@@ -214,23 +191,94 @@ $isArchived = $application && !empty($application['archived_at']);
         <span class="fw-semibold me-2">Submission Date:</span>
         <?= date('M j, Y', strtotime($application['submitted_at'])) ?>
     </div>
-    <div class="mt-1">
-        <span class="fw-semibold me-2">Status:</span>
-        <span class="badge
-            <?php
-                echo match ($application['application_status']) {
-                    'submitted' => 'bg-primary-subtle text-primary',
-                    'reviewed'  => 'bg-secondary-subtle text-secondary',
-                    'final_review'  => 'bg-success-subtle text-success',
-                    'final_recipient'  => 'bg-info-subtle text-info',
-                    default     => 'bg-light text-dark'
-                };
-            ?>">
-            <?= ucwords(str_replace('_', ' ', $application['application_status'])) ?>
-        </span>
-    </div>
 </div>
 
+</div>
+
+<?php
+// Stage pipeline -- drives the progress stepper and the single contextual
+// action button below it, replacing the old set of separate stage buttons.
+$stageOrder = ['submitted', 'reviewed', 'final_review', 'final_recipient'];
+$stageLabels = ['Submitted', 'Reviewed', 'Final Review', 'Recipient'];
+$stageIdx = array_search($application['application_status'], $stageOrder, true);
+
+// Check if any *active* (non-archived) application has already been
+// selected as final recipient — archived recipients from past cycles
+// don't count, or a new cycle could never designate a recipient again.
+$stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL");
+$finalCount = (int) $stmt->fetchColumn();
+?>
+
+<div class="pb-4">
+    <div class="app-stepper">
+        <?php foreach ($stageOrder as $i => $stage): ?>
+            <div class="app-stepitem">
+                <?php if ($i > 0): ?>
+                    <div class="app-connector <?= ($stageIdx !== false && $i <= $stageIdx) ? 'done' : '' ?>"></div>
+                <?php endif; ?>
+                <?php
+                    $isLastStage = $i === count($stageOrder) - 1;
+                    if ($stageIdx !== false && $i < $stageIdx) {
+                        $circleClass = 'done';
+                    } elseif ($stageIdx !== false && $i === $stageIdx) {
+                        $circleClass = $isLastStage ? 'complete' : 'current';
+                    } else {
+                        $circleClass = 'pending';
+                    }
+                ?>
+                <div class="app-circle <?= $circleClass ?>">
+                    <?php if ($circleClass === 'done' || $circleClass === 'complete'): ?>
+                        <i class="bi bi-check-lg"></i>
+                    <?php else: ?>
+                        <?= $i + 1 ?>
+                    <?php endif; ?>
+                </div>
+                <div class="app-steplabel <?= $circleClass === 'pending' ? 'pending' : '' ?>"><?= $stageLabels[$i] ?></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($isArchived): ?>
+        <div class="text-center text-muted mt-3" style="font-size: 13.5px;">
+            <i class="bi bi-lock-fill me-1"></i>This record is archived and read-only.
+        </div>
+    <?php elseif ($application['application_status'] === 'submitted'): ?>
+        <div class="text-center mt-3">
+            <form method="POST" action="mark_reviewed.php" class="d-inline">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn-stage-cta review">Mark as Reviewed</button>
+            </form>
+        </div>
+    <?php elseif ($application['application_status'] === 'reviewed'): ?>
+        <div class="text-center mt-3">
+            <form method="POST" action="mark_final_review.php" class="d-inline">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
+            </form>
+        </div>
+    <?php elseif ($application['application_status'] === 'final_review'): ?>
+        <?php if ($finalCount === 0): ?>
+            <div class="text-center mt-3">
+                <form method="POST" action="mark_final_selected.php" id="designateForm" class="d-inline">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                    <button type="submit" class="btn-stage-cta recipient">
+                        <i class="bi bi-star-fill me-1"></i>Designate as Final Recipient
+                    </button>
+                </form>
+            </div>
+        <?php else: ?>
+            <div class="text-center text-muted mt-3" style="font-size: 13.5px;">
+                A final recipient has already been selected for this cycle.
+            </div>
+        <?php endif; ?>
+    <?php elseif ($application['application_status'] === 'final_recipient'): ?>
+        <div class="text-center mt-3" style="font-size: 13.5px; color: #198754; font-weight: 600;">
+            <i class="bi bi-check-circle-fill me-1"></i>Selected as this cycle's final recipient
+        </div>
+    <?php endif; ?>
 </div>
 
 </div>
@@ -572,6 +620,37 @@ switch ($status) {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Styled confirmation for designating the final recipient, replacing the
+// old native confirm() popup.
+(function() {
+    const form = document.getElementById('designateForm');
+    if (!form) return;
+
+    const recommendationReceived = <?= $recommendationReceived ? 'true' : 'false' ?>;
+    const applicantName = <?= json_encode($application['first_name'] . ' ' . $application['last_name'], JSON_HEX_TAG | JSON_HEX_APOS) ?>;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: recommendationReceived ? 'Designate as Final Recipient?' : 'Recommendation not yet received',
+            html: recommendationReceived
+                ? `This will mark <strong>${applicantName}</strong> as this cycle's final recipient.`
+                : `${applicantName}'s recommendation hasn't been received yet. Designate them as the final recipient anyway?`,
+            icon: recommendationReceived ? 'question' : 'warning',
+            showCancelButton: true,
+            confirmButtonText: recommendationReceived ? 'Yes, designate' : 'Designate Anyway',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+})();
+</script>
 
 
 
