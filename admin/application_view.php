@@ -208,6 +208,12 @@ $stageIdx = array_search($application['application_status'], $stageOrder, true);
 // don't count, or a new cycle could never designate a recipient again.
 $stmt = $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL");
 $finalCount = (int) $stmt->fetchColumn();
+
+// Final review has an admin-configurable cap (Settings > Review Limits).
+$limitValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'final_review_limit'")->fetchColumn();
+$finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
+$finalReviewCount = (int) $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_review' AND archived_at IS NULL")->fetchColumn();
+$finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 ?>
 
 <div class="pb-3">
@@ -252,13 +258,19 @@ $finalCount = (int) $stmt->fetchColumn();
             </form>
         </div>
     <?php elseif ($application['application_status'] === 'reviewed'): ?>
-        <div class="text-center mt-2">
-            <form method="POST" action="mark_final_review.php" class="d-inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
-            </form>
-        </div>
+        <?php if ($finalReviewAtCapacity): ?>
+            <div class="text-center text-muted mt-3" style="font-size: 13.5px;">
+                Final review is full (<?= $finalReviewCount ?>/<?= $finalReviewLimit ?>) for this cycle.
+            </div>
+        <?php else: ?>
+            <div class="text-center mt-2">
+                <form method="POST" action="mark_final_review.php" class="d-inline">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                    <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
+                </form>
+            </div>
+        <?php endif; ?>
     <?php elseif ($application['application_status'] === 'final_review'): ?>
         <?php if ($finalCount === 0): ?>
             <div class="text-center mt-2">

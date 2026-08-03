@@ -42,6 +42,11 @@ try {
     $totalApplications = 0;
 }
 
+// Final review has an admin-configurable cap (Settings > Review Limits).
+$limitValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'final_review_limit'")->fetchColumn();
+$finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
+$finalReviewAtCapacity = $statusCounts['final_review'] >= $finalReviewLimit;
+
 /**
  * Fetch applications for table
  */
@@ -450,7 +455,7 @@ if ($statusCounts['final_recipient'] > 0) {
     <div class="status-tab active" data-status="all">All <span class="tab-count"><?= $totalApplications ?></span></div>
     <div class="status-tab" data-status="submitted">Submitted <span class="tab-count"><?= $statusCounts['submitted'] ?></span></div>
     <div class="status-tab" data-status="reviewed">Reviewed <span class="tab-count"><?= $statusCounts['reviewed'] ?></span></div>
-    <div class="status-tab" data-status="final_review">Final Review <span class="tab-count"><?= $statusCounts['final_review'] ?></span></div>
+    <div class="status-tab" data-status="final_review">Final Review <span class="tab-count"><?= $statusCounts['final_review'] ?>/<?= $finalReviewLimit ?></span></div>
     <div class="status-tab" data-status="final_recipient">Recipient <span class="tab-count"><?= $statusCounts['final_recipient'] ?></span></div>
 </div>
 
@@ -525,10 +530,9 @@ if ($statusCounts['final_recipient'] > 0) {
             <tr>
                 <th style="width: 40px;"></th>
                 <th>Applicant</th>
-                <th style="width: 190px;">Contact</th>
-                <th style="width: 190px;">Intended School</th>
-                <th style="width: 105px;">Submitted</th>
-                <th style="width: 95px;">Progress</th>
+                <th style="width: 260px;">Intended School</th>
+                <th style="width: 115px;">Submitted</th>
+                <th style="width: 105px;">Progress</th>
                 <th style="width: 195px;">Action</th>
             </tr>
         </thead>
@@ -536,7 +540,7 @@ if ($statusCounts['final_recipient'] > 0) {
         <tbody>
         <?php if (empty($applications)): ?>
             <tr>
-                <td colspan="7" class="text-center text-muted py-4">
+                <td colspan="6" class="text-center text-muted py-4">
                     No applications found
                 </td>
             </tr>
@@ -566,14 +570,6 @@ if ($statusCounts['final_recipient'] > 0) {
                         </div>
                         <div class="text-muted" style="font-size: 13px;">
                             GPA: <?= htmlspecialchars($app['gpa']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Contact -->
-                    <td style="overflow: hidden;">
-                        <div class="text-truncate"><?= htmlspecialchars($app['email']) ?></div>
-                        <div class="text-muted text-truncate" style="font-size: 13px;">
-                            <?= htmlspecialchars($app['phone']) ?>
                         </div>
                     </td>
 
@@ -612,12 +608,16 @@ if ($statusCounts['final_recipient'] > 0) {
                                 <button type="submit" class="row-action-btn review">Mark Reviewed</button>
                             </form>
                         <?php elseif ($app['application_status'] === 'reviewed'): ?>
-                            <form method="POST" action="mark_final_review.php" class="d-inline">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="id" value="<?= $app['id'] ?>">
-                                <input type="hidden" name="return" value="index">
-                                <button type="submit" class="row-action-btn final">Advance to Final Review</button>
-                            </form>
+                            <?php if ($finalReviewAtCapacity): ?>
+                                <span class="text-muted" style="font-size: 12.5px;">Final review limit reached</span>
+                            <?php else: ?>
+                                <form method="POST" action="mark_final_review.php" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                    <input type="hidden" name="return" value="index">
+                                    <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                                </form>
+                            <?php endif; ?>
                         <?php elseif ($app['application_status'] === 'final_review'): ?>
                             <?php if ($statusCounts['final_recipient'] > 0): ?>
                                 <span class="text-muted" style="font-size: 12.5px;">Recipient already chosen</span>

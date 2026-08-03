@@ -31,6 +31,10 @@ function getSetting($key, $default = '') {
 // Matches the fallback used on application-form.php, so the field here
 // shows the real current prompt even before it's ever been explicitly saved.
 const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.';
+
+// Matches the fallback used everywhere the limit is enforced, so this field
+// shows the real effective limit even before it's ever been explicitly saved.
+const DEFAULT_FINAL_REVIEW_LIMIT = 10;
 ?>
 
 
@@ -165,6 +169,21 @@ const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself,
                             Where application and recommendation notifications are sent.
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Limits -->
+        <div class="card shadow-sm mb-3" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Review Limits</h5>
+
+                <label for="final_review_limit" style="font-weight: 600; display: block; margin-bottom: 5px;">Final Review Limit</label>
+                <input type="number" id="final_review_limit" name="final_review_limit" min="1" step="1"
+                       value="<?= getSetting('final_review_limit', DEFAULT_FINAL_REVIEW_LIMIT) ?>"
+                       style="width: 100%; max-width: 160px; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    Maximum number of applications that can be advanced to Final Review each cycle. Once this many are in Final Review, advancing more is blocked until the cycle is archived.
                 </div>
             </div>
         </div>

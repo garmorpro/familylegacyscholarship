@@ -23,7 +23,8 @@ $allowedSettings = [
     'review_end',
     'announcement_date',
     'notification_email',
-    'essay_prompt'
+    'essay_prompt',
+    'final_review_limit'
 ];
 
 // Each field is validated and saved independently, so one bad field
@@ -53,6 +54,16 @@ try {
             if ($value !== '' && !is_numeric($value)) {
                 $fieldErrors[] = "Award amount must be a number -- that field was left unchanged.";
                 continue; // skip only this field; keep saving the rest
+            }
+        }
+
+        // Final review limit must be a positive whole number -- the whole
+        // point of this setting is to cap the pipeline, so an empty or
+        // invalid value would silently defeat that.
+        if ($key === 'final_review_limit') {
+            if (!ctype_digit($value) || (int) $value < 1) {
+                $fieldErrors[] = "Final review limit must be a whole number of 1 or more -- that field was left unchanged.";
+                continue;
             }
         }
 

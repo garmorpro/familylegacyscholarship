@@ -13,16 +13,23 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 $appId = (int)$_POST['id'];
 
 try {
-    // Only advance applications that are actually still 'reviewed' and active
+    // Final review has an admin-configurable cap (Settings > Review Limits).
+    // Default of 10 matches the fallback shown on the settings page itself.
+    $limitValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'final_review_limit'")->fetchColumn();
+    $finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
+
+    // Only advance applications that are actually still 'reviewed' and
+    // active, and only while final review is under its cap.
     $stmt = $pdo->prepare("
         UPDATE scholarship_applications
         SET application_status = 'final_review'
         WHERE id = :id AND application_status = 'reviewed' AND archived_at IS NULL
+          AND (SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_review' AND archived_at IS NULL) < :limit
     ");
-    $stmt->execute([':id' => $appId]);
+    $stmt->execute([':id' => $appId, ':limit' => $finalReviewLimit]);
 
     if ($stmt->rowCount() === 0) {
-        error_log("mark_final_review.php: no-op for id={$appId}, not in 'reviewed' status");
+        error_log("mark_final_review.php: no-op for id={$appId}, not in 'reviewed' status or final review limit reached");
     }
 
     // The row-level quick action in the applications table wants to stay on
