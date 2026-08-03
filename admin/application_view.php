@@ -78,7 +78,7 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -383,8 +383,11 @@ switch ($status) {
             </div>
 
             <!-- Letter content -->
-            <div style="background: #fff; border: 1px solid #ececf1; border-left: 3px solid #C5A059; border-radius: 8px; padding: 24px 26px; font-size: 15px; line-height: 1.75; color: #212529;">
-                <?= $recommendation['recommendation'] ?>
+            <div class="letter-paper">
+                <div class="letter-quote-mark">&ldquo;</div>
+                <div class="letter-body">
+                    <?= $recommendation['recommendation'] ?>
+                </div>
             </div>
 
           </div>

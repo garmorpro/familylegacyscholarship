@@ -92,7 +92,7 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
         /* Base modern action button */

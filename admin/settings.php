@@ -45,7 +45,7 @@ const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself,
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.0.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Settings - Morgan Legacy Scholarship</title>
 </head>
 <body class="d-flex flex-column min-vh-100">

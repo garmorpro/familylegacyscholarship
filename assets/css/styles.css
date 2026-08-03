@@ -127,3 +127,54 @@ header .navbar-toggler {
       font-size: 14px;
     }
   }
+
+  /* Recommendation letter content -- styled like an actual written letter */
+  .letter-paper {
+    position: relative;
+    background: #FBF9F3;
+    border: 1px solid #ECE6D8;
+    border-radius: 10px;
+    padding: 36px 34px 30px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+
+  .letter-quote-mark {
+    position: absolute;
+    top: 6px;
+    left: 20px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 72px;
+    line-height: 1;
+    color: #C5A059;
+    opacity: 0.22;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .letter-body {
+    position: relative;
+    z-index: 1;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: #2b2b2b;
+  }
+
+  .letter-body p {
+    margin: 0 0 1em;
+  }
+
+  .letter-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .letter-body ul,
+  .letter-body ol {
+    margin: 0 0 1em;
+    padding-left: 1.3em;
+  }
+
+  .letter-body strong,
+  .letter-body b {
+    font-weight: 700;
+  }
