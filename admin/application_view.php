@@ -286,13 +286,14 @@ $isArchived = $application && !empty($application['archived_at']);
   
 // Fetch recommendation for this application
 $recommendationStmt = $pdo->prepare("
-    SELECT 
+    SELECT
         r.id,
-        r.recommender_name, 
-        r.recommender_email, 
-        r.recommender_relationship, 
+        r.recommender_name,
+        r.recommender_email,
+        r.recommender_relationship,
         r.status AS recommender_status,
         r.recommendation,
+        r.completed_date,
         s.first_name,
         s.last_name
     FROM recommendations r
@@ -351,18 +352,44 @@ switch ($status) {
         <!-- Modal -->
     <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="recModalLabel<?= $recommendation['id'] ?>">Recommendation for <?= htmlspecialchars($recommendation['applicant_name']) ?></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+          <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+            <div>
+              <h5 class="modal-title text-white mb-1" id="recModalLabel<?= $recommendation['id'] ?>" style="font-weight: 600;">
+                Letter of Recommendation
+              </h5>
+              <div style="font-size: 13px; color: rgba(255,255,255,0.7);">
+                For <?= htmlspecialchars($recommendation['applicant_name']) ?>
+              </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-    <!-- Recommendation content rendered as HTML -->
-    <?= $recommendation['recommendation'] ?>
-</div>
+          <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- Recommender identity strip -->
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid #e9e9ee;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+                <?= htmlspecialchars(strtoupper(substr($recommendation['recommender_name'] ?? '?', 0, 1))) ?>
+              </div>
+              <div>
+                <div class="fw-semibold" style="font-size: 15px;"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></div>
+                <div class="text-muted" style="font-size: 13px;">
+                  <?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?>
+                  <?php if (!empty($recommendation['completed_date'])): ?>
+                    &bull; Submitted <?= date('F j, Y', strtotime($recommendation['completed_date'])) ?>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+
+            <!-- Letter content -->
+            <div style="background: #fff; border: 1px solid #ececf1; border-left: 3px solid #C5A059; border-radius: 8px; padding: 24px 26px; font-size: 15px; line-height: 1.75; color: #212529;">
+                <?= $recommendation['recommendation'] ?>
+            </div>
+
+          </div>
+          <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+            <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
