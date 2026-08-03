@@ -44,13 +44,76 @@ function send_recommendation_request_email(PDO $pdo, array $config, int $recomme
         $mail->isHTML(true);
         $mail->Subject = "Recommendation Request for {$applicantName}";
         $mail->Body = "
-            <p><img src='cid:logoimg' alt='Morgan Legacy Scholarship Logo' style='height:80px;'></p>
-            <p>Dear {$rec['recommender_name']},</p>
-            <p>{$applicantName} has applied for The Morgan Legacy Scholarship and listed you as a recommender.</p>
-            <p>Please submit your recommendation using the link below:</p>
-            <p><a href='{$link}' target='_blank'>Submit Recommendation</a></p>
-            <p>Thank you for your support!</p>
-            <p>The Morgan Legacy Scholarship Committee</p>
+        <!DOCTYPE html>
+        <html>
+        <body style='margin:0; padding:0; background-color:#f2f2f5; font-family: Arial, Helvetica, sans-serif;'>
+            <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background-color:#f2f2f5; padding: 32px 16px;'>
+                <tr>
+                    <td align='center'>
+                        <table role='presentation' width='600' cellpadding='0' cellspacing='0' style='max-width:600px; width:100%; background-color:#ffffff; border-radius:10px; overflow:hidden;'>
+
+                            <!-- Header -->
+                            <tr>
+                                <td align='center' style='background-color:#070537; padding: 28px 24px;'>
+                                    <img src='cid:logoimg' alt='Morgan Legacy Scholarship' style='height:64px; display:block;'>
+                                </td>
+                            </tr>
+
+                            <!-- Body -->
+                            <tr>
+                                <td style='padding: 36px 40px 10px 40px; color:#212529; font-size:15px; line-height:1.7;'>
+                                    <p style='margin:0 0 16px;'>Dear {$rec['recommender_name']},</p>
+                                    <p style='margin:0 0 16px;'>
+                                        <strong>{$applicantName}</strong> has applied for The Morgan Legacy Scholarship
+                                        and listed you as a recommender. We'd be grateful if you could share a letter
+                                        of recommendation on their behalf.
+                                    </p>
+                                    <p style='margin:0 0 28px;'>
+                                        Please use the button below to submit your recommendation online &mdash;
+                                        it only takes a few minutes.
+                                    </p>
+                                </td>
+                            </tr>
+
+                            <!-- CTA button -->
+                            <tr>
+                                <td align='center' style='padding: 0 40px 32px 40px;'>
+                                    <table role='presentation' cellpadding='0' cellspacing='0'>
+                                        <tr>
+                                            <td align='center' style='background-color:#C5A059; border-radius:6px;'>
+                                                <a href='{$link}' target='_blank' style='display:inline-block; padding: 14px 32px; font-size:15px; font-weight:bold; color:#070537; text-decoration:none;'>
+                                                    Submit Recommendation
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- Sign-off -->
+                            <tr>
+                                <td style='padding: 0 40px 36px 40px; color:#212529; font-size:15px; line-height:1.7;'>
+                                    <p style='margin:0 0 4px;'>Thank you for your support!</p>
+                                    <p style='margin:0;'>The Morgan Legacy Scholarship Committee</p>
+                                </td>
+                            </tr>
+
+                            <!-- Footer -->
+                            <tr>
+                                <td style='background-color:#f8f8fa; padding: 18px 40px; border-top:1px solid #ececf1;'>
+                                    <p style='margin:0; font-size:12px; color:#8a8a94; line-height:1.6;'>
+                                        If the button above doesn't work, copy and paste this link into your browser:<br>
+                                        <a href='{$link}' target='_blank' style='color:#8a8a94;'>{$link}</a>
+                                    </p>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
         ";
         $mail->send();
 
