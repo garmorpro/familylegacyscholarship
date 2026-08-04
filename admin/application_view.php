@@ -418,54 +418,6 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                         <a href="#" class="detail-sidebar-action" style="color: rgb(7,5,55);" data-bs-toggle="modal" data-bs-target="#recModal<?= $recommendation['id'] ?>">
                             <i class="bi bi-eye me-1"></i>View letter
                         </a>
-                        <!-- Modal -->
-                        <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
-                          <div class="modal-dialog modal-xl modal-dialog-centered">
-                            <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
-                              <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
-                                <div>
-                                  <h5 class="modal-title text-white mb-1" id="recModalLabel<?= $recommendation['id'] ?>" style="font-weight: 600;">
-                                    Letter of Recommendation
-                                  </h5>
-                                  <div style="font-size: 13px; color: rgba(255,255,255,0.7);">
-                                    For <?= htmlspecialchars($recommendation['applicant_name']) ?>
-                                  </div>
-                                </div>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
-
-                                <!-- Recommender identity strip -->
-                                <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid #e9e9ee;">
-                                  <div style="width: 44px; height: 44px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
-                                    <?= htmlspecialchars(strtoupper(substr($recommendation['recommender_name'] ?? '?', 0, 1))) ?>
-                                  </div>
-                                  <div>
-                                    <div class="fw-semibold" style="font-size: 15px;"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></div>
-                                    <div class="text-muted" style="font-size: 13px;">
-                                      <?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?>
-                                      <?php if (!empty($recommendation['completed_date'])): ?>
-                                        &bull; Submitted <?= date('F j, Y', strtotime($recommendation['completed_date'])) ?>
-                                      <?php endif; ?>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <!-- Letter content -->
-                                <div class="letter-paper">
-                                    <div class="letter-quote-mark">&ldquo;</div>
-                                    <div class="letter-body">
-                                        <?= sanitize_recommendation_html($recommendation['recommendation'] ?? '') ?>
-                                    </div>
-                                </div>
-
-                              </div>
-                              <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
-                                <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" data-bs-dismiss="modal">Close</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
                     <?php elseif ($recStatus === 'not_sent'): ?>
                         <a href="send_recommendation.php?id=<?= $recommendation['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>" class="detail-sidebar-action" style="color: rgb(7,5,55);">
                             <i class="bi bi-send me-1"></i>Send request
@@ -543,6 +495,61 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 
   </div>
 
+<?php if ($recStatus === 'completed'): ?>
+    <!-- Recommendation letter modal -- deliberately rendered here, as a
+         sibling of the sidebar/document row rather than nested inside the
+         sticky sidebar, so nothing about position:sticky's stacking context
+         can interfere with this fixed-position modal's backdrop click
+         handling or scroll locking. -->
+    <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+          <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+            <div>
+              <h5 class="modal-title text-white mb-1" id="recModalLabel<?= $recommendation['id'] ?>" style="font-weight: 600;">
+                Letter of Recommendation
+              </h5>
+              <div style="font-size: 13px; color: rgba(255,255,255,0.7);">
+                For <?= htmlspecialchars($recommendation['applicant_name']) ?>
+              </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
+
+            <!-- Recommender identity strip -->
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid #e9e9ee;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+                <?= htmlspecialchars(strtoupper(substr($recommendation['recommender_name'] ?? '?', 0, 1))) ?>
+              </div>
+              <div>
+                <div class="fw-semibold" style="font-size: 15px;"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></div>
+                <div class="text-muted" style="font-size: 13px;">
+                  <?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?>
+                  <?php if (!empty($recommendation['completed_date'])): ?>
+                    &bull; Submitted <?= date('F j, Y', strtotime($recommendation['completed_date'])) ?>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+
+            <!-- Letter content -->
+            <div class="letter-paper">
+                <div class="letter-quote-mark">&ldquo;</div>
+                <div class="letter-body">
+                    <?= sanitize_recommendation_html($recommendation['recommendation'] ?? '') ?>
+                </div>
+            </div>
+
+          </div>
+          <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+            <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<?php endif; ?>
+
 <?php else: ?>
 <div class="alert alert-warning">
     Application not found.
@@ -595,8 +602,27 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 })();
 </script>
 
+<script>
+// Belt-and-suspenders backdrop-click / Escape dismissal for the
+// recommendation letter modal, plus a hard failsafe that force-cleans the
+// body's scroll-lock state on close -- in case anything ever leaves it
+// stuck, this guarantees the page is left in a normal, scrollable state.
+document.querySelectorAll('.modal[id^="recModal"]').forEach(function(modalEl) {
+    modalEl.addEventListener('mousedown', function(e) {
+        if (e.target === modalEl) {
+            const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            instance.hide();
+        }
+    });
 
-
+    modalEl.addEventListener('hidden.bs.modal', function() {
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+        document.querySelectorAll('.modal-backdrop').forEach(function(el) { el.remove(); });
+    });
+});
+</script>
 
 
 
