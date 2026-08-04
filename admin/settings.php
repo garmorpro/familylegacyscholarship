@@ -155,7 +155,7 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
     <div class="settings-nav">
         <div class="settings-nav-item<?= $activeTab === 'general' ? ' active' : '' ?>" data-tab="general"><i class="bi bi-sliders"></i>General</div>
         <div class="settings-nav-item<?= $activeTab === 'timeline' ? ' active' : '' ?>" data-tab="timeline"><i class="bi bi-calendar3"></i>Timeline</div>
-        <div class="settings-nav-item<?= $activeTab === 'review' ? ' active' : '' ?>" data-tab="review"><i class="bi bi-bar-chart"></i>Review Process</div>
+        <div class="settings-nav-item<?= $activeTab === 'review' ? ' active' : '' ?>" data-tab="review"><i class="bi bi-bar-chart"></i>Review Limits</div>
         <div class="settings-nav-item<?= $activeTab === 'committee' ? ' active' : '' ?>" data-tab="committee">
             <i class="bi bi-people"></i>Committee
             <?php if (!empty($committeeMembers)): ?><span class="nav-count"><?= count($committeeMembers) ?></span><?php endif; ?>
@@ -172,7 +172,7 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
             <!-- General -->
             <div class="settings-panel-content<?= $activeTab === 'general' ? ' active' : '' ?>" data-panel="general">
                 <div class="panel-title">General</div>
-                <div class="panel-desc">Award amount and where notifications are sent</div>
+                <div class="panel-desc">Award amount, notifications, and the essay prompt applicants see</div>
 
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -194,6 +194,14 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
                             Where application and recommendation notifications are sent.
                         </div>
                     </div>
+                </div>
+
+                <label for="essay_prompt" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px; margin-top: 20px;">Essay Prompt</label>
+                <textarea id="essay_prompt" name="essay_prompt" rows="3"
+                          style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;"
+                ><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?></textarea>
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    Shown to applicants above the essay field on the application form. Word count guidance can be included right in the prompt text.
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3" style="border-top: 1px solid #f3f3f6;">
@@ -259,25 +267,17 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
                 </div>
             </div>
 
-            <!-- Review Process -->
+            <!-- Review Limits -->
             <div class="settings-panel-content<?= $activeTab === 'review' ? ' active' : '' ?>" data-panel="review">
-                <div class="panel-title">Review Process</div>
-                <div class="panel-desc">Caps and prompts used while reviewing applications</div>
+                <div class="panel-title">Review Limits</div>
+                <div class="panel-desc">Caps used while reviewing applications</div>
 
                 <label for="final_review_limit" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px;">Final Review Limit</label>
                 <input type="number" id="final_review_limit" name="final_review_limit" min="1" step="1"
                        value="<?= getSetting('final_review_limit', DEFAULT_FINAL_REVIEW_LIMIT) ?>"
                        style="width: 100%; max-width: 160px; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-                <div class="text-muted mt-2 mb-4" style="font-size: 13px;">
-                    Maximum number of applications that can be advanced to Final Review each cycle. Once this many are in Final Review, advancing more is blocked until the cycle is archived.
-                </div>
-
-                <label for="essay_prompt" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px;">Essay Prompt</label>
-                <textarea id="essay_prompt" name="essay_prompt" rows="3"
-                          style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;"
-                ><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?></textarea>
                 <div class="text-muted mt-2" style="font-size: 13px;">
-                    Shown to applicants above the essay field on the application form. Word count guidance can be included right in the prompt text.
+                    Maximum number of applications that can be advanced to Final Review each cycle. Once this many are in Final Review, advancing more is blocked until the cycle is archived.
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3" style="border-top: 1px solid #f3f3f6;">
