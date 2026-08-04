@@ -12,6 +12,17 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 
 $appId = (int)$_POST['id'];
 
+// The selection email is never sent automatically at designation time --
+// the admin picks exactly when it should go out, and a cron job (see
+// cron/send_selection_emails.php) is what actually sends it once that time
+// arrives. Required so a recipient can never be designated without a
+// selection email eventually being scheduled.
+$scheduledSendAt = trim($_POST['scheduled_send_at'] ?? '');
+if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $scheduledSendAt)) {
+    die("Please pick a date and time for the selection email before designating a recipient.");
+}
+$scheduledSendAt = str_replace('T', ' ', $scheduledSendAt); // datetime-local -> Postgres timestamp literal
+
 try {
     $pdo->beginTransaction();
 
@@ -40,9 +51,9 @@ try {
 
         $insertStmt = $pdo->prepare("
             INSERT INTO recipients
-            (first_name, last_name, email, phone, expected_graduation_year, intended_school, intended_major, additional_information, date_submitted, application_year, created_at, updated_at)
+            (first_name, last_name, email, phone, expected_graduation_year, intended_school, intended_major, additional_information, date_submitted, application_year, selection_email_scheduled_at, created_at, updated_at)
             VALUES
-            (:first_name, :last_name, :email, :phone, :expected_graduation_year, :intended_school, :intended_major, :additional_information, :date_submitted, :application_year, NOW(), NOW())
+            (:first_name, :last_name, :email, :phone, :expected_graduation_year, :intended_school, :intended_major, :additional_information, :date_submitted, :application_year, :selection_email_scheduled_at, NOW(), NOW())
         ");
         $insertStmt->execute([
             ':first_name'               => $app['first_name'],
@@ -55,6 +66,7 @@ try {
             ':additional_information'   => $app['additional_information'],
             ':date_submitted'           => $app['submitted_at'],
             ':application_year'         => date('Y'),
+            ':selection_email_scheduled_at' => $scheduledSendAt,
         ]);
 
         // A final recipient has been chosen for this cycle -- the committee

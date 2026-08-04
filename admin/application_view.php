@@ -291,6 +291,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                 <form method="POST" action="mark_final_selected.php" id="designateForm" class="d-inline">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                    <input type="hidden" name="scheduled_send_at" id="scheduledSendAtInput">
                     <button type="submit" class="btn-stage-cta recipient">
                         <i class="bi bi-star-fill me-1"></i>Designate as Final Recipient
                     </button>
@@ -563,17 +564,41 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
+        const introHtml = recommendationReceived
+            ? `This will mark <strong>${applicantName}</strong> as this cycle's final recipient.`
+            : `${applicantName}'s recommendation hasn't been received yet. Designate them as the final recipient anyway?`;
+
+        // Designating never sends the selection email by itself -- a date
+        // and time is required here, and a server-side cron job (running
+        // every 5 minutes) is what actually sends it once that time arrives.
         Swal.fire({
             title: recommendationReceived ? 'Designate as Final Recipient?' : 'Recommendation not yet received',
-            html: recommendationReceived
-                ? `This will mark <strong>${applicantName}</strong> as this cycle's final recipient.`
-                : `${applicantName}'s recommendation hasn't been received yet. Designate them as the final recipient anyway?`,
+            html: `
+                <p style="text-align:left; margin-bottom: 16px;">${introHtml}</p>
+                <label for="scheduledSendInput" style="display:block; text-align:left; font-weight:600; font-size:13.5px; margin-bottom:6px;">
+                    When should the selection email be sent?
+                </label>
+                <input type="datetime-local" id="scheduledSendInput" class="swal2-input" style="width: 100%; margin: 0;">
+                <div style="text-align:left; font-size:12px; color:#8a8a94; margin-top:6px;">
+                    Eastern Time. The email goes out automatically at this date and time -- nothing is sent immediately.
+                </div>
+            `,
             icon: recommendationReceived ? 'question' : 'warning',
             showCancelButton: true,
             confirmButtonText: recommendationReceived ? 'Yes, designate' : 'Designate Anyway',
-            cancelButtonText: 'Cancel'
+            cancelButtonText: 'Cancel',
+            focusConfirm: false,
+            preConfirm: () => {
+                const val = document.getElementById('scheduledSendInput').value;
+                if (!val) {
+                    Swal.showValidationMessage('Pick a date and time for the selection email.');
+                    return false;
+                }
+                return val;
+            }
         }).then((result) => {
             if (result.isConfirmed) {
+                document.getElementById('scheduledSendAtInput').value = result.value;
                 form.submit();
             }
         });

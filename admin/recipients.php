@@ -42,6 +42,7 @@ try {
         .pic-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
         .pic-pill.yes { background: rgba(25,135,84,0.12); color: #198754; }
         .pic-pill.no { background: rgba(220,53,69,0.1); color: #dc3545; }
+        .pic-pill.scheduled { background: rgba(197,160,89,0.16); color: #8a6d2e; }
         .recipient-delete-btn { background: none; border: none; color: #c9c9d1; padding: 6px 8px; border-radius: 6px; }
         .recipient-delete-btn:hover { color: #dc3545; background: rgba(220,53,69,0.08); }
     </style>
@@ -89,6 +90,7 @@ try {
                     <th>Intended School</th>
                     <th>Application Year</th>
                     <th>Picture</th>
+                    <th>Selection Email</th>
                     <th style="width: 60px;"></th>
                 </tr>
             </thead>
@@ -96,7 +98,7 @@ try {
             <tbody>
             <?php if (empty($recipients)): ?>
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-5">No recipients found</td>
+                    <td colspan="7" class="text-center text-muted py-5">No recipients found</td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($recipients as $rec): ?>
@@ -134,6 +136,16 @@ try {
                                 <span class="pic-pill yes">Uploaded</span>
                             <?php else: ?>
                                 <span class="pic-pill no">Not Yet</span>
+                            <?php endif; ?>
+                        </td>
+
+                        <td onclick="event.stopPropagation()">
+                            <?php if (!empty($rec['selection_email_sent_at'])): ?>
+                                <span class="pic-pill yes">Sent <?= date('M j, g:ia', strtotime($rec['selection_email_sent_at'])) ?></span>
+                            <?php elseif (!empty($rec['selection_email_scheduled_at'])): ?>
+                                <span class="pic-pill scheduled">Scheduled <?= date('M j, g:ia', strtotime($rec['selection_email_scheduled_at'])) ?></span>
+                            <?php else: ?>
+                                <span class="pic-pill no">Not scheduled</span>
                             <?php endif; ?>
                         </td>
 
