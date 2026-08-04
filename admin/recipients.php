@@ -39,7 +39,7 @@ try {
         .recipient-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .recipient-name { font-weight: 600; font-size: 14.5px; color: #212529; }
         .recipient-sub { font-size: 12.5px; color: #8a8a94; }
-        .pic-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .pic-pill { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
         .pic-pill.yes { background: rgba(25,135,84,0.12); color: #198754; }
         .pic-pill.no { background: rgba(220,53,69,0.1); color: #dc3545; }
         .pic-pill.scheduled { background: rgba(197,160,89,0.16); color: #8a6d2e; }
