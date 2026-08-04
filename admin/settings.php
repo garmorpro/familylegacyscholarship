@@ -140,79 +140,76 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
         <i class="bi bi-arrow-left me-1"></i> Back to application portal
     </a>
 
-    <h3 class="mt-3 mb-1" style="font-weight: 700; font-size: 1.5rem; color: #212529;">Admin Settings</h3>
-    <h5 class="mb-3" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage application periods, award amounts, and timeline dates</h5>
-
-    <?php if (!empty($_GET['error'])): ?>
-        <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
-            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
-            <div><?= htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') ?></div>
-        </div>
-    <?php elseif (!empty($_GET['success'])): ?>
-        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
-            <i class="bi bi-check-circle-fill"></i>
-            <div>Settings saved.</div>
-        </div>
-    <?php endif; ?>
-
     <?php
         // Colors/copy per state, matching the same open/not_open/closed/unset
-        // states and left-border-alert style, so this banner tells the truth
-        // about the Timeline dates instead of always saying "open."
+        // states the homepage computes, so this tells the truth about the
+        // Timeline dates instead of always saying "open."
         $cycleBannerConfig = [
             'open' => [
                 'border' => 'rgb(62,163,45)', 'bg' => 'rgb(242,253,244)', 'icon_color' => 'rgb(62,163,75)',
                 'title_color' => 'rgb(38,82,47)', 'text_color' => 'rgb(51,128,63)', 'icon' => 'bi-check-circle',
                 'title' => 'Applications are currently open',
-                'text' => 'Students can submit applications through ' . date('F j, Y', strtotime($applicationCloseDate ?: 'now')) . '.',
+                'text' => 'Through ' . date('M j, Y', strtotime($applicationCloseDate ?: 'now')) . '.',
             ],
             'not_open' => [
                 'border' => '#C5A059', 'bg' => '#FBF7EE', 'icon_color' => '#8a6d2e',
                 'title_color' => '#6b5321', 'text_color' => '#8a6d2e', 'icon' => 'bi-hourglass-split',
                 'title' => 'Applications haven\'t opened yet',
-                'text' => 'Opens ' . date('F j, Y', strtotime($applicationOpenDate ?: 'now')) . '.',
+                'text' => 'Opens ' . date('M j, Y', strtotime($applicationOpenDate ?: 'now')) . '.',
             ],
             'closed' => [
                 'border' => '#dc3545', 'bg' => 'rgba(220,53,69,0.06)', 'icon_color' => '#dc3545',
                 'title_color' => '#a3202c', 'text_color' => '#b8394a', 'icon' => 'bi-x-circle',
                 'title' => 'Applications are closed',
-                'text' => 'The application window closed ' . date('F j, Y', strtotime($applicationCloseDate ?: 'now')) . '.',
+                'text' => 'Closed ' . date('M j, Y', strtotime($applicationCloseDate ?: 'now')) . '.',
             ],
             'unset' => [
                 'border' => '#9a9aa5', 'bg' => '#f6f6f8', 'icon_color' => '#6c757d',
                 'title_color' => '#495057', 'text_color' => '#6c757d', 'icon' => 'bi-calendar2',
                 'title' => 'Application dates aren\'t set yet',
-                'text' => 'Set the Timeline dates so the site knows when to accept applications.',
+                'text' => 'Set them in Timeline.',
             ],
         ][$cycleState];
     ?>
-    <!-- Left Border Alert -->
-    <div style="
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-left: 5px solid <?= $cycleBannerConfig['border'] ?>;
-        background-color: <?= $cycleBannerConfig['bg'] ?>;
-        padding: 15px 20px;
-        border-radius: 12px;
-        color: #212529;
-        font-size: 14px;
-    ">
-        <div style="
-            flex-shrink: 0;
-            font-size: 20px;
-            color: <?= $cycleBannerConfig['icon_color'] ?>;
-            line-height: 1;
-        ">
-            <i class="bi <?= $cycleBannerConfig['icon'] ?>"></i>
-        </div>
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mt-3">
         <div>
-            <div style="font-weight: 600; font-size: 15px; margin-bottom: 3px; color: <?= $cycleBannerConfig['title_color'] ?> !important;"><?= $cycleBannerConfig['title'] ?></div>
-            <div style="font-weight: 400; font-size: 14px; color: <?= $cycleBannerConfig['text_color'] ?> !important;">
-                <?= $cycleBannerConfig['text'] ?>
+            <h3 class="mb-1" style="font-weight: 700; font-size: 1.5rem; color: #212529;">Admin Settings</h3>
+            <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage application periods, award amounts, and timeline dates</h5>
+        </div>
+
+        <div style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid <?= $cycleBannerConfig['border'] ?>;
+            background-color: <?= $cycleBannerConfig['bg'] ?>;
+            padding: 10px 16px;
+            border-radius: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        ">
+            <div style="flex-shrink: 0; font-size: 18px; color: <?= $cycleBannerConfig['icon_color'] ?>; line-height: 1;">
+                <i class="bi <?= $cycleBannerConfig['icon'] ?>"></i>
+            </div>
+            <div>
+                <div style="font-weight: 600; font-size: 13.5px; color: <?= $cycleBannerConfig['title_color'] ?> !important;"><?= $cycleBannerConfig['title'] ?></div>
+                <div style="font-weight: 400; font-size: 12px; color: <?= $cycleBannerConfig['text_color'] ?> !important;"><?= $cycleBannerConfig['text'] ?></div>
             </div>
         </div>
     </div>
+
+    <?php if (!empty($_GET['error'])): ?>
+        <div class="alert alert-danger d-flex align-items-start gap-2 mt-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div><?= htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+    <?php elseif (!empty($_GET['success'])): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2 mt-3" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>Settings saved.</div>
+        </div>
+    <?php endif; ?>
   </div>
 
   <div class="settings-body" style="border-top: 1px solid #f3f3f6;">
