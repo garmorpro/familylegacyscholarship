@@ -81,18 +81,14 @@ try {
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
-        /* Application status stepper */
-        .app-stepper { display:flex; align-items:flex-start; max-width: 340px; margin: 4px auto 0; }
-        .app-stepitem { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
-        .app-connector { position:absolute; top:10px; left:calc(-50% + 11px); width: calc(100% - 22px); height:2px; background:#eee; z-index:0; }
-        .app-connector.done { background:#C5A059; }
-        .app-circle { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:10.5px; z-index:1; background:#eee; color:#adb0b8; }
-        .app-circle.done { background:#C5A059; color:#fff; }
-        .app-circle.current { background: rgb(7,5,55); color:#fff; box-shadow: 0 0 0 4px rgba(7,5,55,0.12); }
-        .app-circle.complete { background:#198754; color:#fff; }
-        .app-circle i { font-size: 9px; }
-        .app-steplabel { font-size:10.5px; font-weight:600; margin-top:5px; color:#495057; }
-        .app-steplabel.pending { color:#adb0b8; }
+        /* Application status: connected pill chips */
+        .stage-panel { background: rgb(249,250,251); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0; margin-top: 4px; }
+        .stage-chip { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; background: #fff; border: 1.5px solid #e2e2e8; color: #9a9aa5; white-space: nowrap; }
+        .stage-chip.done { background: rgb(7,5,55); border-color: rgb(7,5,55); color: #fff; }
+        .stage-chip.current { background: #fff; border-color: rgb(7,5,55); color: rgb(7,5,55); }
+        .stage-chip.complete { background: #C5A059; border-color: #C5A059; color: #3a2f14; }
+        .stage-connector { width: 22px; height: 2px; background: #e2e2e8; flex-shrink: 0; }
+        .stage-connector.done { background: rgb(7,5,55); }
 
         .btn-stage-cta { border:none; padding: 11px 26px; border-radius:8px; font-weight:600; font-size:14.5px; }
         .btn-stage-cta.review { background: rgb(233,236,255); color: rgb(7,5,55); }
@@ -251,30 +247,30 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 ?>
 
 <div class="pb-3">
-    <div class="app-stepper">
+    <div class="stage-panel">
         <?php foreach ($stageOrder as $i => $stage): ?>
-            <div class="app-stepitem">
-                <?php if ($i > 0): ?>
-                    <div class="app-connector <?= ($stageIdx !== false && $i <= $stageIdx) ? 'done' : '' ?>"></div>
+            <?php if ($i > 0): ?>
+                <div class="stage-connector <?= ($stageIdx !== false && $i <= $stageIdx) ? 'done' : '' ?>"></div>
+            <?php endif; ?>
+            <?php
+                $isLastStage = $i === count($stageOrder) - 1;
+                if ($stageIdx !== false && $i < $stageIdx) {
+                    $chipClass = 'done';
+                } elseif ($stageIdx !== false && $i === $stageIdx) {
+                    $chipClass = $isLastStage ? 'complete' : 'current';
+                } else {
+                    $chipClass = 'pending';
+                }
+            ?>
+            <div class="stage-chip <?= $chipClass ?>">
+                <?php if ($chipClass === 'done'): ?>
+                    <i class="bi bi-check-lg"></i>
+                <?php elseif ($chipClass === 'current'): ?>
+                    <i class="bi bi-hourglass-split"></i>
+                <?php elseif ($chipClass === 'complete'): ?>
+                    <i class="bi bi-trophy-fill"></i>
                 <?php endif; ?>
-                <?php
-                    $isLastStage = $i === count($stageOrder) - 1;
-                    if ($stageIdx !== false && $i < $stageIdx) {
-                        $circleClass = 'done';
-                    } elseif ($stageIdx !== false && $i === $stageIdx) {
-                        $circleClass = $isLastStage ? 'complete' : 'current';
-                    } else {
-                        $circleClass = 'pending';
-                    }
-                ?>
-                <div class="app-circle <?= $circleClass ?>">
-                    <?php if ($circleClass === 'done' || $circleClass === 'complete'): ?>
-                        <i class="bi bi-check-lg"></i>
-                    <?php else: ?>
-                        <?= $i + 1 ?>
-                    <?php endif; ?>
-                </div>
-                <div class="app-steplabel <?= $circleClass === 'pending' ? 'pending' : '' ?>"><?= $stageLabels[$i] ?></div>
+                <?= $stageLabels[$i] ?>
             </div>
         <?php endforeach; ?>
     </div>
@@ -322,8 +318,8 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
             </div>
         <?php endif; ?>
     <?php elseif ($application['application_status'] === 'final_recipient'): ?>
-        <div class="text-center mt-3" style="font-size: 13.5px; color: #198754; font-weight: 600;">
-            <i class="bi bi-check-circle-fill me-1"></i>Selected as this cycle's final recipient
+        <div class="text-center mt-3" style="font-size: 13.5px; color: #8a6d2e; font-weight: 600;">
+            Selected as this cycle's final recipient
         </div>
     <?php endif; ?>
 </div>
