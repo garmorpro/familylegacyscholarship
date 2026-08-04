@@ -43,7 +43,50 @@ if (!$codeVerified) {
     committee_gate_code_form($token);
 }
 
-// Falls through here only when access is fully verified.
+// Code verified. Now establish *who* this visitor is -- the shared
+// link/code alone doesn't distinguish committee members from each other,
+// so votes need a self-identification step. Supports switching identity
+// (e.g. wrong person clicked) via ?switch_identity=1.
+
+if (isset($_GET['switch_identity'])) {
+    unset($_SESSION['committee_member_id']);
+}
+
+$membersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
+$committeeMemberRoster = $membersStmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['member_id'])) {
+    $chosenId = (int) $_POST['member_id'];
+    $matches = array_filter($committeeMemberRoster, fn($m) => (int) $m['id'] === $chosenId);
+    if ($matches) {
+        $_SESSION['committee_member_id'] = $chosenId;
+    } else {
+        committee_gate_identity_form($token, $committeeMemberRoster, "Please choose a name from the list.");
+    }
+}
+
+$committeeMemberId = $_SESSION['committee_member_id'] ?? null;
+
+// Guards against a stale session pointing at a member who's since been
+// removed from the roster.
+if ($committeeMemberId !== null && !array_filter($committeeMemberRoster, fn($m) => (int) $m['id'] === (int) $committeeMemberId)) {
+    unset($_SESSION['committee_member_id']);
+    $committeeMemberId = null;
+}
+
+if ($committeeMemberId === null) {
+    committee_gate_identity_form($token, $committeeMemberRoster);
+}
+
+$committeeMemberName = '';
+foreach ($committeeMemberRoster as $m) {
+    if ((int) $m['id'] === (int) $committeeMemberId) {
+        $committeeMemberName = $m['name'];
+        break;
+    }
+}
+
+// Falls through here only when access is fully verified and identity is known.
 
 function committee_gate_page_start(string $title): void {
 ?>
@@ -108,6 +151,33 @@ function committee_gate_code_form(string $token, ?string $error = null): void {
             <input type="text" name="code" class="gate-code-input" maxlength="6" inputmode="numeric" autocomplete="off" autofocus placeholder="000000">
             <button type="submit" class="gate-btn">Continue</button>
         </form>
+    <?php
+    committee_gate_page_end();
+}
+
+function committee_gate_identity_form(string $token, array $roster, ?string $error = null): void {
+    committee_gate_page_start('Who Are You?');
+    ?>
+        <div class="gate-title">Which of these are you?</div>
+        <div class="gate-text">This is how your pick gets attributed once you select a candidate. You can switch this later if needed.</div>
+        <?php if ($error): ?>
+            <div class="gate-error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <?php if (empty($roster)): ?>
+            <div class="gate-text">No committee roster has been set up yet -- check back once one has.</div>
+        <?php else: ?>
+            <form method="POST" action="?token=<?= urlencode($token) ?>">
+                <div class="text-start" style="max-height: 260px; overflow-y: auto; margin-bottom: 8px;">
+                    <?php foreach ($roster as $m): ?>
+                        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #e9e9ee; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14.5px;">
+                            <input type="radio" name="member_id" value="<?= (int) $m['id'] ?>" required>
+                            <?= htmlspecialchars($m['name']) ?>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <button type="submit" class="gate-btn">Continue</button>
+            </form>
+        <?php endif; ?>
     <?php
     committee_gate_page_end();
 }

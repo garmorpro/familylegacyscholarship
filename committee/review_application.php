@@ -64,6 +64,11 @@ if ($application) {
         default:          $recPillClass = 'not-sent';  $recPillText = 'Not Sent';
     }
 }
+
+// This member's current pick, if any -- shown to them only.
+$voteStmt = $pdo->prepare("SELECT application_id FROM committee_votes WHERE committee_member_id = :member_id");
+$voteStmt->execute([':member_id' => $committeeMemberId]);
+$myPickId = (int) $voteStmt->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,18 +85,30 @@ if ($application) {
         .top-bar img { height: 40px; }
         .top-bar-title { color: #fff; font-weight: 700; font-size: 16px; margin-left: 12px; }
         .top-bar-sub { color: rgba(255,255,255,0.6); font-size: 12.5px; margin-left: 12px; }
+        .top-bar-who { color: rgba(255,255,255,0.85); font-size: 13px; }
+        .top-bar-who a { color: rgba(255,255,255,0.6); text-decoration: underline; }
         .back-link { font-size: 13.5px; color: #9a9aa5; font-weight: 600; }
         .back-link:hover { color: rgb(7,5,55); }
+        .pick-btn { border: none; border-radius: 8px; padding: 11px 22px; font-size: 14.5px; font-weight: 600; }
+        .pick-btn.unpicked { background: rgb(233,236,255); color: rgb(7,5,55); }
+        .pick-btn.picked { background: #C5A059; color: #3a2f14; }
+        .pick-btn:disabled { opacity: 0.6; }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    <div class="container d-flex align-items-center">
-        <img src="/assets/images/logo.png" alt="Morgan Legacy Scholarship">
-        <div>
-            <div class="top-bar-title">Committee Review</div>
-            <div class="top-bar-sub">Morgan Legacy Scholarship</div>
+    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center">
+            <img src="/assets/images/logo.png" alt="Morgan Legacy Scholarship">
+            <div>
+                <div class="top-bar-title">Committee Review</div>
+                <div class="top-bar-sub">Morgan Legacy Scholarship</div>
+            </div>
+        </div>
+        <div class="top-bar-who">
+            Reviewing as <strong><?= htmlspecialchars($committeeMemberName) ?></strong>
+            &bull; <a href="review.php?token=<?= urlencode($token) ?>&switch_identity=1">Not you?</a>
         </div>
     </div>
 </div>
@@ -118,10 +135,14 @@ if ($application) {
             </div>
         </div>
         <div class="col-md-6 text-md-end mt-3 mt-md-0">
-            <div>
+            <div class="mb-2">
                 <span class="meta-label">Submitted&nbsp; </span>
                 <span class="meta-value"><?= date('M j, Y', strtotime($application['submitted_at'])) ?></span>
             </div>
+            <?php $isMyPick = ((int) $application['id'] === $myPickId); ?>
+            <button type="button" class="pick-btn <?= $isMyPick ? 'picked' : 'unpicked' ?>" id="pickBtn" data-app-id="<?= (int) $application['id'] ?>">
+                <i class="bi <?= $isMyPick ? 'bi-star-fill' : 'bi-star' ?> me-1"></i><?= $isMyPick ? 'This Is My Pick' : 'Pick as My Candidate' ?>
+            </button>
         </div>
     </div>
   </div>
@@ -328,6 +349,34 @@ document.querySelectorAll('.modal[id^="recModal"]').forEach(function(modalEl) {
     });
 });
 </script>
+
+<?php if ($application): ?>
+<script>
+document.getElementById('pickBtn').addEventListener('click', function() {
+    const btn = this;
+    btn.disabled = true;
+
+    fetch('vote.php?token=<?= urlencode($token) ?>', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ application_id: btn.dataset.appId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            btn.disabled = false;
+            alert(data.message || 'Something went wrong recording your pick.');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        alert('Something went wrong recording your pick. Please try again.');
+    });
+});
+</script>
+<?php endif; ?>
 
 </body>
 </html>

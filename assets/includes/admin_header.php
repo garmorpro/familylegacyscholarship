@@ -24,6 +24,7 @@ function admin_nav_active($pages, $current) {
           <li class="nav-item"><a class="nav-link px-2<?= admin_nav_active(['index.php', 'application_view.php'], $currentAdminPage) ?>" href="<?= BASE_URL ?>/admin/index.php">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link px-2<?= admin_nav_active('recipients.php', $currentAdminPage) ?>" href="<?= BASE_URL ?>/admin/recipients.php">Recipients</a></li>
           <li class="nav-item"><a class="nav-link px-2<?= admin_nav_active('archives.php', $currentAdminPage) ?>" href="<?= BASE_URL ?>/admin/archives.php">Archives</a></li>
+          <li class="nav-item"><a class="nav-link px-2<?= admin_nav_active('committee_votes.php', $currentAdminPage) ?>" href="<?= BASE_URL ?>/admin/committee_votes.php">Committee Votes</a></li>
           <li class="nav-item"><a class="nav-link px-2<?= admin_nav_active('settings.php', $currentAdminPage) ?>" href="<?= BASE_URL ?>/admin/settings.php">Settings</a></li>
           <li class="nav-item ms-lg-3"><a class="nav-link px-2 text-muted" href="<?= BASE_URL ?>/" target="_blank" rel="noopener">View Site <i class="bi bi-box-arrow-up-right" style="font-size:.75em;"></i></a></li>
           <li class="nav-item"><a class="nav-link px-2 text-danger" href="<?= BASE_URL ?>/admin/auth/logout.php">Log Out</a></li>

@@ -59,8 +59,11 @@ try {
 
         // A final recipient has been chosen for this cycle -- the committee
         // review link/code, if one was ever sent out, must stop working
-        // immediately.
+        // immediately, and the votes (scoped to this cycle only, with no
+        // year/cycle marker of their own) need to be cleared so they don't
+        // linger and get mixed up with the next cycle's votes.
         $pdo->exec("DELETE FROM committee_access");
+        $pdo->exec("DELETE FROM committee_votes");
     } else {
         error_log("mark_final_selected.php: no-op for id={$appId}, not eligible (wrong status or recipient already chosen)");
     }
