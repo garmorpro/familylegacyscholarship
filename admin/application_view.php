@@ -81,6 +81,16 @@ try {
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
+        /* Case card chrome */
+        .case-accent { height: 5px; background: linear-gradient(90deg, rgb(7,5,55), #C5A059); }
+        .back-link { font-size: 13.5px; color: #9a9aa5; font-weight: 600; }
+        .back-link:hover { color: rgb(7,5,55); }
+        .meta-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; }
+        .meta-value { font-size: 14px; font-weight: 700; color: #212529; }
+        .meta-value.success { color: #198754; }
+        .meta-value.secondary { color: #6c757d; }
+        .meta-value.danger { color: #dc3545; }
+
         /* Application status: connected pill chips */
         .stage-panel { background: rgb(249,250,251); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0; margin-top: 4px; }
         .stage-chip { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; background: #fff; border: 1.5px solid #e2e2e8; color: #9a9aa5; white-space: nowrap; }
@@ -98,8 +108,8 @@ try {
         .btn-stage-cta.recipient { background: rgb(7,5,55); color:#fff; }
         .btn-stage-cta.recipient:hover { background: rgb(20,16,80); }
 
-        /* Application detail: sidebar + document layout */
-        .detail-sidebar { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 14px; padding: 22px; position: sticky; top: 20px; }
+        /* Application detail: sidebar + document layout, flowing on one flat surface */
+        .sidebar-col { border-right: 1px solid #f3f3f6; padding-right: 28px; position: sticky; top: 20px; align-self: flex-start; }
         .detail-sidebar-block { margin-bottom: 22px; }
         .detail-sidebar-block:last-child { margin-bottom: 0; }
         .detail-sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
@@ -115,9 +125,9 @@ try {
         .detail-status-pill.not-sent { background: rgba(108,117,125,0.12); color: #6c757d; }
         .detail-sidebar-action { font-size: 12.5px; font-weight: 600; text-decoration: none; }
 
-        .detail-doc { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 14px; padding: 8px 0; }
-        .detail-doc-section { padding: 22px 28px; border-bottom: 1px solid #f3f3f6; }
-        .detail-doc-section:last-child { border-bottom: none; }
+        .detail-doc-section { padding: 22px 0; border-bottom: 1px solid #f3f3f6; }
+        .detail-doc-section:first-child { padding-top: 4px; }
+        .detail-doc-section:last-child { border-bottom: none; padding-bottom: 0; }
         .detail-doc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
         .detail-doc-head i { color: #C5A059; font-size: 16px; }
         .detail-doc-title { font-weight: 700; font-size: 15.5px; color: #212529; }
@@ -128,7 +138,7 @@ try {
         .detail-essay-box { background: #FBF9F3; border: 1px solid #ECE6D8; border-radius: 10px; padding: 16px 18px; font-size: 14.5px; line-height: 1.7; color: #2b2b2b; margin-top: 4px; }
 
         @media (max-width: 991px) {
-            .detail-sidebar { position: static; margin-bottom: 16px; }
+            .sidebar-col { position: static; border-right: none; border-bottom: 1px solid #f3f3f6; padding-right: 0; padding-bottom: 20px; margin-bottom: 20px; }
             .detail-doc-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -142,20 +152,14 @@ try {
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
-<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; border-color: rgb(241,242,243) !important; padding: 0 !important;">
-  
-  <!-- Top header remains white -->
-  <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
-    <div class="mb-3">
-        <!-- Back link -->
-        <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none text-muted d-inline-flex align-items-center">
-            <i class="bi bi-arrow-left me-1"></i> Back to applications
-        </a>
-    </div>
-  
+<div class="card shadow-sm" style="border-radius: 16px; overflow: hidden; border-color: rgb(241,242,243) !important; padding: 0 !important;">
+  <div class="case-accent"></div>
 
-  <!-- Card body with pink background -->
-  
+  <div style="padding: 28px 32px 24px;">
+    <!-- Back link -->
+    <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none back-link d-inline-flex align-items-center mb-3">
+        <i class="bi bi-arrow-left me-1"></i> Back to applications
+    </a>
 
 <?php
 // Get the application ID
@@ -181,18 +185,18 @@ $isArchived = $application && !empty($application['archived_at']);
 
 <?php if ($application): ?>
 
-<div class="row align-items-center py-3">
+<div class="row align-items-start">
     <!-- Left: Name + Major/School -->
     <div class="col-md-6">
-        <h2 class="fw-semibold mb-1">
+        <div style="font-size: 26px; font-weight: 800; color: #16151f; letter-spacing: -0.01em; margin-bottom: 2px;">
             <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
             <?php if ($isArchived): ?>
                 <span class="badge bg-secondary-subtle text-secondary ms-2" style="font-size: 12px; vertical-align: middle;">
                     <i class="bi bi-archive me-1"></i>Archived
                 </span>
             <?php endif; ?>
-        </h2>
-        <div class="text-muted">
+        </div>
+        <div style="font-size: 14.5px; color: #6c757d; font-weight: 500;">
             <?= htmlspecialchars($application['intended_major']) ?> &bull; <?= htmlspecialchars($application['intended_school']) ?>
         </div>
         <?php if ($isArchived): ?>
@@ -206,21 +210,21 @@ $isArchived = $application && !empty($application['archived_at']);
 <div class="col-md-6 text-md-end mt-3 mt-md-0">
 
     <?php if (in_array($application['application_status'], ['submitted', 'reviewed', 'final_review'], true)): ?>
-        <div class="mb-2" style="font-size: 13px;">
-            <span class="text-muted">Recommendation:</span>
+        <div class="mb-2">
+            <span class="meta-label">Recommendation&nbsp; </span>
             <?php if ($recommendationStatus === 'completed'): ?>
-                <span class="text-success fw-semibold">Received</span>
+                <span class="meta-value success">Received</span>
             <?php elseif ($recommendationStatus === 'sent'): ?>
-                <span class="text-secondary fw-semibold">Sent, awaiting response</span>
+                <span class="meta-value secondary">Sent, awaiting response</span>
             <?php else: ?>
-                <span class="text-danger fw-semibold">Not sent yet</span>
+                <span class="meta-value danger">Not sent yet</span>
             <?php endif; ?>
         </div>
     <?php endif; ?>
 
     <div>
-        <span class="fw-semibold me-2">Submission Date:</span>
-        <?= date('M j, Y', strtotime($application['submitted_at'])) ?>
+        <span class="meta-label">Submitted&nbsp; </span>
+        <span class="meta-value"><?= date('M j, Y', strtotime($application['submitted_at'])) ?></span>
     </div>
 </div>
 
@@ -324,15 +328,14 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
     <?php endif; ?>
 </div>
 
-</div>
+  </div>
 
-<div class="card-body" style="background-color: rgb(249,250,251); padding: 1.5rem !important; border: none !important;">
+  <div style="padding: 26px 32px 32px; border-top: 1px solid #f3f3f6;">
 
-<div class="row mt-4">
+<div class="row">
 
     <!-- Sidebar: reference info -->
-    <div class="col-lg-3">
-        <div class="detail-sidebar">
+    <div class="col-lg-3 sidebar-col">
 
             <div class="detail-sidebar-block">
                 <div class="detail-sidebar-label"><i class="bi bi-envelope-fill"></i>Contact</div>
@@ -472,12 +475,10 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                 </div>
             </div>
 
-        </div>
     </div>
 
     <!-- Document: application content -->
-    <div class="col-lg-9">
-        <div class="detail-doc">
+    <div class="col-lg-9 ps-lg-4">
 
             <div class="detail-doc-section">
                 <div class="detail-doc-head"><i class="bi bi-bank2"></i><div class="detail-doc-title">Post-Secondary Plans</div></div>
@@ -535,10 +536,11 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                 </div>
             </div>
 
-        </div>
     </div>
 
 </div>
+
+  </div>
 
 <?php else: ?>
 <div class="alert alert-warning">
@@ -546,7 +548,6 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 </div>
 <?php endif; ?>
 
-  </div>
 </div>
 
 </div>
