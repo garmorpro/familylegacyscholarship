@@ -3,6 +3,7 @@ require_once '../app/db.php';
 require_once '../path.php';
 require_once '../app/require_admin.php';
 require_once '../app/csrf.php';
+require_once '../app/functions.php';
 
 /**
  * Status counts + total
@@ -454,7 +455,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                                 <div class="letter-paper">
                                     <div class="letter-quote-mark">&ldquo;</div>
                                     <div class="letter-body">
-                                        <?= $recommendation['recommendation'] ?>
+                                        <?= sanitize_recommendation_html($recommendation['recommendation'] ?? '') ?>
                                     </div>
                                 </div>
 

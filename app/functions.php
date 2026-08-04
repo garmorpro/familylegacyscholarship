@@ -4,6 +4,23 @@ require_once 'db.php';
 require_once __DIR__ . '/recommendation_mailer.php';
 
 /**
+ * Sanitize rich-text HTML submitted by recommenders before it is stored or
+ * displayed. The recommendation editor exposes TinyMCE's raw HTML source
+ * view, so submitted content can't be trusted as safe formatting -- it must
+ * be treated the same as any other untrusted user input. Only a small
+ * allowlist of plain formatting tags survives, and every attribute is
+ * stripped from what remains (killing onclick=, style=, javascript: hrefs,
+ * etc.), removing the stored-XSS risk of rendering it unescaped.
+ */
+function sanitize_recommendation_html(string $html): string {
+    $allowedTags = '<p><br><b><i><u><strong><em><ul><ol><li><h1><h2><h3><h4><blockquote>';
+    $stripped = strip_tags($html, $allowedTags);
+    // Strip all attributes from the tags that remain -- none of the allowed
+    // formatting tags need any for a recommendation letter.
+    return preg_replace('/<([a-z0-9]+)[^>]*>/i', '<$1>', $stripped);
+}
+
+/**
  * Insert application + recommendation in a single transaction
  */
 function insert_application_with_recommendation(PDO $pdo, array $data) {

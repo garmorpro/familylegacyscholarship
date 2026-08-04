@@ -1,5 +1,6 @@
 <?php
 require '../app/db.php';
+require_once '../app/functions.php';
 
 // Get token from URL
 $token = $_GET['token'] ?? '';
@@ -29,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (trim($content) === '') {
         $error = "Please enter your recommendation.";
     } else {
+        $content = sanitize_recommendation_html($content);
         $update = $pdo->prepare("
             UPDATE recommendations
             SET recommendation = :content, status = 'completed', completed_date = NOW()
