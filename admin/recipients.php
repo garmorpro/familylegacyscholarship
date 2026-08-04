@@ -87,7 +87,6 @@ try {
                 <tr>
                     <th>Applicant</th>
                     <th>Contact</th>
-                    <th>Intended School</th>
                     <th>Application Year</th>
                     <th>Picture</th>
                     <th>Selection Email</th>
@@ -98,13 +97,15 @@ try {
             <tbody>
             <?php if (empty($recipients)): ?>
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-5">No recipients found</td>
+                    <td colspan="6" class="text-center text-muted py-5">No recipients found</td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($recipients as $rec): ?>
                     <tr class="recipient-row" style="cursor: pointer;"
                         data-recipient-id="<?= $rec['id'] ?>"
-                        data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>">
+                        data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>"
+                        data-recipient-school="<?= htmlspecialchars($rec['intended_school'], ENT_QUOTES, 'UTF-8') ?>"
+                        data-recipient-major="<?= htmlspecialchars($rec['intended_major'], ENT_QUOTES, 'UTF-8') ?>">
 
                         <td>
                             <div class="d-flex align-items-center gap-3">
@@ -122,11 +123,6 @@ try {
                         <td>
                             <div><?= htmlspecialchars($rec['email']) ?></div>
                             <div class="recipient-sub"><?= htmlspecialchars($rec['phone']) ?></div>
-                        </td>
-
-                        <td>
-                            <div><?= htmlspecialchars($rec['intended_school']) ?></div>
-                            <div class="recipient-sub"><?= htmlspecialchars($rec['intended_major']) ?></div>
                         </td>
 
                         <td><?= htmlspecialchars($rec['application_year']) ?></td>
@@ -180,11 +176,18 @@ try {
       <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
         <?= csrf_field() ?>
         <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
-          <h5 class="modal-title text-white mb-0" id="uploadPictureLabel" style="font-weight: 600;">Recipient Picture</h5>
+          <h5 class="modal-title text-white mb-0" id="uploadPictureLabel" style="font-weight: 600;">Recipient Details</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
             <input type="hidden" name="recipient_id" id="recipient_id">
+
+            <!-- Intended school / major -- read-only, moved off the table to free up column width -->
+            <div class="mb-3" style="background: #fff; border: 1px solid #ececf1; border-radius: 8px; padding: 12px 16px;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 2px;">Intended School</div>
+                <div id="modalRecipientSchool" style="font-size: 14.5px; color: #212529; font-weight: 600;"></div>
+                <div id="modalRecipientMajor" style="font-size: 13px; color: #8a8a94;"></div>
+            </div>
 
             <!-- Current picture preview -->
             <div class="mb-3 d-none text-center" id="currentPictureContainer">
@@ -233,13 +236,17 @@ document.querySelectorAll('.recipient-row').forEach(function (row) {
         }
         openUploadModal(
             row.getAttribute('data-recipient-id'),
-            row.getAttribute('data-recipient-picture')
+            row.getAttribute('data-recipient-picture'),
+            row.getAttribute('data-recipient-school'),
+            row.getAttribute('data-recipient-major')
         );
     });
 });
 
-function openUploadModal(recipientId, recipientPicture) {
+function openUploadModal(recipientId, recipientPicture, recipientSchool, recipientMajor) {
     document.getElementById('recipient_id').value = recipientId;
+    document.getElementById('modalRecipientSchool').textContent = recipientSchool || '—';
+    document.getElementById('modalRecipientMajor').textContent = recipientMajor || '';
 
     var currentPictureContainer = document.getElementById('currentPictureContainer');
     var currentPictureImg = document.getElementById('currentPictureImg');
