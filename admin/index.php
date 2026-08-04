@@ -381,20 +381,6 @@ if ($statusCounts['final_recipient'] > 0) {
                         Delete
                     </a>
                 </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2"
-                       href="#" onclick="performBulkAction('mark_reviewed'); return false;">
-                        <i class="bi bi-eye text-secondary"></i>
-                        Mark Reviewed
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2"
-                       href="#" onclick="performBulkAction('select'); return false;">
-                        <i class="bi bi-check-circle text-success"></i>
-                        Advance to Final Review
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -676,41 +662,6 @@ document.getElementById('applicationsTable').addEventListener('change', function
             </ul>
             <p style="color: red; font-weight: bold; font-size: 16px;">
                 This action <u>cannot</u> be undone.
-            </p>
-        `;
-    } else if (action === 'mark_reviewed') {
-        title = 'Mark Applications Reviewed';
-        htmlMessage = `
-            <p>Mark the following applications as reviewed?</p>
-            <ul class="list-group" style="
-                max-height: 200px;
-                overflow-y: auto;
-                margin-top: 10px;
-                margin-bottom: 15px;
-            ">
-                ${nameList}
-            </ul>
-            <p class="text-muted" style="font-size: 13px;">
-                Only applications currently marked "Submitted" will actually advance.
-            </p>
-        `;
-    } else if (action === 'select') {
-        title = 'Advance Applicants to Final Review';
-        htmlMessage = `
-            <p>Are you sure you want to advance the following applications to final review?</p>
-            <ul class="list-group" style="
-                max-height: 200px;
-                overflow-y: auto;
-                margin-top: 10px;
-                margin-bottom: 15px;
-            ">
-                ${nameList}
-            </ul>
-            <p class="text-muted" style="font-size: 13px;">
-                Only applications currently marked "Reviewed" will actually advance — anything still "Submitted" will be skipped.
-            </p>
-            <p style="color: orange; font-weight: bold; font-size: 16px;">
-                This action is permanent.
             </p>
         `;
     } else if (action === 'archive') {

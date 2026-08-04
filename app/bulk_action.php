@@ -41,64 +41,6 @@ try {
         $stmt->execute($ids);
         $message = count($ids) . " application(s) deleted.";
 
-    } elseif ($action === 'mark_reviewed') {
-        if (empty($ids)) {
-            throw new Exception('No applications selected to mark reviewed.');
-        }
-
-        // Only advance applications actually in 'submitted' status.
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $stmt = $pdo->prepare("
-            UPDATE scholarship_applications
-            SET application_status = 'reviewed'
-            WHERE id IN ($placeholders) AND application_status = 'submitted' AND archived_at IS NULL
-        ");
-        $stmt->execute($ids);
-        $advancedCount = $stmt->rowCount();
-        $skippedCount = count($ids) - $advancedCount;
-
-        $message = $advancedCount . " application(s) marked reviewed.";
-        if ($skippedCount > 0) {
-            $message .= " " . $skippedCount . " skipped (not in \"Submitted\" status).";
-        }
-
-    } elseif ($action === 'select') {
-        if (empty($ids)) {
-            throw new Exception('No applications selected to advance.');
-        }
-
-        // Final review has an admin-configurable cap (Settings > Review Limits).
-        $limitValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'final_review_limit'")->fetchColumn();
-        $finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
-        $currentFinalReviewCount = (int) $pdo->query("SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_review' AND archived_at IS NULL")->fetchColumn();
-        $remainingCapacity = max(0, $finalReviewLimit - $currentFinalReviewCount);
-
-        if ($remainingCapacity === 0) {
-            $message = "0 application(s) advanced -- final review is already at its limit of {$finalReviewLimit}.";
-        } else {
-            // Only advance applications actually in 'reviewed' status — otherwise
-            // a still-'submitted' application could skip the review step
-            // entirely — and only up to whatever capacity remains under the cap.
-            $placeholders = implode(',', array_fill(0, count($ids), '?'));
-            $stmt = $pdo->prepare("
-                UPDATE scholarship_applications
-                SET application_status = 'final_review'
-                WHERE id IN (
-                    SELECT id FROM scholarship_applications
-                    WHERE id IN ($placeholders) AND application_status = 'reviewed' AND archived_at IS NULL
-                    LIMIT ?
-                )
-            ");
-            $stmt->execute([...$ids, $remainingCapacity]);
-            $advancedCount = $stmt->rowCount();
-            $skippedCount = count($ids) - $advancedCount;
-
-            $message = $advancedCount . " application(s) advanced to final review.";
-            if ($skippedCount > 0) {
-                $message .= " " . $skippedCount . " skipped (not in \"Reviewed\" status, or the final review limit of {$finalReviewLimit} was reached).";
-            }
-        }
-
     } elseif ($action === 'archive') {
         // The recipients record is now created at the moment a final
         // recipient is designated (see mark_final_selected.php), so this no
