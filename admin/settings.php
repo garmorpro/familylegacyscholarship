@@ -18,8 +18,12 @@ try {
         $settings[$row['setting_key']] = $row['setting_value'];
     }
 
+    $committeeMembersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
+    $committeeMembers = $committeeMembersStmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     $settings = [];
+    $committeeMembers = [];
 }
 
 // Helper function to safely get a setting
@@ -49,7 +53,7 @@ const DEFAULT_FINAL_REVIEW_LIMIT = 10;
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <title>Settings - Morgan Legacy Scholarship</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -274,6 +278,76 @@ const DEFAULT_FINAL_REVIEW_LIMIT = 10;
             </button>
         </div>
     </form>
+
+    <!-- Committee Members -->
+    <div class="card shadow-sm mb-4" style="border-radius: 12px; border: 1px solid rgb(241,242,243);">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">Committee Members</h5>
+            <div class="text-muted mb-3" style="font-size: 13px;">
+                The roster you can choose from when sending the Final Review link out for outside review.
+            </div>
+
+            <?php if (!empty($_GET['member_error'])): ?>
+                <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+                    <div><?= htmlspecialchars($_GET['member_error'], ENT_QUOTES, 'UTF-8') ?></div>
+                </div>
+            <?php elseif (!empty($_GET['member_success'])): ?>
+                <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div><?= htmlspecialchars($_GET['member_success'], ENT_QUOTES, 'UTF-8') ?></div>
+                </div>
+            <?php endif; ?>
+
+            <?php if (empty($committeeMembers)): ?>
+                <div class="text-muted mb-3" style="font-size: 14px;">No committee members added yet.</div>
+            <?php else: ?>
+                <div class="mb-3">
+                    <?php foreach ($committeeMembers as $member): ?>
+                        <div class="d-flex align-items-center justify-content-between" style="padding: 10px 4px; border-bottom: 1px solid rgb(241,242,243);">
+                            <div>
+                                <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($member['name']) ?></div>
+                                <div class="text-muted" style="font-size: 13px;"><?= htmlspecialchars($member['email']) ?></div>
+                            </div>
+                            <form method="POST" action="delete_committee_member.php" class="d-inline"
+                                  onsubmit="return confirm('Remove <?= htmlspecialchars(addslashes($member['name'])) ?> from the committee roster?');">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= (int) $member['id'] ?>">
+                                <button type="submit" class="btn btn-sm" style="color: #dc3545; background: rgba(220,53,69,0.08); border-radius: 6px;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="save_committee_member.php" class="row g-2 align-items-end">
+                <?= csrf_field() ?>
+                <div class="col-md-5">
+                    <label for="member_name" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13.5px;">Name</label>
+                    <input type="text" id="member_name" name="member_name" required
+                           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                </div>
+                <div class="col-md-5">
+                    <label for="member_email" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13.5px;">Email</label>
+                    <input type="email" id="member_email" name="member_email" required
+                           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" style="
+                        width: 100%;
+                        padding: 8px 12px;
+                        background-color: rgb(7,5,55);
+                        color: #fff;
+                        font-weight: 600;
+                        border: none;
+                        border-radius: 6px;
+                    ">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
   </div>
 </div>

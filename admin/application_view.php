@@ -98,18 +98,12 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
-        /* Case card chrome */
-        .case-accent { height: 5px; background: linear-gradient(90deg, rgb(7,5,55), #C5A059); }
+        /* Admin-only chrome not shared with the read-only committee view */
         .back-link { font-size: 13.5px; color: #9a9aa5; font-weight: 600; }
         .back-link:hover { color: rgb(7,5,55); }
-        .meta-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; }
-        .meta-value { font-size: 14px; font-weight: 700; color: #212529; }
-        .meta-value.success { color: #198754; }
-        .meta-value.secondary { color: #6c757d; }
-        .meta-value.danger { color: #dc3545; }
 
         /* Application status: connected pill chips */
         .stage-panel { background: rgb(249,250,251); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0; margin-top: 4px; }
@@ -127,40 +121,6 @@ try {
         .btn-stage-cta.final:hover { background: rgba(197,160,89,0.3); }
         .btn-stage-cta.recipient { background: rgb(7,5,55); color:#fff; }
         .btn-stage-cta.recipient:hover { background: rgb(20,16,80); }
-
-        /* Application detail: sidebar + document layout, flowing on one flat surface */
-        .sidebar-col { border-right: 1px solid #f3f3f6; padding-right: 28px; position: sticky; top: 20px; align-self: flex-start; }
-        .detail-sidebar-block { margin-bottom: 22px; }
-        .detail-sidebar-block:last-child { margin-bottom: 0; }
-        .detail-sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-        .detail-sidebar-label i { color: #C5A059; }
-        .detail-sidebar-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13.5px; padding: 6px 0; border-bottom: 1px solid #f3f3f6; }
-        .detail-sidebar-row:last-child { border-bottom: none; }
-        .detail-sidebar-row .k { color: #6c757d; }
-        .detail-sidebar-row .v { font-weight: 600; color: #212529; text-align: right; word-break: break-word; }
-        .detail-sidebar-row .v a { color: rgb(7,5,55); }
-        .detail-status-pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-        .detail-status-pill.completed { background: rgba(25,135,84,0.12); color: #198754; }
-        .detail-status-pill.sent { background: rgba(13,110,253,0.12); color: #0d6efd; }
-        .detail-status-pill.not-sent { background: rgba(108,117,125,0.12); color: #6c757d; }
-        .detail-sidebar-action { font-size: 12.5px; font-weight: 600; text-decoration: none; }
-
-        .detail-doc-section { padding: 22px 0; border-bottom: 1px solid #f3f3f6; }
-        .detail-doc-section:first-child { padding-top: 4px; }
-        .detail-doc-section:last-child { border-bottom: none; padding-bottom: 0; }
-        .detail-doc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .detail-doc-head i { color: #C5A059; font-size: 16px; }
-        .detail-doc-title { font-weight: 700; font-size: 15.5px; color: #212529; }
-        .detail-doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .detail-doc-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 4px; }
-        .detail-doc-value { font-size: 14.5px; color: #333; }
-        .detail-word-count { font-size: 12px; color: #9a9aa5; font-weight: 600; margin-left: auto; }
-        .detail-essay-box { background: #FBF9F3; border: 1px solid #ECE6D8; border-radius: 10px; padding: 16px 18px; font-size: 14.5px; line-height: 1.7; color: #2b2b2b; margin-top: 4px; }
-
-        @media (max-width: 991px) {
-            .sidebar-col { position: static; border-right: none; border-bottom: 1px solid #f3f3f6; padding-right: 0; padding-bottom: 20px; margin-bottom: 20px; }
-            .detail-doc-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">

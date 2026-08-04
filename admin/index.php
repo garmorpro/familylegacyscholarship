@@ -5,6 +5,13 @@ require_once '../app/require_admin.php';
 require_once '../app/csrf.php';
 require_once '../path.php';
 
+try {
+    $committeeMembersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
+    $committeeMembers = $committeeMembersStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $committeeMembers = [];
+}
+
 /**
  * Status counts + total
  */
@@ -97,7 +104,7 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.1.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
         /* Base modern action button */
@@ -340,6 +347,12 @@ if ($statusCounts['final_recipient'] > 0) {
 
     <!-- Right side: Buttons -->
     <div class="d-flex align-items-center gap-2">
+        <!-- Send to Committee: only shown while the Final Review tab is active -->
+        <button class="btn btn-action d-none" id="sendToCommitteeBtn" data-bs-toggle="modal" data-bs-target="#sendToCommitteeModal">
+            <i class="bi bi-send me-1"></i>
+            Send to Committee
+        </button>
+
         <!-- Archive Applications: appears once a final recipient has been chosen -->
         <?php if ($statusCounts['final_recipient'] > 0): ?>
             <button class="btn btn-action"
@@ -513,12 +526,55 @@ if ($statusCounts['final_recipient'] > 0) {
 
 <!-- END TABLE -->
 
-    
+
   </div>
 </div>
 
 
 </div>
+
+<!-- Send to Committee Modal -->
+<div class="modal fade" id="sendToCommitteeModal" tabindex="-1" aria-labelledby="sendToCommitteeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+      <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+        <h5 class="modal-title text-white mb-1" id="sendToCommitteeModalLabel" style="font-weight: 600;">Send Final Review to Committee</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 24px 26px;">
+        <?php if (empty($committeeMembers)): ?>
+            <p class="text-muted mb-0">
+                No committee members have been added yet. Add some in
+                <a href="settings.php">Settings</a> first.
+            </p>
+        <?php else: ?>
+            <p class="text-muted" style="font-size: 13.5px;">
+                Select who should receive the secure review link. This generates a brand-new link and access code --
+                any link sent previously will stop working immediately.
+            </p>
+            <div style="max-height: 260px; overflow-y: auto;">
+                <?php foreach ($committeeMembers as $member): ?>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input committee-member-checkbox" type="checkbox" value="<?= (int) $member['id'] ?>" id="committeeMember<?= (int) $member['id'] ?>">
+                        <label class="form-check-label" for="committeeMember<?= (int) $member['id'] ?>">
+                            <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($member['name']) ?></div>
+                            <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($member['email']) ?></div>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+      </div>
+      <?php if (!empty($committeeMembers)): ?>
+      <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+        <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" id="sendToCommitteeSubmitBtn">Send</button>
+      </div>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <?php include_once ROOT_PATH . '/assets/includes/footer.php'; ?>
@@ -552,6 +608,8 @@ document.querySelectorAll('.status-tab').forEach(tab => {
         this.classList.add('active');
         currentStatusTab = this.dataset.status;
         applyTableFilters();
+
+        document.getElementById('sendToCommitteeBtn').classList.toggle('d-none', currentStatusTab !== 'final_review');
     });
 });
 </script>
@@ -715,6 +773,49 @@ document.getElementById('applicationsTable').addEventListener('change', function
     });
 }
 
+</script>
+
+<script>
+// Send to Committee: gather the checked member IDs and POST them. A fresh
+// token+code is generated server-side on every send, immediately replacing
+// whatever was active before.
+const sendToCommitteeBtn = document.getElementById('sendToCommitteeSubmitBtn');
+if (sendToCommitteeBtn) {
+    sendToCommitteeBtn.addEventListener('click', function() {
+        const memberIds = Array.from(document.querySelectorAll('.committee-member-checkbox:checked')).map(cb => cb.value);
+
+        if (memberIds.length === 0) {
+            Swal.fire({ icon: 'info', title: 'No one selected', text: 'Choose at least one committee member to send to.' });
+            return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        sendToCommitteeBtn.disabled = true;
+
+        fetch('send_committee_review.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ member_ids: memberIds, csrf_token: csrfToken })
+        })
+        .then(res => res.json())
+        .then(data => {
+            sendToCommitteeBtn.disabled = false;
+            const modalEl = document.getElementById('sendToCommitteeModal');
+            bootstrap.Modal.getInstance(modalEl)?.hide();
+
+            Swal.fire({
+                icon: data.success ? 'success' : 'error',
+                title: data.success ? 'Sent' : 'Error',
+                html: data.message
+            });
+        })
+        .catch(err => {
+            sendToCommitteeBtn.disabled = false;
+            console.error(err);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while sending.' });
+        });
+    });
+}
 </script>
 
 
