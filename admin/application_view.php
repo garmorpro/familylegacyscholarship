@@ -419,7 +419,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                         </a>
                         <!-- Modal -->
                         <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
-                          <div class="modal-dialog modal-lg modal-dialog-centered">
+                          <div class="modal-dialog modal-xl modal-dialog-centered">
                             <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
                               <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
                                 <div>
