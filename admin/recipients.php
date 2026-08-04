@@ -101,8 +101,6 @@ try {
             <?php else: ?>
                 <?php foreach ($recipients as $rec): ?>
                     <tr class="recipient-row" style="cursor: pointer;"
-                        data-bs-toggle="modal"
-                        data-bs-target="#uploadPictureModal"
                         data-recipient-id="<?= $rec['id'] ?>"
                         data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>">
 
@@ -139,7 +137,7 @@ try {
                             <?php endif; ?>
                         </td>
 
-                        <td class="text-end" onclick="event.stopPropagation()">
+                        <td class="text-end">
                             <button type="button" class="recipient-delete-btn"
                                     data-recipient-id="<?= $rec['id'] ?>"
                                     data-recipient-name="<?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name'], ENT_QUOTES, 'UTF-8') ?>"
@@ -208,13 +206,27 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-var uploadModal = document.getElementById('uploadPictureModal');
+var uploadModalEl = document.getElementById('uploadPictureModal');
+var uploadModal = new bootstrap.Modal(uploadModalEl);
 
-uploadModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget; // Row that triggered modal
-    var recipientId = button.getAttribute('data-recipient-id');
-    var recipientPicture = button.getAttribute('data-recipient-picture');
+// Row clicks open the upload modal -- but only when the click didn't
+// originate on (or inside) the delete button. Handling this explicitly
+// in JS, instead of relying on Bootstrap's data-bs-toggle click delegation
+// plus stopPropagation() racing it, is what actually guarantees the two
+// actions never both fire from a single click.
+document.querySelectorAll('.recipient-row').forEach(function (row) {
+    row.addEventListener('click', function (event) {
+        if (event.target.closest('.recipient-delete-btn')) {
+            return;
+        }
+        openUploadModal(
+            row.getAttribute('data-recipient-id'),
+            row.getAttribute('data-recipient-picture')
+        );
+    });
+});
 
+function openUploadModal(recipientId, recipientPicture) {
     document.getElementById('recipient_id').value = recipientId;
 
     var currentPictureContainer = document.getElementById('currentPictureContainer');
@@ -238,7 +250,9 @@ uploadModal.addEventListener('show.bs.modal', function (event) {
         fileInputLabel.textContent = 'Choose an image';
         replaceHint.classList.add('d-none');
     }
-});
+
+    uploadModal.show();
+}
 
 // Deleting a recipient is permanent -- a styled, hard-to-miss confirmation
 // before anything actually gets submitted.
