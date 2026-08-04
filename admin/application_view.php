@@ -101,6 +101,40 @@ try {
         .btn-stage-cta.final:hover { background: rgba(197,160,89,0.3); }
         .btn-stage-cta.recipient { background: rgb(7,5,55); color:#fff; }
         .btn-stage-cta.recipient:hover { background: rgb(20,16,80); }
+
+        /* Application detail: sidebar + document layout */
+        .detail-sidebar { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 14px; padding: 22px; position: sticky; top: 20px; }
+        .detail-sidebar-block { margin-bottom: 22px; }
+        .detail-sidebar-block:last-child { margin-bottom: 0; }
+        .detail-sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .detail-sidebar-label i { color: #C5A059; }
+        .detail-sidebar-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13.5px; padding: 6px 0; border-bottom: 1px solid #f3f3f6; }
+        .detail-sidebar-row:last-child { border-bottom: none; }
+        .detail-sidebar-row .k { color: #6c757d; }
+        .detail-sidebar-row .v { font-weight: 600; color: #212529; text-align: right; word-break: break-word; }
+        .detail-sidebar-row .v a { color: rgb(7,5,55); }
+        .detail-status-pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .detail-status-pill.completed { background: rgba(25,135,84,0.12); color: #198754; }
+        .detail-status-pill.sent { background: rgba(13,110,253,0.12); color: #0d6efd; }
+        .detail-status-pill.not-sent { background: rgba(108,117,125,0.12); color: #6c757d; }
+        .detail-sidebar-action { font-size: 12.5px; font-weight: 600; text-decoration: none; }
+
+        .detail-doc { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 14px; padding: 8px 0; }
+        .detail-doc-section { padding: 22px 28px; border-bottom: 1px solid #f3f3f6; }
+        .detail-doc-section:last-child { border-bottom: none; }
+        .detail-doc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .detail-doc-head i { color: #C5A059; font-size: 16px; }
+        .detail-doc-title { font-weight: 700; font-size: 15.5px; color: #212529; }
+        .detail-doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .detail-doc-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 4px; }
+        .detail-doc-value { font-size: 14.5px; color: #333; }
+        .detail-word-count { font-size: 12px; color: #9a9aa5; font-weight: 600; margin-left: auto; }
+        .detail-essay-box { background: #FBF9F3; border: 1px solid #ECE6D8; border-radius: 10px; padding: 16px 18px; font-size: 14.5px; line-height: 1.7; color: #2b2b2b; margin-top: 4px; }
+
+        @media (max-width: 991px) {
+            .detail-sidebar { position: static; margin-bottom: 16px; }
+            .detail-doc-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -296,320 +330,218 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
 
 </div>
 
-<div class="card-body" style="background-color: #eaefff; padding: 1.5rem !important; border: none !important;">
+<div class="card-body" style="background-color: rgb(249,250,251); padding: 1.5rem !important; border: none !important;">
 
 <div class="row mt-4">
 
-    <!-- LEFT COLUMN: 25% -->
-    <div class="col-lg-4">
+    <!-- Sidebar: reference info -->
+    <div class="col-lg-3">
+        <div class="detail-sidebar">
 
-        <!-- Contact Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-body">
-                <h5 class="card-title fw-semibold mb-3">Contact Information</h5>
-                <div class="mb-2">
-                    <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-envelope me-2 text-primary"></i> <span class="text-muted">Email</span>
+            <div class="detail-sidebar-block">
+                <div class="detail-sidebar-label"><i class="bi bi-envelope-fill"></i>Contact</div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Email</span>
+                    <span class="v"><a href="mailto:<?= htmlspecialchars($application['email'] ?? 'N/A') ?>"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></a></span>
+                </div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Phone</span>
+                    <span class="v"><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></span>
+                </div>
+            </div>
+
+            <div class="detail-sidebar-block">
+                <div class="detail-sidebar-label"><i class="bi bi-mortarboard-fill"></i>Academic</div>
+                <div class="detail-sidebar-row">
+                    <span class="k">GPA</span>
+                    <span class="v"><?= htmlspecialchars($application['gpa'] ?? 'N/A') ?></span>
+                </div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Grad Year</span>
+                    <span class="v"><?= htmlspecialchars($application['expected_graduation_year'] ?? 'N/A') ?></span>
+                </div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Institution</span>
+                    <span class="v"><?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?></span>
+                </div>
+            </div>
+
+            <?php
+            // Fetch recommendation for this application
+            $recommendationStmt = $pdo->prepare("
+                SELECT
+                    r.id,
+                    r.recommender_name,
+                    r.recommender_email,
+                    r.recommender_relationship,
+                    r.status AS recommender_status,
+                    r.recommendation,
+                    r.completed_date,
+                    s.first_name,
+                    s.last_name
+                FROM recommendations r
+                JOIN scholarship_applications s ON s.id = r.scholarship_application_id
+                WHERE r.scholarship_application_id = :app_id
+                LIMIT 1
+            ");
+            $recommendationStmt->execute([':app_id' => $application['id']]);
+            $recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
+
+            // Combine first and last name for easier use
+            $recommendation['applicant_name'] = $recommendation['first_name'] . ' ' . $recommendation['last_name'];
+
+            $recStatus = strtolower($recommendation['recommender_status'] ?? 'not_sent');
+            switch ($recStatus) {
+                case 'completed': $recPillClass = 'completed'; $recPillText = 'Completed'; break;
+                case 'sent':      $recPillClass = 'sent';      $recPillText = 'Sent';      break;
+                default:          $recPillClass = 'not-sent';  $recPillText = 'Not Sent';
+            }
+            ?>
+
+            <div class="detail-sidebar-block">
+                <div class="detail-sidebar-label"><i class="bi bi-file-earmark-person-fill"></i>Recommendation</div>
+                <div class="detail-sidebar-row">
+                    <span class="k">From</span>
+                    <span class="v"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></span>
+                </div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Relationship</span>
+                    <span class="v"><?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?></span>
+                </div>
+                <div class="detail-sidebar-row">
+                    <span class="k">Status</span>
+                    <span class="detail-status-pill <?= $recPillClass ?>"><?= $recPillText ?></span>
+                </div>
+
+                <div class="mt-2">
+                    <?php if ($recStatus === 'completed'): ?>
+                        <a href="#" class="detail-sidebar-action" style="color: rgb(7,5,55);" data-bs-toggle="modal" data-bs-target="#recModal<?= $recommendation['id'] ?>">
+                            <i class="bi bi-eye me-1"></i>View letter
+                        </a>
+                        <!-- Modal -->
+                        <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
+                          <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+                              <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+                                <div>
+                                  <h5 class="modal-title text-white mb-1" id="recModalLabel<?= $recommendation['id'] ?>" style="font-weight: 600;">
+                                    Letter of Recommendation
+                                  </h5>
+                                  <div style="font-size: 13px; color: rgba(255,255,255,0.7);">
+                                    For <?= htmlspecialchars($recommendation['applicant_name']) ?>
+                                  </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
+
+                                <!-- Recommender identity strip -->
+                                <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid #e9e9ee;">
+                                  <div style="width: 44px; height: 44px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+                                    <?= htmlspecialchars(strtoupper(substr($recommendation['recommender_name'] ?? '?', 0, 1))) ?>
+                                  </div>
+                                  <div>
+                                    <div class="fw-semibold" style="font-size: 15px;"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></div>
+                                    <div class="text-muted" style="font-size: 13px;">
+                                      <?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?>
+                                      <?php if (!empty($recommendation['completed_date'])): ?>
+                                        &bull; Submitted <?= date('F j, Y', strtotime($recommendation['completed_date'])) ?>
+                                      <?php endif; ?>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Letter content -->
+                                <div class="letter-paper">
+                                    <div class="letter-quote-mark">&ldquo;</div>
+                                    <div class="letter-body">
+                                        <?= $recommendation['recommendation'] ?>
+                                    </div>
+                                </div>
+
+                              </div>
+                              <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+                                <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    <?php elseif ($recStatus === 'not_sent'): ?>
+                        <a href="send_recommendation.php?id=<?= $recommendation['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>" class="detail-sidebar-action" style="color: rgb(7,5,55);">
+                            <i class="bi bi-send me-1"></i>Send request
+                        </a>
+                    <?php else: ?>
+                        <span class="text-muted" style="font-size: 12.5px;"><i class="bi bi-clock me-1"></i>Awaiting response</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Document: application content -->
+    <div class="col-lg-9">
+        <div class="detail-doc">
+
+            <div class="detail-doc-section">
+                <div class="detail-doc-head"><i class="bi bi-bank2"></i><div class="detail-doc-title">Post-Secondary Plans</div></div>
+                <div class="detail-doc-grid">
+                    <div>
+                        <div class="detail-doc-label">Intended School</div>
+                        <div class="detail-doc-value"><?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?></div>
                     </div>
-                    <a href="mailto:<?= htmlspecialchars($application['email'] ?? 'N/A') ?>"><span class="fw-semibold"><?= htmlspecialchars($application['email'] ?? 'N/A') ?></span></a>
-                </div>
-                <hr>
-                <div class="mb-0">
-                    <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-telephone me-2 text-primary"></i> <span class="text-muted">Phone</span>
+                    <div>
+                        <div class="detail-doc-label">Intended Major</div>
+                        <div class="detail-doc-value"><?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?></div>
                     </div>
-                    <span class="fw-semibold"><?= htmlspecialchars($application['phone'] ?? 'N/A') ?></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Academic Profile Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-body">
-                <h5 class="card-title fw-semibold mb-3">Academic Profile</h5>
-                <div class="mb-2">
-                    <span class="text-muted">GPA</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['gpa'] ?? 'N/A') ?></span>
-                </div>
-                <hr>
-                <div class="mb-2">
-                    <span class="text-muted">Expected Graduation Year</span><br> <span class="fw-semibold"><?= htmlspecialchars($application['expected_graduation_year'] ?? 'N/A') ?></span>
-                </div>
-                <hr>
-                <div class="mb-0">
-                    <span class="text-muted">Institution Type</span> <br> <span class="fw-semibold"><?= htmlspecialchars($application['institution_type'] ?? 'N/A') ?></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recommendation Card -->
-         <?php
-
-  
-// Fetch recommendation for this application
-$recommendationStmt = $pdo->prepare("
-    SELECT
-        r.id,
-        r.recommender_name,
-        r.recommender_email,
-        r.recommender_relationship,
-        r.status AS recommender_status,
-        r.recommendation,
-        r.completed_date,
-        s.first_name,
-        s.last_name
-    FROM recommendations r
-    JOIN scholarship_applications s ON s.id = r.scholarship_application_id
-    WHERE r.scholarship_application_id = :app_id
-    LIMIT 1
-");
-$recommendationStmt->execute([':app_id' => $application['id']]);
-$recommendation = $recommendationStmt->fetch(PDO::FETCH_ASSOC);
-
-// Combine first and last name for easier use
-$recommendation['applicant_name'] = $recommendation['first_name'] . ' ' . $recommendation['last_name'];
-
-?>
-
-
-         
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h5 class="card-title fw-semibold mb-0">Recommendation</h5>
-                    <?php
-$status = strtolower($recommendation['recommender_status'] ?? 'not sent');
-
-switch ($status) {
-    case 'completed':
-        $iconClass = 'bi-eye-fill text-success';
-        $iconTitle = 'Completed';
-        break;
-    case 'sent':
-        $iconClass = 'bi-clock-fill text-secondary';
-        $iconTitle = 'Send';
-        break;
-    case 'sent':
-    case 'not_sent':
-    default:
-        $iconClass = 'bi-send-fill text-primary';
-        $iconTitle = 'Not Sent';
-        break;
-}
-?>
-<div class="d-flex gap-1">
-    <?php if ($status === 'not_sent'): ?>
-        <!-- Not sent: show clickable icon that triggers alert -->
-        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"
-       style="cursor:pointer;"
-       onclick="window.location.href='send_recommendation.php?id=<?= $recommendation['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>'">
-    </i>
-    <?php elseif ($status === 'completed'): ?>
-        <!-- Completed: open modal -->
-        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>" 
-           style="cursor:pointer;" 
-           data-bs-toggle="modal" 
-           data-bs-target="#recModal<?= $recommendation['id'] ?>">
-        </i>
-        <!-- Modal -->
-    <div class="modal fade" id="recModal<?= $recommendation['id'] ?>" tabindex="-1" aria-labelledby="recModalLabel<?= $recommendation['id'] ?>" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
-          <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
-            <div>
-              <h5 class="modal-title text-white mb-1" id="recModalLabel<?= $recommendation['id'] ?>" style="font-weight: 600;">
-                Letter of Recommendation
-              </h5>
-              <div style="font-size: 13px; color: rgba(255,255,255,0.7);">
-                For <?= htmlspecialchars($recommendation['applicant_name']) ?>
-              </div>
-            </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
-
-            <!-- Recommender identity strip -->
-            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid #e9e9ee;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
-                <?= htmlspecialchars(strtoupper(substr($recommendation['recommender_name'] ?? '?', 0, 1))) ?>
-              </div>
-              <div>
-                <div class="fw-semibold" style="font-size: 15px;"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></div>
-                <div class="text-muted" style="font-size: 13px;">
-                  <?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?>
-                  <?php if (!empty($recommendation['completed_date'])): ?>
-                    &bull; Submitted <?= date('F j, Y', strtotime($recommendation['completed_date'])) ?>
-                  <?php endif; ?>
-                </div>
-              </div>
-            </div>
-
-            <!-- Letter content -->
-            <div class="letter-paper">
-                <div class="letter-quote-mark">&ldquo;</div>
-                <div class="letter-body">
-                    <?= $recommendation['recommendation'] ?>
                 </div>
             </div>
 
-          </div>
-          <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
-            <button type="button" class="btn" style="background: rgb(7,5,55); color: #fff;" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <?php else: ?>
-        <!-- Pending or Sent: static icon -->
-        <i class="bi <?= $iconClass ?>" title="<?= $iconTitle ?>"></i>
-    <?php endif; ?>
-</div>
-
-
-                </div>
-
-                <div class="mb-2">
-    <span class="text-muted">Recommender</span> <br>
-    <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_name'] ?? 'N/A') ?></span>
-</div>
-<div class="mb-2">
-    <span class="text-muted">Relationship</span> <br>
-    <span class="fw-semibold"><?= htmlspecialchars($recommendation['recommender_relationship'] ?? 'N/A') ?></span>
-</div>
-<div class="mb-2">
-    <span class="text-muted">Email</span> <br> 
-    <span class="fw-semibold">
-        <a href="mailto:<?= htmlspecialchars($recommendation['recommender_email'] ?? '') ?>">
-            <?= htmlspecialchars($recommendation['recommender_email'] ?? 'N/A') ?>
-        </a>
-    </span>
-</div>
-
-<?php
-    $status = strtolower($recommendation['recommender_status'] ?? '');
-    switch ($status) {
-        case 'completed': $badgeClass='bg-success'; $badgeText='Completed'; break;
-        case 'sent': $badgeClass='bg-primary'; $badgeText='Sent'; break;
-        case 'not_sent': $badgeClass='bg-secondary'; $badgeText='Not Sent'; break;
-        default: $badgeClass='bg-secondary'; $badgeText=htmlspecialchars($recommendation['recommender_status']);
-    }
-?>
-<div class="mb-0">
-    <span class="text-muted">Status</span> <br>
-    <span class="badge rounded-pill <?= $badgeClass ?> px-3 py-2"><?= $badgeText ?></span>
-</div>
-
-
+            <div class="detail-doc-section">
+                <div class="detail-doc-head"><i class="bi bi-people-fill"></i><div class="detail-doc-title">Activities & Leadership</div></div>
+                <div class="detail-doc-label">Extracurricular Activities</div>
+                <div class="detail-doc-value mb-3"><?= nl2br(htmlspecialchars($application['extracurricular'] ?? 'N/A')) ?></div>
+                <div class="detail-doc-label">Leadership Roles</div>
+                <div class="detail-doc-value mb-3"><?= nl2br(htmlspecialchars($application['leadership'] ?? 'N/A')) ?></div>
+                <div class="detail-doc-label">Community Service</div>
+                <div class="detail-doc-value"><?= nl2br(htmlspecialchars($application['community_service'] ?? 'N/A')) ?></div>
             </div>
-        </div>
 
-    </div>
-
-    <!-- RIGHT COLUMN: 75% -->
-    <div class="col-lg-8">
-
-        <!-- Post-Secondary Plans Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-header bg-white d-flex align-items-center gap-2" style="border: none !important; padding-top: 30px; padding-left: 25px; margin-bottom: -20px !important;">
-                <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
-                    <i class="bi bi-mortarboard text-white"></i>
+            <?php
+                $essayText = $application['essay'] ?? '';
+                $wordCount = str_word_count($essayText);
+            ?>
+            <div class="detail-doc-section">
+                <div class="detail-doc-head">
+                    <i class="bi bi-file-text-fill"></i>
+                    <div class="detail-doc-title">Essay</div>
+                    <div class="detail-word-count"><?= $wordCount ?> words</div>
                 </div>
-                <h5 class="mb-0 fw-semibold">Post-Secondary Plans</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-2">
-                    <span class="text-muted">Intended School</span> <br>
-                    <span class="fw-semibold"><?= htmlspecialchars($application['intended_school'] ?? 'N/A') ?></span>
+                <div style="font-size: 13.5px; color: #6c757d; font-style: italic; margin-bottom: 10px;">
+                    In 500-750 words, please tell us about yourself...
                 </div>
-                <div class="mb-0">
-                    <span class="text-muted">Intended Major</span> <br>
-                    <span class="fw-semibold"><?= htmlspecialchars($application['intended_major'] ?? 'N/A') ?></span>
+                <div class="detail-essay-box">
+                    <?= nl2br(htmlspecialchars($essayText)) ?>
                 </div>
             </div>
-        </div>
 
-        <!-- Activities & Leadership Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-header bg-white d-flex align-items-center gap-2" style="border: none !important; padding-top: 30px; padding-left: 25px; margin-bottom: -20px !important;">
-                <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #198754; border-radius: 4px;">
-                    <i class="bi bi-award text-white"></i>
-                </div>
-                <h5 class="mb-0 fw-semibold">Activities & Leadership</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="fw-semibold mb-1">Extracurricular Activities:</div>
-                    <div><?= nl2br(htmlspecialchars($application['extracurricular'] ?? 'N/A')) ?></div>
-                </div>
-                <hr>
-                <div class="mb-3">
-                    <div class="fw-semibold mb-1">Leadership Roles:</div>
-                    <div><?= nl2br(htmlspecialchars($application['leadership'] ?? 'N/A')) ?></div>
-                </div>
-                <hr>
-                <div>
-                    <div class="fw-semibold mb-1">Community Service:</div>
-                    <div><?= nl2br(htmlspecialchars($application['community_service'] ?? 'N/A')) ?></div>
+            <div class="detail-doc-section">
+                <div class="detail-doc-head"><i class="bi bi-info-circle-fill"></i><div class="detail-doc-title">Additional Details</div></div>
+                <div class="detail-doc-grid">
+                    <div>
+                        <div class="detail-doc-label">Financial Need</div>
+                        <div class="detail-doc-value"><?= nl2br(htmlspecialchars($application['financial_need'] ?? 'N/A')) ?></div>
+                    </div>
+                    <div>
+                        <div class="detail-doc-label">Additional Notes</div>
+                        <div class="detail-doc-value"><?= nl2br(htmlspecialchars($application['additional_information'] ?? 'N/A')) ?></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Essay Card -->
-<div class="card mb-3 shadow-sm" style="border-radius: 12px; border: none; overflow: hidden;">
-    <!-- Card Header -->
-    <div class="card-header bg-white d-flex align-items-center gap-2" style="padding: 20px 10px; border-bottom: none !important;">
-        <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #0d6efd; border-radius: 6px;">
-            <i class="bi bi-file-earmark-text text-white"></i>
-        </div>
-        <h5 class="mb-0 fw-semibold">Essay</h5>
-        <!-- Word Count small badge -->
-        <?php
-            $essayText = $application['essay'] ?? '';
-            $wordCount = str_word_count($essayText);
-        ?>
-        <span style="
-            font-size: 12px;
-            color: #6c757d;
-            margin-left: auto;
-            font-weight: 500;
-        ">
-            <?= $wordCount ?> words
-        </span>
-    </div>
-    <p style="font-size: 14px;">
-        In 500-750 words, please tell us about yourself...
-    </p>
-
-    <!-- Card Body -->
-    <div class="card-body" style="padding: 20px 25px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; border-top: 1px solid #e9ecef;">
-        <div style="line-height: 1.6; color: #343a40; font-size: 14px;">
-            <?= nl2br(htmlspecialchars($essayText)) ?>
         </div>
     </div>
-</div>
 
-
-        <!-- Additional Details Card -->
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; padding: 0 !important; border: 0 !important;">
-            <div class="card-header bg-white d-flex align-items-center gap-2" style="border: none !important; padding-top: 30px; padding-left: 25px; margin-bottom: -20px !important;">
-                <div class="d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #6c757d; border-radius: 4px;">
-                    <i class="bi bi-info-circle text-white"></i>
-                </div>
-                <h5 class="mb-0 fw-semibold">Additional Details</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="fw-semibold mb-1">Financial Need:</div>
-                    <div><?= nl2br(htmlspecialchars($application['financial_need'] ?? 'N/A')) ?></div>
-                </div>
-                <hr>
-                <div>
-                    <div class="fw-semibold mb-1">Additional Notes:</div>
-                    <div><?= nl2br(htmlspecialchars($application['additional_information'] ?? 'N/A')) ?></div>
-                </div>
-            </div>
-        </div>
-
-    </div>
 </div>
 
 <?php else: ?>
