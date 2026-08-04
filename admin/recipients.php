@@ -12,6 +12,24 @@ try {
 } catch (Exception $e) {
     $recipients = [];
 }
+
+// selection_email_scheduled_at / _sent_at are stored as naive UTC (see
+// mark_final_selected.php + cron/send_selection_emails.php). Rendering them
+// as a fixed server-side format would show the wrong time to anyone not in
+// that same zone -- instead, emit each as an unambiguous UTC ISO string and
+// let a small JS pass below convert it into whichever local time the
+// browser actually viewing this page is in.
+function utc_to_iso(?string $utcNaive): ?string {
+    if (empty($utcNaive)) {
+        return null;
+    }
+    try {
+        $dt = new DateTime($utcNaive, new DateTimeZone('UTC'));
+        return $dt->format(DateTime::ATOM);
+    } catch (Exception $e) {
+        return null;
+    }
+}
 ?>
 
 
@@ -137,9 +155,9 @@ try {
 
                         <td onclick="event.stopPropagation()">
                             <?php if (!empty($rec['selection_email_sent_at'])): ?>
-                                <span class="pic-pill yes">Sent <?= date('M j, g:ia', strtotime($rec['selection_email_sent_at'])) ?></span>
+                                <span class="pic-pill yes local-time" data-utc="<?= utc_to_iso($rec['selection_email_sent_at']) ?>" data-prefix="Sent ">Sent &hellip;</span>
                             <?php elseif (!empty($rec['selection_email_scheduled_at'])): ?>
-                                <span class="pic-pill scheduled">Scheduled <?= date('M j, g:ia', strtotime($rec['selection_email_scheduled_at'])) ?></span>
+                                <span class="pic-pill scheduled local-time" data-utc="<?= utc_to_iso($rec['selection_email_scheduled_at']) ?>" data-prefix="Scheduled ">Scheduled &hellip;</span>
                             <?php else: ?>
                                 <span class="pic-pill no">Not scheduled</span>
                             <?php endif; ?>
@@ -221,6 +239,20 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// Selection email times are rendered server-side as UTC ISO strings
+// (data-utc) -- convert each to whichever local time this browser is
+// actually in before showing it, so the admin viewing this page always
+// sees a time that makes sense to them, wherever they are.
+document.querySelectorAll('.local-time').forEach(function (el) {
+    var utc = el.getAttribute('data-utc');
+    if (!utc) return;
+    var prefix = el.getAttribute('data-prefix') || '';
+    var formatted = new Date(utc).toLocaleString(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
+    el.textContent = prefix + formatted;
+});
+
 var uploadModalEl = document.getElementById('uploadPictureModal');
 var uploadModal = new bootstrap.Modal(uploadModalEl);
 

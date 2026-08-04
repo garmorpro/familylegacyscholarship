@@ -17,11 +17,32 @@ $appId = (int)$_POST['id'];
 // cron/send_selection_emails.php) is what actually sends it once that time
 // arrives. Required so a recipient can never be designated without a
 // selection email eventually being scheduled.
-$scheduledSendAt = trim($_POST['scheduled_send_at'] ?? '');
-if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $scheduledSendAt)) {
+//
+// A <input type="datetime-local"> value has NO timezone info of its own --
+// it's just the wall-clock digits the browser showed, with no indication of
+// which zone they're in. Whoever is designating could be in CDT, MDT,
+// wherever -- so the browser's actual IANA zone (e.g. "America/Chicago") is
+// sent alongside it, and used here to convert to a real, unambiguous UTC
+// instant before storing. The cron job then only ever compares UTC to UTC,
+// so it fires at the correct moment no matter what timezone the admin (or
+// the server itself) happens to be in.
+$scheduledSendAtRaw = trim($_POST['scheduled_send_at'] ?? '');
+$scheduledSendTz = trim($_POST['scheduled_send_tz'] ?? '');
+
+if (!preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $scheduledSendAtRaw)) {
     die("Please pick a date and time for the selection email before designating a recipient.");
 }
-$scheduledSendAt = str_replace('T', ' ', $scheduledSendAt); // datetime-local -> Postgres timestamp literal
+if ($scheduledSendTz === '' || !in_array($scheduledSendTz, DateTimeZone::listIdentifiers(), true)) {
+    die("Couldn't determine your time zone. Please try again.");
+}
+
+try {
+    $localDt = new DateTime(str_replace('T', ' ', $scheduledSendAtRaw), new DateTimeZone($scheduledSendTz));
+    $localDt->setTimezone(new DateTimeZone('UTC'));
+    $scheduledSendAt = $localDt->format('Y-m-d H:i:s'); // stored as naive UTC
+} catch (Exception $e) {
+    die("Invalid date/time or time zone provided.");
+}
 
 try {
     $pdo->beginTransaction();

@@ -14,11 +14,13 @@ if (php_sapi_name() !== 'cli') {
 require_once __DIR__ . '/../app/db.php';
 require_once __DIR__ . '/../app/recipient_selection_mailer.php';
 
-// Scheduled times are entered by the admin as Eastern Time (where the
-// scholarship is based) -- compare against "now" in that same zone so a
-// server running in UTC (or any other zone) doesn't send early or late.
-date_default_timezone_set('America/New_York');
-$nowEastern = date('Y-m-d H:i:s');
+// selection_email_scheduled_at is stored as a naive UTC timestamp (see
+// mark_final_selected.php, which converts whatever time zone the admin's
+// browser was actually in at the moment they picked it into UTC before
+// saving). gmdate() always returns UTC regardless of this server's own
+// timezone setting, so this comparison is correct no matter what zone the
+// box running cron happens to be in.
+$nowUtc = gmdate('Y-m-d H:i:s');
 
 try {
     $stmt = $pdo->prepare("
@@ -27,7 +29,7 @@ try {
           AND selection_email_scheduled_at <= :now
           AND selection_email_sent_at IS NULL
     ");
-    $stmt->execute([':now' => $nowEastern]);
+    $stmt->execute([':now' => $nowUtc]);
     $due = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($due)) {
@@ -37,7 +39,10 @@ try {
     $awardAmountRaw = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'award_amount'")->fetchColumn();
     $awardAmount = $awardAmountRaw !== false ? (string) $awardAmountRaw : '';
 
-    $markSent = $pdo->prepare("UPDATE recipients SET selection_email_sent_at = NOW() WHERE id = :id");
+    // Stamped in UTC too (rather than the DB server's own NOW(), whose
+    // timezone isn't guaranteed) so every timestamp on this table follows
+    // the same convention and displays correctly everywhere.
+    $markSent = $pdo->prepare("UPDATE recipients SET selection_email_sent_at = :now WHERE id = :id");
 
     foreach ($due as $recipient) {
         $ok = send_recipient_selection_email(
@@ -48,7 +53,7 @@ try {
         );
 
         if ($ok) {
-            $markSent->execute([':id' => $recipient['id']]);
+            $markSent->execute([':id' => $recipient['id'], ':now' => gmdate('Y-m-d H:i:s')]);
             echo "[" . date('Y-m-d H:i:s') . "] Sent selection email to {$recipient['email']} (recipient #{$recipient['id']}).\n";
         } else {
             error_log("send_selection_emails.php: failed to send to {$recipient['email']} (recipient #{$recipient['id']})");

@@ -292,6 +292,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
                     <input type="hidden" name="scheduled_send_at" id="scheduledSendAtInput">
+                    <input type="hidden" name="scheduled_send_tz" id="scheduledSendTzInput">
                     <button type="submit" class="btn-stage-cta recipient">
                         <i class="bi bi-star-fill me-1"></i>Designate as Final Recipient
                     </button>
@@ -568,6 +569,15 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
             ? `This will mark <strong>${applicantName}</strong> as this cycle's final recipient.`
             : `${applicantName}'s recommendation hasn't been received yet. Designate them as the final recipient anyway?`;
 
+        // Whichever time zone this browser is actually in -- the date/time
+        // you pick below is always interpreted in YOUR local time, whoever
+        // and wherever you are, not a hardcoded zone. It's converted to a
+        // precise UTC instant server-side before being stored.
+        const browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const tzLabel = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
+            .formatToParts(new Date())
+            .find(p => p.type === 'timeZoneName')?.value || browserTz;
+
         // Designating never sends the selection email by itself -- a date
         // and time is required here, and a server-side cron job (running
         // every 5 minutes) is what actually sends it once that time arrives.
@@ -580,7 +590,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                 </label>
                 <input type="datetime-local" id="scheduledSendInput" class="swal2-input" style="width: 100%; margin: 0;">
                 <div style="text-align:left; font-size:12px; color:#8a8a94; margin-top:6px;">
-                    Eastern Time. The email goes out automatically at this date and time -- nothing is sent immediately.
+                    Your time zone (${tzLabel}). The email goes out automatically at this date and time -- nothing is sent immediately.
                 </div>
             `,
             icon: recommendationReceived ? 'question' : 'warning',
@@ -599,6 +609,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('scheduledSendAtInput').value = result.value;
+                document.getElementById('scheduledSendTzInput').value = browserTz;
                 form.submit();
             }
         });
