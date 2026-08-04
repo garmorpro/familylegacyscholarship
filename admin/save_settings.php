@@ -72,10 +72,16 @@ try {
         $stmt->execute();
     }
 
+    // Sends the admin back to whichever tab they were actually editing,
+    // instead of always bouncing to General.
+    $allowedTabs = ['general', 'timeline', 'review', 'committee'];
+    $activeTab = in_array($_POST['active_tab'] ?? '', $allowedTabs, true) ? $_POST['active_tab'] : 'general';
+    $tabParam = "&tab=" . urlencode($activeTab);
+
     if ($fieldErrors) {
-        header("Location: settings.php?error=" . urlencode(implode(' ', $fieldErrors)));
+        header("Location: settings.php?error=" . urlencode(implode(' ', $fieldErrors)) . $tabParam);
     } else {
-        header("Location: settings.php?success=1");
+        header("Location: settings.php?success=1" . $tabParam);
     }
     exit;
 
