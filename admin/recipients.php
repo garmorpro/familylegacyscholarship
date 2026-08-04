@@ -4,19 +4,14 @@ require_once '../app/require_admin.php';
 require_once '../app/csrf.php';
 
 require_once '../path.php';
-// Ensure PDO exists
-
 
 // Fetch all recipients from DB
-
 try {
     $recipientsStmt = $pdo->query("SELECT * FROM recipients ORDER BY application_year DESC");
     $recipients = $recipientsStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $recipients = [];
 }
-
-
 ?>
 
 
@@ -25,6 +20,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
@@ -33,6 +29,22 @@ try {
 
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <title>Recipients - Morgan Legacy Scholarship</title>
+    <style>
+        .recipient-table { width: 100%; border-collapse: collapse; }
+        .recipient-table th { text-align: left; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; padding: 14px 20px; border-bottom: 1px solid #f3f3f6; background: rgb(249,250,251); }
+        .recipient-table td { padding: 14px 20px; border-bottom: 1px solid #f6f6f8; vertical-align: middle; }
+        .recipient-table tr:last-child td { border-bottom: none; }
+        .recipient-table tr.recipient-row:hover td { background: #fafbff; }
+        .recipient-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; overflow: hidden; }
+        .recipient-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .recipient-name { font-weight: 600; font-size: 14.5px; color: #212529; }
+        .recipient-sub { font-size: 12.5px; color: #8a8a94; }
+        .pic-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .pic-pill.yes { background: rgba(25,135,84,0.12); color: #198754; }
+        .pic-pill.no { background: rgba(220,53,69,0.1); color: #dc3545; }
+        .recipient-delete-btn { background: none; border: none; color: #c9c9d1; padding: 6px 8px; border-radius: 6px; }
+        .recipient-delete-btn:hover { color: #dc3545; background: rgba(220,53,69,0.08); }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -43,214 +55,214 @@ try {
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
-<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
+<div class="card shadow-sm" style="border-radius: 16px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
+  <div class="case-accent"></div>
 
-<!-- Top header remains white -->
-  <div class="card-header bg-white shadow-sm" style="padding: 1.5rem !important; padding-bottom: 0 !important;">
-    <div class="">
-        <!-- Back link -->
-        <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none text-muted d-inline-flex align-items-center">
-            <i class="bi bi-arrow-left me-1"></i> Back to application portal
-        </a>
-    </div>
+  <div style="padding: 28px 32px 24px;">
+    <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none" style="font-size: 13.5px; color: #9a9aa5; font-weight: 600;">
+        <i class="bi bi-arrow-left me-1"></i> Back to application portal
+    </a>
 
-  <!-- Text with padding preserved -->
-  <div class="card-body">
-    <div class="d-flex align-items-center justify-content-between mb-4" style="padding: 5px 5px;">
-        <!-- Left: Titles -->
-        <div>
-            <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Recipients</h3>
-            <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage and view all recipients</h5>
+    <h3 class="mt-3 mb-1" style="font-weight: 700; font-size: 1.5rem; color: #212529;">Recipients</h3>
+    <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Manage and view all recipients</h5>
+
+    <?php if (!empty($_GET['error'])): ?>
+        <div class="alert alert-danger d-flex align-items-start gap-2 mt-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div><?= htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8') ?></div>
         </div>
-    </div>
+    <?php elseif (!empty($_GET['success'])): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2 mt-3" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <div><?= htmlspecialchars($_GET['success'], ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+    <?php endif; ?>
+  </div>
 
-
-    <div class="mt-4 bg-white shadow-sm"
-     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
-
-    <table class="table table-hover mb-0 align-middle" id="applicationsTable">
-        <thead class="table-light">
-            <tr>
-                <th style="width: 20px;"></th>
-                <th>Applicant</th>
-                <th>Contact</th>
-                <th>Intended School</th>
-                <th>Application Year</th>
-                <th>Picture</th>
-                <th style="width: 40px;"></th>
-            </tr>
-        </thead>
-
-        <tbody>
-        <?php if (empty($recipients)): ?>
-            <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                    No recipients found
-                </td>
-            </tr>
-        <?php else: ?>
-            <?php foreach ($recipients as $rec): ?>
-                <tr style="cursor: pointer;"
-                    data-bs-toggle="modal"
-                    data-bs-target="#uploadPictureModal"
-                    data-recipient-id="<?= $rec['id'] ?>"
-                    data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>">
-
-                    <td style="width: 20px;"></td>
-
-                    <!-- Name + GPA -->
-                    <td>
-                        <div class="fw-semibold">
-                            <?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?>
-                        </div>
-                      
-                    </td>
-
-                    <!-- Contact -->
-                    <td>
-                        <div><?= htmlspecialchars($rec['email']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            <?= htmlspecialchars($rec['phone']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Intended School -->
-                    <td>
-                        <div><?= htmlspecialchars($rec['intended_school']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            <?= htmlspecialchars($rec['intended_major']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Date Submitted -->
-                    <td>
-                        <?= htmlspecialchars($rec['application_year']) ?>
-                    </td>
-
-                    <!-- Date Submitted -->
-                    <td>
-                        <?php if (!empty($rec['recipient_picture'])): ?>
-                            <span class="badge rounded-pill bg-success-subtle text-success">Uploaded</span>
-                        <?php else: ?>
-                            <span class="badge rounded-pill bg-danger-subtle text-danger">Not Yet</span>
-                        <?php endif; ?>
-                    </td>
-
-                    <td class="text-end text-muted">
-                        <i class="bi bi-chevron-right"></i>
-                    </td>
-
-
-                    
+  <div style="padding: 0 32px 32px;">
+    <div class="bg-white" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+        <table class="recipient-table">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Contact</th>
+                    <th>Intended School</th>
+                    <th>Application Year</th>
+                    <th>Picture</th>
+                    <th style="width: 60px;"></th>
                 </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+            <?php if (empty($recipients)): ?>
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">No recipients found</td>
+                </tr>
+            <?php else: ?>
+                <?php foreach ($recipients as $rec): ?>
+                    <tr class="recipient-row" style="cursor: pointer;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#uploadPictureModal"
+                        data-recipient-id="<?= $rec['id'] ?>"
+                        data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>">
+
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="recipient-avatar">
+                                    <?php if (!empty($rec['recipient_picture'])): ?>
+                                        <img src="../uploads/recipients/<?= htmlspecialchars($rec['recipient_picture']) ?>" alt="">
+                                    <?php else: ?>
+                                        <?= htmlspecialchars(strtoupper(substr($rec['first_name'], 0, 1))) ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="recipient-name"><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div><?= htmlspecialchars($rec['email']) ?></div>
+                            <div class="recipient-sub"><?= htmlspecialchars($rec['phone']) ?></div>
+                        </td>
+
+                        <td>
+                            <div><?= htmlspecialchars($rec['intended_school']) ?></div>
+                            <div class="recipient-sub"><?= htmlspecialchars($rec['intended_major']) ?></div>
+                        </td>
+
+                        <td><?= htmlspecialchars($rec['application_year']) ?></td>
+
+                        <td>
+                            <?php if (!empty($rec['recipient_picture'])): ?>
+                                <span class="pic-pill yes">Uploaded</span>
+                            <?php else: ?>
+                                <span class="pic-pill no">Not Yet</span>
+                            <?php endif; ?>
+                        </td>
+
+                        <td class="text-end" onclick="event.stopPropagation()">
+                            <button type="button" class="recipient-delete-btn"
+                                    data-recipient-id="<?= $rec['id'] ?>"
+                                    data-recipient-name="<?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name'], ENT_QUOTES, 'UTF-8') ?>"
+                                    onclick="confirmDeleteRecipient(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+  </div>
+
 </div>
 
-    <!-- Upload Picture Modal (single instance, reused for whichever row triggered it) -->
-    <div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
-          <div class="modal-content">
-            <?= csrf_field() ?>
-            <div class="modal-header">
-              <h5 class="modal-title" id="uploadPictureLabel">Upload Recipient Picture</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" name="recipient_id" id="recipient_id">
+<!-- Delete confirmation form -- hidden, submitted after the SweetAlert2 confirm -->
+<form id="deleteRecipientForm" method="POST" action="delete_recipient.php" class="d-none">
+    <?= csrf_field() ?>
+    <input type="hidden" name="id" id="deleteRecipientId">
+</form>
 
-                <!-- Current picture preview -->
-                <div class="mb-3 d-none text-center" id="currentPictureContainer">
-                    <img id="currentPictureImg" src="" alt="Current picture"
-                         style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid #dee2e6;">
-                    <div class="text-muted mt-1" style="font-size: 12px;">Current picture</div>
-                </div>
+<!-- Upload Picture Modal (single instance, reused for whichever row triggered it) -->
+<div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
+      <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+        <?= csrf_field() ?>
+        <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+          <h5 class="modal-title text-white mb-0" id="uploadPictureLabel" style="font-weight: 600;">Recipient Picture</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
+            <input type="hidden" name="recipient_id" id="recipient_id">
 
-                <!-- File input container -->
-                <div class="mb-2" id="fileInputContainer">
-                    <label for="recipient_picture" class="form-label" id="fileInputLabel">Choose an image</label>
-                    <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required>
-                </div>
-                <div class="text-muted d-none" id="replaceHint" style="font-size: 12px;">
-                    Uploading a new image will replace the current one.
-                </div>
+            <!-- Current picture preview -->
+            <div class="mb-3 d-none text-center" id="currentPictureContainer">
+                <img id="currentPictureImg" src="" alt="Current picture"
+                     style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+                <div class="text-muted mt-2" style="font-size: 12.5px;">Current picture</div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary" id="uploadButton">Upload</button>
+
+            <label for="recipient_picture" class="form-label" id="fileInputLabel" style="font-weight: 600; font-size: 14px;">Choose an image</label>
+            <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required
+                   style="border-radius: 6px; border: 1px solid #ced4da;">
+            <div class="text-muted d-none mt-2" id="replaceHint" style="font-size: 12.5px;">
+                Uploading a new image will replace the current one.
             </div>
-          </div>
-        </form>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+          <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn" style="background: rgb(7,5,55); color: #fff;" id="uploadButton">Upload</button>
+        </div>
       </div>
-    </div>
-
-    <script>
-    var uploadModal = document.getElementById('uploadPictureModal');
-
-    uploadModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget; // Row that triggered modal
-        var recipientId = button.getAttribute('data-recipient-id');
-        var recipientPicture = button.getAttribute('data-recipient-picture');
-
-        document.getElementById('recipient_id').value = recipientId;
-
-        var currentPictureContainer = document.getElementById('currentPictureContainer');
-        var currentPictureImg = document.getElementById('currentPictureImg');
-        var fileInputLabel = document.getElementById('fileInputLabel');
-        var replaceHint = document.getElementById('replaceHint');
-        var fileInput = document.getElementById('recipient_picture');
-
-        fileInput.value = ''; // clear any previously chosen file from a prior open
-
-        if (recipientPicture) {
-            // Recipient already has a picture — show it, and let uploading a
-            // new one replace it.
-            currentPictureImg.src = '../uploads/recipients/' + recipientPicture;
-            currentPictureContainer.classList.remove('d-none');
-            fileInputLabel.textContent = 'Replace image';
-            replaceHint.classList.remove('d-none');
-        } else {
-            currentPictureContainer.classList.add('d-none');
-            currentPictureImg.src = '';
-            fileInputLabel.textContent = 'Choose an image';
-            replaceHint.classList.add('d-none');
-        }
-    });
-    </script>
-
-
-
-
-
-
-
-
+    </form>
   </div>
 </div>
 
-
-
-</div>
 </div>
 </main>
 
 <?php include_once ROOT_PATH . '/assets/includes/footer.php'; ?>
 
-
-
-
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+var uploadModal = document.getElementById('uploadPictureModal');
 
+uploadModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget; // Row that triggered modal
+    var recipientId = button.getAttribute('data-recipient-id');
+    var recipientPicture = button.getAttribute('data-recipient-picture');
 
+    document.getElementById('recipient_id').value = recipientId;
 
+    var currentPictureContainer = document.getElementById('currentPictureContainer');
+    var currentPictureImg = document.getElementById('currentPictureImg');
+    var fileInputLabel = document.getElementById('fileInputLabel');
+    var replaceHint = document.getElementById('replaceHint');
+    var fileInput = document.getElementById('recipient_picture');
 
+    fileInput.value = ''; // clear any previously chosen file from a prior open
 
+    if (recipientPicture) {
+        // Recipient already has a picture — show it, and let uploading a
+        // new one replace it.
+        currentPictureImg.src = '../uploads/recipients/' + recipientPicture;
+        currentPictureContainer.classList.remove('d-none');
+        fileInputLabel.textContent = 'Replace image';
+        replaceHint.classList.remove('d-none');
+    } else {
+        currentPictureContainer.classList.add('d-none');
+        currentPictureImg.src = '';
+        fileInputLabel.textContent = 'Choose an image';
+        replaceHint.classList.add('d-none');
+    }
+});
+
+// Deleting a recipient is permanent -- a styled, hard-to-miss confirmation
+// before anything actually gets submitted.
+function confirmDeleteRecipient(btn) {
+    var id = btn.getAttribute('data-recipient-id');
+    var name = btn.getAttribute('data-recipient-name');
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Remove ' + name + '?',
+        html: 'This permanently deletes this recipient record and their uploaded picture. <strong>This cannot be undone.</strong>',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete permanently',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc3545',
+        focusConfirm: false
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            document.getElementById('deleteRecipientId').value = id;
+            document.getElementById('deleteRecipientForm').submit();
+        }
+    });
+}
+</script>
 
 </body>
 </html>
