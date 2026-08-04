@@ -5,6 +5,25 @@ require_once '../app/require_admin.php';
 require_once '../app/csrf.php';
 require_once '../app/functions.php';
 
+// Pull the essay prompt from Settings, so it stays in sync with whatever the
+// admin has configured there instead of showing a stale hardcoded default.
+try {
+    $settingsStmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    $settings = [];
+    while ($row = $settingsStmt->fetch(PDO::FETCH_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (Exception $e) {
+    $settings = [];
+}
+
+function getSetting($key, $default = '') {
+    global $settings;
+    return isset($settings[$key]) ? htmlspecialchars($settings[$key], ENT_QUOTES, 'UTF-8') : $default;
+}
+
+const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.';
+
 /**
  * Status counts + total
  */
@@ -468,7 +487,7 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
                     <div class="detail-word-count"><?= $wordCount ?> words</div>
                 </div>
                 <div style="font-size: 13.5px; color: #6c757d; font-style: italic; margin-bottom: 10px;">
-                    In 500-750 words, please tell us about yourself...
+                    <?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?>
                 </div>
                 <div class="detail-essay-box">
                     <?= nl2br(htmlspecialchars($essayText)) ?>
