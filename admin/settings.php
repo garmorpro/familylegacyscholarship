@@ -80,6 +80,24 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
         .panel-desc { font-size: 13px; color: #9a9aa5; margin-bottom: 20px; }
         .settings-save-btn { padding: 10px 24px; background: rgb(7,5,55); color: #fff; font-weight: 600; border: none; border-radius: 6px; }
         .settings-save-btn:hover { background: rgb(20,16,80); color: #fff; }
+
+        .roster-list { border: 1px solid rgb(241,242,243); border-radius: 12px; overflow: hidden; margin-bottom: 22px; }
+        .roster-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #f6f6f8; background: #fff; }
+        .roster-item:last-child { border-bottom: none; }
+        .roster-item:hover { background: #fafbff; }
+        .roster-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+        .roster-info { flex: 1; min-width: 0; }
+        .roster-name { font-weight: 600; font-size: 14.5px; color: #212529; }
+        .roster-email { font-size: 12.5px; color: #8a8a94; }
+        .roster-delete { background: none; border: none; color: #c9c9d1; padding: 6px 8px; border-radius: 6px; flex-shrink: 0; }
+        .roster-delete:hover { color: #dc3545; background: rgba(220,53,69,0.08); }
+
+        .roster-empty { text-align: center; padding: 32px 20px; border: 1px dashed #e2e2e8; border-radius: 12px; color: #9a9aa5; font-size: 13.5px; margin-bottom: 22px; }
+        .roster-empty i { font-size: 22px; display: block; margin-bottom: 8px; color: #d5d5db; }
+
+        .add-member-card { background: rgb(249,250,251); border: 1px solid #f3f3f6; border-radius: 12px; padding: 18px 20px; }
+        .add-member-title { font-size: 13.5px; font-weight: 700; color: #212529; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .add-member-title i { color: #C5A059; }
         @media (max-width: 767px) {
             .settings-body { flex-direction: column; }
             .settings-nav { width: 100%; border-right: none; border-bottom: 1px solid #f3f3f6; padding: 4px 4px 16px; display: flex; overflow-x: auto; gap: 4px; }
@@ -304,20 +322,24 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
             <?php endif; ?>
 
             <?php if (empty($committeeMembers)): ?>
-                <div class="text-muted mb-3" style="font-size: 14px;">No committee members added yet.</div>
+                <div class="roster-empty">
+                    <i class="bi bi-people"></i>
+                    No committee members added yet.
+                </div>
             <?php else: ?>
-                <div class="mb-3">
+                <div class="roster-list">
                     <?php foreach ($committeeMembers as $member): ?>
-                        <div class="d-flex align-items-center justify-content-between" style="padding: 10px 4px; border-bottom: 1px solid rgb(241,242,243);">
-                            <div>
-                                <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($member['name']) ?></div>
-                                <div class="text-muted" style="font-size: 13px;"><?= htmlspecialchars($member['email']) ?></div>
+                        <div class="roster-item">
+                            <div class="roster-avatar"><?= htmlspecialchars(strtoupper(substr($member['name'], 0, 1))) ?></div>
+                            <div class="roster-info">
+                                <div class="roster-name"><?= htmlspecialchars($member['name']) ?></div>
+                                <div class="roster-email"><?= htmlspecialchars($member['email']) ?></div>
                             </div>
                             <form method="POST" action="delete_committee_member.php" class="d-inline"
                                   onsubmit="return confirm('Remove <?= htmlspecialchars(addslashes($member['name'])) ?> from the committee roster?');">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="id" value="<?= (int) $member['id'] ?>">
-                                <button type="submit" class="btn btn-sm" style="color: #dc3545; background: rgba(220,53,69,0.08); border-radius: 6px;">
+                                <button type="submit" class="roster-delete">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -326,22 +348,25 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="save_committee_member.php" class="row g-2 align-items-end">
-                <?= csrf_field() ?>
-                <div class="col-md-5">
-                    <label for="member_name" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13.5px;">Name</label>
-                    <input type="text" id="member_name" name="member_name" required
-                           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-                </div>
-                <div class="col-md-5">
-                    <label for="member_email" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13.5px;">Email</label>
-                    <input type="email" id="member_email" name="member_email" required
-                           style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="settings-save-btn" style="width: 100%;">Add</button>
-                </div>
-            </form>
+            <div class="add-member-card">
+                <div class="add-member-title"><i class="bi bi-person-plus-fill"></i>Add a Committee Member</div>
+                <form method="POST" action="save_committee_member.php" class="row g-2 align-items-end">
+                    <?= csrf_field() ?>
+                    <div class="col-md-5">
+                        <label for="member_name" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13px; color: #495057;">Name</label>
+                        <input type="text" id="member_name" name="member_name" required placeholder="Full name"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; background: #fff;">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="member_email" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13px; color: #495057;">Email</label>
+                        <input type="email" id="member_email" name="member_email" required placeholder="name@example.com"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; background: #fff;">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="settings-save-btn" style="width: 100%;">Add</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>
