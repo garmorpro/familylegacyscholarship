@@ -32,6 +32,7 @@ $myPickId = (int) $voteStmt->fetchColumn();
     <title>Final Review - Morgan Legacy Scholarship</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <style>
         body { background: rgb(249,250,251); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         .top-bar { background: rgb(7,5,55); padding: 18px 0; margin-bottom: 28px; }
@@ -54,8 +55,8 @@ $myPickId = (int) $voteStmt->fetchColumn();
         .applicant-name { font-weight: 600; color: #212529; }
         .applicant-sub { font-size: 12.5px; color: #8a8a94; }
         .review-link { font-size: 13px; font-weight: 600; color: rgb(7,5,55); text-decoration: none; white-space: nowrap; }
-        .pick-btn { border: 1.5px solid #e2e2e8; background: #fff; color: #9a9aa5; border-radius: 20px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
-        .pick-btn.picked { border-color: #C5A059; background: rgba(197,160,89,0.15); color: #8a6d2e; }
+        .pick-btn { border: none; background: rgb(233,236,255); color: rgb(7,5,55); border-radius: 20px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+        .pick-btn.picked { background: #C5A059; color: #3a2f14; }
         .pick-btn:disabled { opacity: 0.6; }
     </style>
 </head>
@@ -79,6 +80,7 @@ $myPickId = (int) $voteStmt->fetchColumn();
 
 <div class="container pb-5" style="max-width: 1000px;">
     <div class="case-card">
+        <div class="case-accent"></div>
         <div class="page-head">
             <div class="page-title">Applications in Final Review</div>
             <div class="page-sub">Click an applicant to view their full application, or use the star to mark your pick for final recipient.</div>
