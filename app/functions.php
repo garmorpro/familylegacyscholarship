@@ -134,6 +134,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'additional_information' => $_POST['additional_information'] ?? ''
     ];
 
+    // The form marks these required client-side, but that alone isn't
+    // trustworthy -- a browser quirk, autofill, or a non-browser client can
+    // still submit them empty. expected_graduation_year and gpa in
+    // particular map to strictly-typed integer/numeric DB columns, and an
+    // empty string there fails as a raw, unfriendly PDOException rather
+    // than a normal validation message. Catch that here first.
+    $requiredFields = [
+        'first_name' => 'First name', 'last_name' => 'Last name', 'email' => 'Email address',
+        'phone' => 'Phone number', 'expected_graduation_year' => 'Expected graduation year',
+        'gpa' => 'Current GPA', 'institution_type' => 'Institution type',
+        'intended_school' => 'Intended school', 'intended_major' => 'Intended major',
+        'extracurricular' => 'Extracurricular activities', 'leadership' => 'Leadership experience',
+        'community_service' => 'Community service', 'essay' => 'Essay',
+        'recommender_name' => "Recommender's name", 'recommender_email' => "Recommender's email",
+        'recommender_relationship' => "Recommender's relationship",
+    ];
+    $missing = [];
+    foreach ($requiredFields as $key => $label) {
+        if (trim((string) $data[$key]) === '') {
+            $missing[] = $label;
+        }
+    }
+
+    if ($missing) {
+        echo "Please fill out: " . implode(', ', $missing) . ".";
+        exit();
+    }
+    if (!ctype_digit(trim($data['expected_graduation_year']))) {
+        echo "Expected graduation year must be a whole number (e.g. " . (date('Y') + 3) . ").";
+        exit();
+    }
+    if (!is_numeric($data['gpa'])) {
+        echo "Current GPA must be a number (e.g. 4.0).";
+        exit();
+    }
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        echo "Please enter a valid email address.";
+        exit();
+    }
+    if (!filter_var($data['recommender_email'], FILTER_VALIDATE_EMAIL)) {
+        echo "Please enter a valid email address for your recommender.";
+        exit();
+    }
+
     try {
         $result = insert_application_with_recommendation($pdo, $data);
 
