@@ -52,55 +52,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Morgan Legacy Scholarship - Submit Recommendation</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://cdn.tiny.cloud/1/7kainuaawjddfzf3pj7t2fm3qdjgq5smjfjtsw3l4kqfd1h4/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 <style>
-  body {
-    background-color: #f8f9fa;
-  }
-  .scholarship-header {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-  .scholarship-header img {
-    height: 80px;
-  }
-  .scholarship-header h1 {
-    font-size: 1.8rem;
-    margin: 0;
-    color: #000000;
-  }
-  .form-container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
+  body { background-color: rgb(249,250,251); }
+
+  .page-header { background: #fff; border-bottom: 1px solid rgb(241,242,243); padding: 20px 0; margin-bottom: 32px; }
+  .page-header-inner { display: flex; align-items: center; gap: 16px; max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  .page-header img { height: 56px; }
+  .page-header h1 { font-size: 1.3rem; font-weight: 700; color: rgb(7,5,55); margin: 0; }
+  .page-header .tagline { font-size: 0.85rem; color: #8a8a94; margin: 0; }
+
+  .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 20px 60px; }
+
+  .case-card { background: #fff; border-radius: 16px; border: 1px solid rgb(241,242,243); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px; }
+  .case-accent { height: 5px; background: linear-gradient(90deg, rgb(7,5,55), #C5A059); }
+
+  .info-grid { padding: 24px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; }
+  .info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 3px; }
+  .info-value { font-size: 14.5px; font-weight: 600; color: #212529; }
+
+  .highlight-banner { margin: 24px 28px 0; background: rgba(197,160,89,0.12); border: 1px solid rgba(197,160,89,0.35); border-radius: 10px; padding: 14px 18px; font-size: 14.5px; color: #6b5620; display: flex; align-items: center; gap: 10px; }
+  .highlight-banner i { color: #C5A059; font-size: 18px; }
+
+  .form-section { padding: 24px 28px 28px; }
+  .form-label-lg { font-size: 15px; font-weight: 700; color: #212529; margin-bottom: 4px; }
+  .form-sub { font-size: 12.5px; color: #8a8a94; margin-bottom: 14px; }
+
+  .submit-btn { background: rgb(7,5,55); color: #fff; font-weight: 600; padding: 11px 28px; border-radius: 8px; border: none; font-size: 15px; margin-top: 18px; }
+  .submit-btn:hover { background: rgb(12,9,70); color: #fff; }
+
+  .completed-card { padding: 40px 28px; text-align: center; }
+  .completed-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(25,135,84,0.12); color: #198754; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+  .completed-title { font-size: 17px; font-weight: 700; color: #212529; margin-bottom: 6px; }
+  .completed-sub { font-size: 13.5px; color: #8a8a94; }
 </style>
 </head>
-<body class="p-4">
+<body>
 
-<div class="container">
-
-    <!-- Scholarship Header -->
-    <div class="scholarship-header">
-        <img src="../assets/images/logo.png" alt="Morgan Legacy Scholarship Logo">
-        <h1>The Morgan Legacy Scholarship</h1>
+<div class="page-header">
+  <div class="page-header-inner">
+    <img src="../assets/images/logo.png" alt="Morgan Legacy Scholarship Logo">
+    <div>
+      <h1>The Morgan Legacy Scholarship</h1>
+      <p class="tagline">Recommendation Letter</p>
     </div>
+  </div>
+</div>
 
-    <!-- Applicant Info -->
-    <div class="form-container mb-4">
-        <p><strong>Applicant:</strong> <?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></p>
-        <p><strong>Intended School:</strong> <?= htmlspecialchars($rec['intended_school']) ?></p>
-        <p><strong>Intended Major:</strong> <?= htmlspecialchars($rec['intended_major']) ?></p>
-        <p><strong>Recommender:</strong> <?= htmlspecialchars($rec['recommender_name']) ?> (<?= htmlspecialchars($rec['recommender_email']) ?>)</p>
+<div class="container-narrow">
+
+    <!-- Applicant / recommender info -->
+    <div class="case-card">
+        <div class="case-accent"></div>
+        <div class="info-grid">
+            <div>
+                <div class="info-label">Applicant</div>
+                <div class="info-value"><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></div>
+            </div>
+            <div>
+                <div class="info-label">Recommender</div>
+                <div class="info-value"><?= htmlspecialchars($rec['recommender_name']) ?></div>
+                <div style="font-size: 12.5px; color: #8a8a94;"><?= htmlspecialchars($rec['recommender_email']) ?></div>
+            </div>
+            <div>
+                <div class="info-label">Intended School</div>
+                <div class="info-value"><?= htmlspecialchars($rec['intended_school']) ?></div>
+            </div>
+            <div>
+                <div class="info-label">Intended Major</div>
+                <div class="info-value"><?= htmlspecialchars($rec['intended_major']) ?></div>
+            </div>
+        </div>
     </div>
 
     <!-- Success/Error Messages -->
@@ -112,24 +138,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Recommendation Form -->
     <?php if ($rec['status'] !== 'completed'): ?>
-    <div class="form-container">
-        <form method="POST">
+    <div class="case-card">
+        <div class="case-accent"></div>
 
-            <!-- Highlight applicant for clarity -->
-            <div class="alert alert-secondary" role="alert" style="font-weight: 600; font-size: 1.1rem;">
-                This recommendation is for <strong><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></strong>.
-            </div>
+        <div class="highlight-banner">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>This recommendation is for <strong><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></strong>.</div>
+        </div>
 
+        <form method="POST" class="form-section">
             <div class="mb-3">
-                <label for="content" class="form-label" style="font-size: 20px; font-weight: 600;">Your Recommendation</label>
+                <label for="content" class="form-label-lg">Your Recommendation</label>
+                <div class="form-sub">Share your honest assessment of the applicant -- their character, achievements, and why they'd make a strong recipient.</div>
                 <textarea name="content" id="content" rows="10" class="form-control"><?= htmlspecialchars($_POST['content'] ?? '') ?></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Submit Recommendation</button>
+            <button type="submit" class="submit-btn">Submit Recommendation</button>
         </form>
     </div>
     <?php else: ?>
         <!-- Show info only when completed -->
-        <div class="alert alert-info">You have already submitted this recommendation.</div>
+        <div class="case-card">
+            <div class="case-accent"></div>
+            <div class="completed-card">
+                <div class="completed-icon"><i class="bi bi-check-lg"></i></div>
+                <div class="completed-title">Recommendation submitted</div>
+                <div class="completed-sub">Thank you -- your recommendation for <strong><?= htmlspecialchars($rec['first_name'] . ' ' . $rec['last_name']) ?></strong> has already been received.</div>
+            </div>
+        </div>
     <?php endif; ?>
 
 </div>
