@@ -569,18 +569,14 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" style="padding: 32px 36px; background: #fbfbfc;">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="editAdminName" class="form-label" style="font-weight: 600; font-size: 14px;">Name</label>
-                                    <input type="text" class="form-control" id="editAdminName" name="admin_name" required
-                                           style="border-radius: 6px; border: 1px solid #ced4da; padding: 10px 12px;">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editAdminEmail" class="form-label" style="font-weight: 600; font-size: 14px;">Email</label>
-                                    <input type="email" class="form-control" id="editAdminEmail" name="admin_email" required
-                                           style="border-radius: 6px; border: 1px solid #ced4da; padding: 10px 12px;">
-                                </div>
-                            </div>
+                            <label for="editAdminName" class="form-label" style="font-weight: 600; font-size: 15px;">Name</label>
+                            <input type="text" class="form-control mb-3" id="editAdminName" name="admin_name" required
+                                   style="border-radius: 8px; border: 1px solid #ced4da; padding: 14px 16px; font-size: 16px;">
+
+                            <label for="editAdminEmail" class="form-label" style="font-weight: 600; font-size: 15px;">Email</label>
+                            <input type="email" class="form-control" id="editAdminEmail" name="admin_email" required
+                                   style="border-radius: 8px; border: 1px solid #ced4da; padding: 14px 16px; font-size: 16px;">
+
                             <div class="text-muted mt-3" style="font-size: 12.5px;" id="editAdminEmailHint"></div>
                         </div>
                         <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
