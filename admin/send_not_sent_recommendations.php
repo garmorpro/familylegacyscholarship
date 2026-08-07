@@ -55,40 +55,22 @@ if (php_sapi_name() !== 'cli') {
 require __DIR__ . '/../app/db.php';
 require_once __DIR__ . '/../app/recommendation_mailer.php';
 
-// Determine if running for a single recommendation (GET) or for cron (all not_sent)
-$recommendationIds = [];
+// This is CLI-only (the guard above 403s any browser request before
+// execution ever reaches here), so $_GET is always empty -- this always
+// runs in "cron mode," sending every recommendation still marked
+// 'not_sent'.
+$stmt = $pdo->query("SELECT id FROM recommendations WHERE status = 'not_sent'");
+$recommendationIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-if (isset($_GET['id'])) {
-    // Single recommendation via browser
-    $recId = (int)$_GET['id'];
-    $stmt = $pdo->prepare("SELECT id FROM recommendations WHERE id = :id");
-    $stmt->execute([':id' => $recId]);
-    if (!$stmt->fetchColumn()) die("Recommendation not found.");
-
-    $recommendationIds[] = $recId;
-} else {
-    // Cron mode: send all recommendations with status 'not_sent'
-    $stmt = $pdo->query("SELECT id FROM recommendations WHERE status = 'not_sent'");
-    $recommendationIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
-
-// If no recommendations to send, exit
 if (!$recommendationIds) {
     echo "No recommendations to send.\n";
     exit;
 }
 
-// Send each recommendation
 foreach ($recommendationIds as $recId) {
     if (send_recommendation_request_email($pdo, $config, $recId)) {
         echo "Email sent for recommendation {$recId}\n";
     } else {
         echo "Failed to send for recommendation {$recId} (see error log)\n";
     }
-}
-
-// If running via browser, redirect back
-if (isset($_GET['id'])) {
-    header("Location: " . $_SERVER['HTTP_REFERER']);
-    exit;
 }

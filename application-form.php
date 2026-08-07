@@ -120,8 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Expected graduation year must be a whole number (e.g. " . (date('Y') + 3) . ").";
         exit();
     }
-    if (!is_numeric($data['gpa'])) {
-        echo "Current GPA must be a number (e.g. 4.0).";
+    // Weighted GPAs can legitimately run higher than the traditional 4.0
+    // unweighted scale, but a bare is_numeric() check would still accept
+    // nonsense like -5 or 999. 0-6.0 comfortably covers any real weighted
+    // scale without being so strict it rejects a valid submission.
+    if (!is_numeric($data['gpa']) || (float) $data['gpa'] < 0 || (float) $data['gpa'] > 6.0) {
+        echo "Current GPA must be a number between 0 and 6.0.";
         exit();
     }
     if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {

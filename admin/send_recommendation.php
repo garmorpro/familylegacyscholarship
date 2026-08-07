@@ -19,5 +19,9 @@ if (!send_recommendation_request_email($pdo, $config, $recId)) {
     die("Email could not be sent. Check the server error log for details.");
 }
 
-header("Location: " . $_SERVER['HTTP_REFERER']);
+// Some browsers/privacy extensions strip the Referer header entirely --
+// fall back to the dashboard instead of redirecting to an empty
+// location (which would 404 or just do nothing).
+$redirectTo = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php';
+header("Location: " . $redirectTo);
 exit;
