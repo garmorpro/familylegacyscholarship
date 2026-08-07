@@ -560,7 +560,7 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
         <!-- Edit Admin modal (single instance, reused for whichever row triggered it) -->
         <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
-                <form id="editAdminForm" method="POST" action="update_admin_user.php">
+                <form id="editAdminForm" method="POST" action="update_admin_user.php" style="display: contents;">
                     <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
                         <?= csrf_field() ?>
                         <input type="hidden" name="id" id="editAdminId">

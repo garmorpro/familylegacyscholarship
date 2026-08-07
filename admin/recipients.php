@@ -190,7 +190,7 @@ function utc_to_iso(?string $utcNaive): ?string {
 <!-- Upload Picture Modal (single instance, reused for whichever row triggered it) -->
 <div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
+    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php" style="display: contents;">
       <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
         <?= csrf_field() ?>
         <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
