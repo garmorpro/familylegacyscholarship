@@ -47,7 +47,7 @@ function send_admin_invite_email(array $config, string $email, string $name, str
                             <!-- Body -->
                             <tr>
                                 <td style='padding: 36px 40px 10px 40px; color:#212529; font-size:15px; line-height:1.7;'>
-                                    <p style='margin:0 0 16px;'>Hi {$name},</p>
+                                    <p style='margin:0 0 16px;'>Dear {$name},</p>
                                     <p style='margin:0 0 16px;'>
                                         You've been added as an admin for The Morgan Legacy Scholarship.
                                         Use the button below to set your password and get into the admin
