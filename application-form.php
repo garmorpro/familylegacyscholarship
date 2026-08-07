@@ -7,7 +7,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 require_once 'app/functions.php';
+require_once 'app/spam_protection.php';
 require_once 'path.php';
+
+// Server-side timestamp of when the form was actually rendered, used
+// below to reject submissions that arrive faster than a human could
+// plausibly have filled the whole thing out. Only (re)set on a fresh
+// GET load, not on POST, so a slow/failed submission retry isn't
+// penalized for taking a while.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION['app_form_started_at'] = time();
+}
 
 // Pull the essay prompt from Settings, so admin can change it without a
 // code change. Falls back to a sensible default if it's never been set.
@@ -36,6 +46,27 @@ const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself,
 // submissions with this form's validation and insert logic. Now it only
 // runs here, where it actually belongs.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Honeypot: a bot that blindly fills every field trips this
+    // off-screen field real visitors never see. Pretend success without
+    // actually saving anything, rather than giving the bot any signal
+    // it was caught.
+    if (is_honeypot_filled()) {
+        error_log("application-form.php: honeypot triggered from " . get_client_ip());
+        header("Location: thank_you.php");
+        exit();
+    }
+
+    if (submission_too_fast('app_form_started_at')) {
+        echo "That was fast! Please take a moment to review your application before submitting.";
+        exit();
+    }
+
+    if (is_rate_limited($pdo, 'application_form')) {
+        echo "Too many submissions from your network recently. Please try again in a little while.";
+        exit();
+    }
+    record_submission_attempt($pdo, 'application_form');
 
     $data = [
         'first_name' => $_POST['first_name'] ?? '',
@@ -283,6 +314,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" action="" class="container py-4" id="applicationForm">
   <?= csrf_field() ?>
+
+  <!-- Honeypot -- left blank by real visitors, invisible to them; a bot
+       that fills every field trips it. Not display:none, since some
+       bots specifically skip hidden fields -- positioned off-screen
+       instead so it's still "visible" to a naive scraper. -->
+  <div style="position: absolute; left: -9999px; top: -9999px; height: 0; width: 0; overflow: hidden;" aria-hidden="true">
+    <label for="website">Leave this field blank</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+  </div>
 
   <p class="text-muted mb-3" style="font-size: 13px;"><span class="text-danger">*</span> Required</p>
 

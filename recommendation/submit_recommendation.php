@@ -1,11 +1,23 @@
 <?php
+session_start();
 require '../app/db.php';
 require_once '../app/functions.php';
+require_once '../app/spam_protection.php';
 
 // Get token from URL
 $token = $_GET['token'] ?? '';
 if (!$token) {
     die("Invalid link.");
+}
+
+// Server-side timestamp of when the form was actually rendered, used
+// below to reject submissions arriving faster than a human plausibly
+// could have written a recommendation. Scoped per-token so this doesn't
+// collide if the same browser session ever handles two different
+// recommendation links.
+$formTimingKey = 'rec_form_started_at_' . $token;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION[$formTimingKey] = time();
 }
 
 // Fetch recommendation + applicant info
@@ -26,24 +38,37 @@ if (!$rec) {
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $content = $_POST['content'] ?? '';
-    if (trim($content) === '') {
-        $error = "Please enter your recommendation.";
-    } else {
-        $content = sanitize_recommendation_html($content);
-        $update = $pdo->prepare("
-            UPDATE recommendations
-            SET recommendation = :content, status = 'completed', completed_date = NOW()
-            WHERE id = :id
-        ");
-        $update->execute([
-            ':content' => $content,
-            ':id' => $rec['id']
-        ]);
-
-        // Update status in local variable so page reflects completion immediately
+    if (is_honeypot_filled()) {
+        // Pretend success without saving anything -- no signal to a bot
+        // that it was caught.
+        error_log("submit_recommendation.php: honeypot triggered from " . get_client_ip());
         $rec['status'] = 'completed';
         $success = "Thank you! Your recommendation has been submitted.";
+    } elseif (submission_too_fast($formTimingKey)) {
+        $error = "That was fast! Please take a moment before submitting.";
+    } elseif (is_rate_limited($pdo, 'recommendation')) {
+        $error = "Too many submissions from your network recently. Please try again in a little while.";
+    } else {
+        record_submission_attempt($pdo, 'recommendation');
+        $content = $_POST['content'] ?? '';
+        if (trim($content) === '') {
+            $error = "Please enter your recommendation.";
+        } else {
+            $content = sanitize_recommendation_html($content);
+            $update = $pdo->prepare("
+                UPDATE recommendations
+                SET recommendation = :content, status = 'completed', completed_date = NOW()
+                WHERE id = :id
+            ");
+            $update->execute([
+                ':content' => $content,
+                ':id' => $rec['id']
+            ]);
+
+            // Update status in local variable so page reflects completion immediately
+            $rec['status'] = 'completed';
+            $success = "Thank you! Your recommendation has been submitted.";
+        }
     }
 }
 ?>
@@ -147,6 +172,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <form method="POST" class="form-section">
+            <!-- Honeypot -- left blank by real visitors, invisible to them -->
+            <div style="position: absolute; left: -9999px; top: -9999px; height: 0; width: 0; overflow: hidden;" aria-hidden="true">
+                <label for="website">Leave this field blank</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
             <div class="mb-3">
                 <label for="content" class="form-label-lg">Your Recommendation</label>
                 <div class="form-sub">Share your honest assessment of the applicant -- their character, achievements, and why they'd make a strong recipient.</div>
