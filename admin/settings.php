@@ -21,9 +21,33 @@ try {
     $committeeMembersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
     $committeeMembers = $committeeMembersStmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $adminUsersStmt = $pdo->query("
+        SELECT id, name, email, is_active, failed_login_attempts, unlock_token
+        FROM admin_users ORDER BY name, email
+    ");
+    $adminUsers = $adminUsersStmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     $settings = [];
     $committeeMembers = [];
+    $adminUsers = [];
+}
+
+// Derives a human status from is_active / failed_login_attempts / whether
+// an unlock-or-invite token is still pending, since all three real-world
+// states (freshly invited, locked out from failed logins, and manually
+// disabled) share the same underlying is_active=false column.
+function adminUserStatus(array $admin): array {
+    if ($admin['is_active']) {
+        return ['label' => 'Active', 'class' => 'yes'];
+    }
+    if (!empty($admin['unlock_token']) && (int) $admin['failed_login_attempts'] === 0) {
+        return ['label' => 'Pending setup', 'class' => 'scheduled'];
+    }
+    if ((int) $admin['failed_login_attempts'] >= 3) {
+        return ['label' => 'Locked', 'class' => 'no'];
+    }
+    return ['label' => 'Disabled', 'class' => 'no'];
 }
 
 // Helper function to safely get a setting
@@ -59,10 +83,13 @@ if (empty($applicationOpenDate) || empty($applicationCloseDate)) {
 
 // Which tab to land on -- lets other pages/links deep-link straight to
 // Committee, for example, instead of always landing on General.
-$allowedTabs = ['general', 'timeline', 'review', 'committee'];
+$allowedTabs = ['general', 'timeline', 'review', 'committee', 'admins'];
 $activeTab = in_array($_GET['tab'] ?? '', $allowedTabs, true) ? $_GET['tab'] : 'general';
 if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
     $activeTab = 'committee';
+}
+if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
+    $activeTab = 'admins';
 }
 ?>
 
@@ -115,6 +142,15 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
         .add-member-card { background: rgb(249,250,251); border: 1px solid #f3f3f6; border-radius: 12px; padding: 18px 20px; }
         .add-member-title { font-size: 13.5px; font-weight: 700; color: #212529; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
         .add-member-title i { color: #C5A059; }
+
+        .status-badge { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-right: 10px; }
+        .status-badge.yes { background: rgba(25,135,84,0.12); color: #198754; }
+        .status-badge.no { background: rgba(220,53,69,0.1); color: #dc3545; }
+        .status-badge.scheduled { background: rgba(197,160,89,0.16); color: #8a6d2e; }
+        .roster-you { font-size: 11.5px; color: #9a9aa5; font-weight: 600; margin-right: 4px; }
+        .roster-action-btn { border: 1px solid #e2e2e8; background: #fff; color: #495057; border-radius: 6px; padding: 5px 12px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+        .roster-action-btn:hover { background: #f8f8fa; }
+        .roster-action-btn.danger:hover { color: #dc3545; border-color: rgba(220,53,69,0.4); background: rgba(220,53,69,0.06); }
         @media (max-width: 767px) {
             .settings-body { flex-direction: column; }
             .settings-nav { width: 100%; border-right: none; border-bottom: 1px solid #f3f3f6; padding: 4px 4px 16px; display: flex; overflow-x: auto; gap: 4px; }
@@ -222,6 +258,10 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
         <div class="settings-nav-item<?= $activeTab === 'committee' ? ' active' : '' ?>" data-tab="committee">
             <i class="bi bi-people"></i>Committee
             <?php if (!empty($committeeMembers)): ?><span class="nav-count"><?= count($committeeMembers) ?></span><?php endif; ?>
+        </div>
+        <div class="settings-nav-item<?= $activeTab === 'admins' ? ' active' : '' ?>" data-tab="admins">
+            <i class="bi bi-shield-lock"></i>Admin Users
+            <?php if (!empty($adminUsers)): ?><span class="nav-count"><?= count($adminUsers) ?></span><?php endif; ?>
         </div>
     </div>
 
@@ -414,6 +454,98 @@ if (!empty($_GET['member_error']) || !empty($_GET['member_success'])) {
             </div>
         </div>
 
+        <!-- Admin Users -->
+        <div class="settings-panel-content<?= $activeTab === 'admins' ? ' active' : '' ?>" data-panel="admins">
+            <div class="panel-title">Admin Users</div>
+            <div class="panel-desc">Full access to the admin portal. Separate from Committee Members, who only get a review link and never sign in.</div>
+
+            <?php if (!empty($_GET['admin_error'])): ?>
+                <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+                    <div><?= htmlspecialchars($_GET['admin_error'], ENT_QUOTES, 'UTF-8') ?></div>
+                </div>
+            <?php elseif (!empty($_GET['admin_success'])): ?>
+                <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div><?= htmlspecialchars($_GET['admin_success'], ENT_QUOTES, 'UTF-8') ?></div>
+                </div>
+            <?php endif; ?>
+
+            <?php if (empty($adminUsers)): ?>
+                <div class="roster-empty">
+                    <i class="bi bi-shield-lock"></i>
+                    No admin users found.
+                </div>
+            <?php else: ?>
+                <div class="roster-list">
+                    <?php foreach ($adminUsers as $admin): ?>
+                        <?php
+                            $status = adminUserStatus($admin);
+                            $isSelf = (int) $admin['id'] === (int) ($_SESSION['admin_id'] ?? 0);
+                            $displayName = $admin['name'] !== '' && $admin['name'] !== null ? $admin['name'] : $admin['email'];
+                        ?>
+                        <div class="roster-item">
+                            <div class="roster-avatar"><?= htmlspecialchars(strtoupper(substr($displayName, 0, 1))) ?></div>
+                            <div class="roster-info">
+                                <div class="roster-name"><?= htmlspecialchars($displayName) ?></div>
+                                <div class="roster-email"><?= htmlspecialchars($admin['email']) ?></div>
+                            </div>
+                            <span class="status-badge <?= $status['class'] ?>"><?= $status['label'] ?></span>
+
+                            <?php if ($isSelf): ?>
+                                <span class="roster-you">You</span>
+                            <?php elseif ($status['label'] === 'Pending setup'): ?>
+                                <form method="POST" action="toggle_admin_user.php" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $admin['id'] ?>">
+                                    <input type="hidden" name="action" value="resend">
+                                    <button type="submit" class="roster-action-btn">Resend Invite</button>
+                                </form>
+                            <?php elseif ($admin['is_active']): ?>
+                                <form method="POST" action="toggle_admin_user.php" class="d-inline"
+                                      onsubmit="return confirm('Disable admin access for <?= htmlspecialchars(addslashes($displayName)) ?>?');">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $admin['id'] ?>">
+                                    <input type="hidden" name="action" value="disable">
+                                    <button type="submit" class="roster-action-btn danger">Disable</button>
+                                </form>
+                            <?php else: ?>
+                                <form method="POST" action="toggle_admin_user.php" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $admin['id'] ?>">
+                                    <input type="hidden" name="action" value="enable">
+                                    <button type="submit" class="roster-action-btn">Enable</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="add-member-card">
+                <div class="add-member-title"><i class="bi bi-person-plus-fill"></i>Invite a New Admin</div>
+                <form method="POST" action="save_admin_user.php" class="row g-2 align-items-end">
+                    <?= csrf_field() ?>
+                    <div class="col-md-5">
+                        <label for="admin_name" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13px; color: #495057;">Name</label>
+                        <input type="text" id="admin_name" name="admin_name" required placeholder="Full name"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; background: #fff;">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="admin_email" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 13px; color: #495057;">Email</label>
+                        <input type="email" id="admin_email" name="admin_email" required placeholder="name@example.com"
+                               style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da; background: #fff;">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="settings-save-btn" style="width: 100%;">Invite</button>
+                    </div>
+                </form>
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    They'll get an email with a link to set their own password -- you never choose or see it.
+                </div>
+            </div>
+        </div>
+
     </div>
   </div>
 </div>
@@ -445,6 +577,8 @@ document.querySelectorAll('.settings-nav-item').forEach(function(item) {
         url.searchParams.set('tab', tab);
         url.searchParams.delete('member_error');
         url.searchParams.delete('member_success');
+        url.searchParams.delete('admin_error');
+        url.searchParams.delete('admin_success');
         url.searchParams.delete('error');
         url.searchParams.delete('success');
         window.history.replaceState({}, '', url);
