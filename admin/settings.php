@@ -559,7 +559,7 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
 
         <!-- Edit Admin modal (single instance, reused for whichever row triggered it) -->
         <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <form id="editAdminForm" method="POST" action="update_admin_user.php">
                     <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
                         <?= csrf_field() ?>
@@ -568,15 +568,20 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                             <h5 class="modal-title text-white mb-0" id="editAdminLabel" style="font-weight: 600;">Edit Admin</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
-                            <label for="editAdminName" class="form-label" style="font-weight: 600; font-size: 14px;">Name</label>
-                            <input type="text" class="form-control mb-3" id="editAdminName" name="admin_name" required
-                                   style="border-radius: 6px; border: 1px solid #ced4da;">
-
-                            <label for="editAdminEmail" class="form-label" style="font-weight: 600; font-size: 14px;">Email</label>
-                            <input type="email" class="form-control" id="editAdminEmail" name="admin_email" required
-                                   style="border-radius: 6px; border: 1px solid #ced4da;">
-                            <div class="text-muted mt-2" style="font-size: 12.5px;" id="editAdminEmailHint"></div>
+                        <div class="modal-body" style="padding: 32px 36px; background: #fbfbfc;">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editAdminName" class="form-label" style="font-weight: 600; font-size: 14px;">Name</label>
+                                    <input type="text" class="form-control" id="editAdminName" name="admin_name" required
+                                           style="border-radius: 6px; border: 1px solid #ced4da; padding: 10px 12px;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editAdminEmail" class="form-label" style="font-weight: 600; font-size: 14px;">Email</label>
+                                    <input type="email" class="form-control" id="editAdminEmail" name="admin_email" required
+                                           style="border-radius: 6px; border: 1px solid #ced4da; padding: 10px 12px;">
+                                </div>
+                            </div>
+                            <div class="text-muted mt-3" style="font-size: 12.5px;" id="editAdminEmailHint"></div>
                         </div>
                         <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
                             <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
