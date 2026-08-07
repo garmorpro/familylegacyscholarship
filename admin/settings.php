@@ -148,6 +148,8 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
         .status-badge.no { background: rgba(220,53,69,0.1); color: #dc3545; }
         .status-badge.scheduled { background: rgba(197,160,89,0.16); color: #8a6d2e; }
         .roster-you { font-size: 11.5px; color: #9a9aa5; font-weight: 600; margin-right: 4px; }
+        .roster-edit { background: none; border: none; color: #c9c9d1; padding: 6px 8px; border-radius: 6px; margin-right: 4px; flex-shrink: 0; }
+        .roster-edit:hover { color: rgb(7,5,55); background: #f1f1f4; }
         .roster-action-btn { border: 1px solid #e2e2e8; background: #fff; color: #495057; border-radius: 6px; padding: 5px 12px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
         .roster-action-btn:hover { background: #f8f8fa; }
         .roster-action-btn.danger:hover { color: #dc3545; border-color: rgba(220,53,69,0.4); background: rgba(220,53,69,0.06); }
@@ -492,6 +494,15 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                             </div>
                             <span class="status-badge <?= $status['class'] ?>"><?= $status['label'] ?></span>
 
+                            <button type="button" class="roster-edit" title="Edit"
+                                    data-admin-id="<?= (int) $admin['id'] ?>"
+                                    data-admin-name="<?= htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8') ?>"
+                                    data-admin-email="<?= htmlspecialchars($admin['email'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-admin-pending="<?= $status['label'] === 'Pending setup' ? '1' : '0' ?>"
+                                    onclick="openEditAdminModal(this)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
                             <?php if ($isSelf): ?>
                                 <span class="roster-you">You</span>
                             <?php elseif ($status['label'] === 'Pending setup'): ?>
@@ -546,6 +557,36 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
             </div>
         </div>
 
+        <!-- Edit Admin modal (single instance, reused for whichever row triggered it) -->
+        <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form id="editAdminForm" method="POST" action="update_admin_user.php">
+                    <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id" id="editAdminId">
+                        <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+                            <h5 class="modal-title text-white mb-0" id="editAdminLabel" style="font-weight: 600;">Edit Admin</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
+                            <label for="editAdminName" class="form-label" style="font-weight: 600; font-size: 14px;">Name</label>
+                            <input type="text" class="form-control mb-3" id="editAdminName" name="admin_name" required
+                                   style="border-radius: 6px; border: 1px solid #ced4da;">
+
+                            <label for="editAdminEmail" class="form-label" style="font-weight: 600; font-size: 14px;">Email</label>
+                            <input type="email" class="form-control" id="editAdminEmail" name="admin_email" required
+                                   style="border-radius: 6px; border: 1px solid #ced4da;">
+                            <div class="text-muted mt-2" style="font-size: 12.5px;" id="editAdminEmailHint"></div>
+                        </div>
+                        <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+                            <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn" style="background: rgb(7,5,55); color: #fff;">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
   </div>
 </div>
@@ -584,6 +625,23 @@ document.querySelectorAll('.settings-nav-item').forEach(function(item) {
         window.history.replaceState({}, '', url);
     });
 });
+</script>
+
+<script>
+var editAdminModal = new bootstrap.Modal(document.getElementById('editAdminModal'));
+
+function openEditAdminModal(btn) {
+    document.getElementById('editAdminId').value = btn.dataset.adminId;
+    document.getElementById('editAdminName').value = btn.dataset.adminName;
+    document.getElementById('editAdminEmail').value = btn.dataset.adminEmail;
+
+    var hint = document.getElementById('editAdminEmailHint');
+    hint.textContent = btn.dataset.adminPending === '1'
+        ? 'Their invite hasn\'t been accepted yet -- changing the email sends a fresh invite there instead.'
+        : '';
+
+    editAdminModal.show();
+}
 </script>
 
 </body>
