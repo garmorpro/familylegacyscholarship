@@ -422,6 +422,13 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                 <div class="roster-name"><?= htmlspecialchars($member['name']) ?></div>
                                 <div class="roster-email"><?= htmlspecialchars($member['email']) ?></div>
                             </div>
+                            <button type="button" class="roster-edit" title="Edit"
+                                    data-member-id="<?= (int) $member['id'] ?>"
+                                    data-member-name="<?= htmlspecialchars($member['name'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-member-email="<?= htmlspecialchars($member['email'], ENT_QUOTES, 'UTF-8') ?>"
+                                    onclick="openEditMemberModal(this)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
                             <form method="POST" action="delete_committee_member.php" class="d-inline"
                                   onsubmit="return confirm('Remove <?= htmlspecialchars(addslashes($member['name'])) ?> from the committee roster?');">
                                 <?= csrf_field() ?>
@@ -451,6 +458,35 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="settings-save-btn" style="width: 100%;">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Committee Member modal (single instance, reused for whichever row triggered it) -->
+        <div class="modal fade" id="editMemberModal" tabindex="-1" aria-labelledby="editMemberLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <form id="editMemberForm" method="POST" action="update_committee_member.php" style="display: contents;">
+                    <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id" id="editMemberId">
+                        <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+                            <h5 class="modal-title text-white mb-0" id="editMemberLabel" style="font-weight: 600;">Edit Committee Member</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 32px 36px; background: #fbfbfc;">
+                            <label for="editMemberName" class="form-label" style="font-weight: 600; font-size: 15px;">Name</label>
+                            <input type="text" class="form-control mb-3" id="editMemberName" name="member_name" required
+                                   style="border-radius: 8px; border: 1px solid #ced4da; padding: 14px 16px; font-size: 16px;">
+
+                            <label for="editMemberEmail" class="form-label" style="font-weight: 600; font-size: 15px;">Email</label>
+                            <input type="email" class="form-control" id="editMemberEmail" name="member_email" required
+                                   style="border-radius: 8px; border: 1px solid #ced4da; padding: 14px 16px; font-size: 16px;">
+                        </div>
+                        <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+                            <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn" style="background: rgb(7,5,55); color: #fff;">Save Changes</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -638,6 +674,17 @@ document.querySelectorAll('.settings-nav-item').forEach(function(item) {
         window.history.replaceState({}, '', url);
     });
 });
+</script>
+
+<script>
+var editMemberModal = new bootstrap.Modal(document.getElementById('editMemberModal'));
+
+function openEditMemberModal(btn) {
+    document.getElementById('editMemberId').value = btn.dataset.memberId;
+    document.getElementById('editMemberName').value = btn.dataset.memberName;
+    document.getElementById('editMemberEmail').value = btn.dataset.memberEmail;
+    editMemberModal.show();
+}
 </script>
 
 <script>
