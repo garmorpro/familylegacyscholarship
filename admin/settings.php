@@ -527,6 +527,12 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                     <input type="hidden" name="action" value="enable">
                                     <button type="submit" class="roster-action-btn">Enable</button>
                                 </form>
+                                <button type="button" class="roster-delete" title="Delete permanently"
+                                        data-admin-id="<?= (int) $admin['id'] ?>"
+                                        data-admin-name="<?= htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8') ?>"
+                                        onclick="confirmDeleteAdmin(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
@@ -556,6 +562,12 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                 </div>
             </div>
         </div>
+
+        <!-- Delete Admin confirmation form -- hidden, submitted after the SweetAlert2 confirm -->
+        <form id="deleteAdminForm" method="POST" action="delete_admin_user.php" class="d-none">
+            <?= csrf_field() ?>
+            <input type="hidden" name="id" id="deleteAdminId">
+        </form>
 
         <!-- Edit Admin modal (single instance, reused for whichever row triggered it) -->
         <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminLabel" aria-hidden="true">
@@ -642,6 +654,30 @@ function openEditAdminModal(btn) {
         : '';
 
     editAdminModal.show();
+}
+
+// Deleting an admin is permanent -- only ever reachable once the account
+// is already disabled, and still gated behind an explicit, hard-to-miss
+// confirmation before anything is actually submitted.
+function confirmDeleteAdmin(btn) {
+    var id = btn.getAttribute('data-admin-id');
+    var name = btn.getAttribute('data-admin-name');
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Delete ' + name + '?',
+        html: 'This permanently deletes their admin account. <strong>This cannot be undone.</strong>',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete permanently',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc3545',
+        focusConfirm: false
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            document.getElementById('deleteAdminId').value = id;
+            document.getElementById('deleteAdminForm').submit();
+        }
+    });
 }
 </script>
 
