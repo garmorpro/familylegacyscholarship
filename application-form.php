@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once 'app/functions.php';
 require_once 'app/spam_protection.php';
+require_once 'app/applicant_mailer.php';
 require_once 'path.php';
 
 // Server-side timestamp of when the form was actually rendered, used
@@ -149,6 +150,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             send_recommendation_request_email($pdo, $config, $result['recommendation_id']);
         } catch (Throwable $e) {
             error_log("Auto-send recommendation email failed: " . $e->getMessage());
+        }
+
+        // Best-effort, same reasoning as above: lets the applicant know
+        // their application was received and when review starts, but a
+        // failure here must never block the submission itself.
+        try {
+            send_application_received_email(
+                $config,
+                $data['email'],
+                $data['first_name'],
+                $settings['review_start'] ?? null,
+                $settings['review_end'] ?? null
+            );
+        } catch (Throwable $e) {
+            error_log("Auto-send application-received email failed: " . $e->getMessage());
         }
 
         header("Location: thank_you.php");
