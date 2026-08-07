@@ -396,7 +396,9 @@ if ($statusCounts['final_recipient'] > 0) {
     <table class="table table-hover mb-0 align-middle" id="applicationsTable" style="table-layout: fixed;">
         <thead class="table-light">
             <tr>
-                <th style="width: 40px;"></th>
+                <th style="width: 40px;">
+                    <input type="checkbox" class="form-check-input" id="selectAllCheckbox" title="Select all">
+                </th>
                 <th>Applicant</th>
                 <th style="width: 260px;">Intended School</th>
                 <th style="width: 115px;">Submitted</th>
@@ -584,6 +586,10 @@ function applyTableFilters() {
         const matchesSearch = row.innerText.toLowerCase().includes(searchTerm);
         row.style.display = (matchesTab && matchesSearch) ? '' : 'none';
     });
+
+    // Which rows count as "all" for the select-all checkbox changes with
+    // the filter, so refresh its state every time the visible set changes.
+    updateSelectAllState();
 }
 
 document.getElementById('searchInput').addEventListener('keyup', applyTableFilters);
@@ -616,8 +622,44 @@ function updateSelectionIndicator() {
 document.getElementById('applicationsTable').addEventListener('change', function(e) {
     if (e.target.classList.contains('app-checkbox')) {
         updateSelectionIndicator();
+        updateSelectAllState();
     }
 });
+
+// "Select all" only ever acts on rows currently visible under the active
+// status tab + search filter -- checking it while a filter is applied
+// shouldn't silently also select applications the admin can't even see.
+function getVisibleCheckboxes() {
+    return Array.from(document.querySelectorAll('#applicationsTable tbody tr[data-status]'))
+        .filter(row => row.style.display !== 'none')
+        .map(row => row.querySelector('.app-checkbox'))
+        .filter(Boolean);
+}
+
+document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+    getVisibleCheckboxes().forEach(cb => { cb.checked = this.checked; });
+    updateSelectionIndicator();
+});
+
+// Keeps the header checkbox itself reflecting reality: fully checked only
+// when every visible row is checked, indeterminate (the dash icon) when
+// some but not all are, unchecked when none are.
+function updateSelectAllState() {
+    const selectAll = document.getElementById('selectAllCheckbox');
+    const visible = getVisibleCheckboxes();
+    const checkedCount = visible.filter(cb => cb.checked).length;
+
+    if (visible.length === 0 || checkedCount === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    } else if (checkedCount === visible.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+    } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+    }
+}
 </script>
 
 <script>
