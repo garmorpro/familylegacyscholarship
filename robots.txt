@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /committee/
+Disallow: /recommendation/
+Disallow: /app/
+Disallow: /cron/
+
+Sitemap: https://themorganlegacy.com/sitemap.xml
