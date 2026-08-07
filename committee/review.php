@@ -60,8 +60,9 @@ $myPickId = (int) $voteStmt->fetchColumn();
         .pick-btn:disabled { opacity: 0.6; }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
+<main class="flex-fill">
 <div class="top-bar">
     <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center">
@@ -138,6 +139,7 @@ $myPickId = (int) $voteStmt->fetchColumn();
         </table>
     </div>
 </div>
+</main>
 
 <?php require_once ROOT_PATH . '/assets/includes/footer.php'; ?>
 
