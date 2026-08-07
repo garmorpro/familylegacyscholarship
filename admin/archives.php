@@ -44,6 +44,22 @@ try {
 
     <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
     <title>Archives - Morgan Legacy Scholarship</title>
+    <style>
+        .archive-table { width: 100%; border-collapse: collapse; }
+        .archive-table th { text-align: left; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; padding: 14px 20px; border-bottom: 1px solid #f3f3f6; background: rgb(249,250,251); }
+        .archive-table td { padding: 14px 20px; border-bottom: 1px solid #f6f6f8; vertical-align: middle; }
+        .archive-table tr:last-child td { border-bottom: none; }
+        .archive-table tr.archive-row:hover td { background: #fafbff; }
+        .archive-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+        .applicant-name { font-weight: 600; font-size: 14.5px; color: #212529; }
+        .applicant-sub { font-size: 12.5px; color: #8a8a94; }
+        .status-pill { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: capitalize; }
+        .status-pill.submitted { background: rgba(108,117,125,0.12); color: #6c757d; }
+        .status-pill.reviewed { background: rgba(13,110,253,0.1); color: #0d6efd; }
+        .status-pill.final_review { background: rgba(25,135,84,0.12); color: #198754; }
+        .status-pill.final_recipient { background: rgba(197,160,89,0.16); color: #8a6d2e; }
+        .archive-search { padding: 8px 16px !important; border-radius: 20px !important; }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -54,112 +70,90 @@ try {
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
 
-<div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
+<div class="card shadow-sm" style="border-radius: 16px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
+  <div class="case-accent"></div>
 
+  <div style="padding: 28px 32px 20px;">
+    <a href="<?= BASE_URL ?>/admin/" class="text-decoration-none" style="font-size: 13.5px; color: #9a9aa5; font-weight: 600;">
+        <i class="bi bi-arrow-left me-1"></i> Back to application portal
+    </a>
 
-  <div class="card-body">
-    <div class="d-flex align-items-center justify-content-between mb-4" style="padding: 15px 20px;">
-        <div>
-            <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Archives</h3>
-            <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Past cycles, kept on file for historical record</h5>
-        </div>
-    </div>
+    <h3 class="mt-3 mb-1" style="font-weight: 700; font-size: 1.5rem; color: #212529;">Archives</h3>
+    <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Past cycles, kept on file for historical record</h5>
+  </div>
+
+  <div style="padding: 0 32px 32px;">
 
     <div class="mb-3">
-        <input type="text" id="archiveSearchInput" class="form-control form-control-sm"
-               placeholder="Search archived applicants..." style="width: 280px; padding-top: 8px !important; padding-bottom: 8px !important; border-radius: 20px !important;">
+        <input type="text" id="archiveSearchInput" class="form-control form-control-sm archive-search"
+               placeholder="Search archived applicants..." style="width: 280px;">
     </div>
 
-    <div class="mt-2 bg-white shadow-sm"
-     style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+    <div class="bg-white" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+        <table class="archive-table" id="archivesTable">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Contact</th>
+                    <th>Intended School</th>
+                    <th>Submitted</th>
+                    <th>Final Status</th>
+                    <th>Archived</th>
+                    <th style="width: 40px;"></th>
+                </tr>
+            </thead>
 
-    <table class="table table-hover mb-0 align-middle" id="archivesTable">
-        <thead class="table-light">
-            <tr>
-                <th>Applicant</th>
-                <th>Contact</th>
-                <th>Intended School</th>
-                <th>Submitted</th>
-                <th>Final Status</th>
-                <th>Archived</th>
-                <th style="width: 40px;"></th>
-            </tr>
-        </thead>
-
-        <tbody>
-        <?php if (empty($archivedApplications)): ?>
-            <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                    No archived applications yet — applications will appear here once a cycle is archived from the dashboard.
-                </td>
-            </tr>
-        <?php else: ?>
-            <?php foreach ($archivedApplications as $app): ?>
-                <tr style="cursor: pointer;"
-                    onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
-
-                    <!-- Name + GPA -->
-                    <td>
-                        <div class="fw-semibold">
-                            <?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?>
-                        </div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            GPA: <?= htmlspecialchars($app['gpa']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Contact -->
-                    <td>
-                        <div><?= htmlspecialchars($app['email']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            <?= htmlspecialchars($app['phone']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Intended School -->
-                    <td>
-                        <div><?= htmlspecialchars($app['intended_school']) ?></div>
-                        <div class="text-muted" style="font-size: 13px;">
-                            <?= htmlspecialchars($app['intended_major']) ?>
-                        </div>
-                    </td>
-
-                    <!-- Date Submitted -->
-                    <td>
-                        <?= date('M j, Y', strtotime($app['submitted_at'])) ?>
-                    </td>
-
-                    <!-- Final Status -->
-                    <td>
-                        <span class="badge
-                            <?php
-                                echo match ($app['application_status']) {
-                                    'submitted' => 'bg-primary-subtle text-primary',
-                                    'reviewed'  => 'bg-secondary-subtle text-secondary',
-                                    'final_review' => 'bg-success-subtle text-success',
-                                    'final_recipient' => 'bg-info-subtle text-info',
-                                    default => 'bg-light text-dark'
-                                };
-                            ?>">
-                            <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
-                        </span>
-                    </td>
-
-                    <!-- Archived On -->
-                    <td class="text-muted" style="font-size: 13px;">
-                        <?= date('M j, Y', strtotime($app['archived_at'])) ?>
-                    </td>
-
-                    <!-- Chevron -->
-                    <td class="text-end text-muted">
-                        <i class="bi bi-chevron-right"></i>
+            <tbody>
+            <?php if (empty($archivedApplications)): ?>
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        No archived applications yet &mdash; applications will appear here once a cycle is archived from the dashboard.
                     </td>
                 </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+            <?php else: ?>
+                <?php foreach ($archivedApplications as $app): ?>
+                    <tr class="archive-row" style="cursor: pointer;"
+                        onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
+
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="archive-avatar"><?= htmlspecialchars(strtoupper(substr($app['first_name'], 0, 1))) ?></div>
+                                <div>
+                                    <div class="applicant-name"><?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?></div>
+                                    <div class="applicant-sub">GPA: <?= htmlspecialchars($app['gpa']) ?></div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div><?= htmlspecialchars($app['email']) ?></div>
+                            <div class="applicant-sub"><?= htmlspecialchars($app['phone']) ?></div>
+                        </td>
+
+                        <td>
+                            <div><?= htmlspecialchars($app['intended_school']) ?></div>
+                            <div class="applicant-sub"><?= htmlspecialchars($app['intended_major']) ?></div>
+                        </td>
+
+                        <td><?= date('M j, Y', strtotime($app['submitted_at'])) ?></td>
+
+                        <td>
+                            <span class="status-pill <?= htmlspecialchars($app['application_status']) ?>">
+                                <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
+                            </span>
+                        </td>
+
+                        <td class="applicant-sub"><?= date('M j, Y', strtotime($app['archived_at'])) ?></td>
+
+                        <td class="text-end text-muted">
+                            <i class="bi bi-chevron-right"></i>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
   </div>
 </div>
@@ -175,7 +169,7 @@ try {
 <script>
 document.getElementById('archiveSearchInput').addEventListener('keyup', function() {
     const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#archivesTable tbody tr');
+    const rows = document.querySelectorAll('#archivesTable tbody tr.archive-row');
 
     rows.forEach(row => {
         const text = row.innerText.toLowerCase();
