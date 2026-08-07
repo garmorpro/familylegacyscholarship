@@ -167,6 +167,10 @@ button:hover {
   </form>
 
   <div class="footer-text">
+    <a href="forgot_password.php" style="color: var(--muted);">Forgot your password?</a>
+  </div>
+
+  <div class="footer-text">
     © <?= date('Y') ?> The Morgan Legacy
   </div>
 </div>
