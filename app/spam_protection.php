@@ -48,27 +48,44 @@ function submission_too_fast(string $sessionKey, int $minSeconds = 3): bool {
 // this far (whether or not the underlying form data itself is ultimately
 // valid), so someone repeatedly retrying a bad submission still runs
 // into the wall.
+//
+// Fails OPEN, not closed: if the query itself fails for any reason
+// (table missing, permissions not granted, DB hiccup), this is a spam
+// *prevention* nicety, not something that should be able to take down
+// the ability to submit a real application entirely -- log it and let
+// the submission through rather than hard-crashing the whole form.
 function is_rate_limited(PDO $pdo, string $formType, int $maxAttempts = 5, int $windowMinutes = 15): bool {
-    $ip = get_client_ip();
-    $cutoff = date('Y-m-d H:i:s', time() - ($windowMinutes * 60));
+    try {
+        $ip = get_client_ip();
+        $cutoff = date('Y-m-d H:i:s', time() - ($windowMinutes * 60));
 
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) FROM submission_attempts
-        WHERE ip_address = :ip AND form_type = :form_type AND created_at > :cutoff
-    ");
-    $stmt->execute([':ip' => $ip, ':form_type' => $formType, ':cutoff' => $cutoff]);
-    return (int) $stmt->fetchColumn() >= $maxAttempts;
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) FROM submission_attempts
+            WHERE ip_address = :ip AND form_type = :form_type AND created_at > :cutoff
+        ");
+        $stmt->execute([':ip' => $ip, ':form_type' => $formType, ':cutoff' => $cutoff]);
+        return (int) $stmt->fetchColumn() >= $maxAttempts;
+    } catch (PDOException $e) {
+        error_log("is_rate_limited failed, allowing submission through: " . $e->getMessage());
+        return false;
+    }
 }
 
 function record_submission_attempt(PDO $pdo, string $formType): void {
-    $ip = get_client_ip();
-    $stmt = $pdo->prepare("INSERT INTO submission_attempts (ip_address, form_type) VALUES (:ip, :form_type)");
-    $stmt->execute([':ip' => $ip, ':form_type' => $formType]);
+    try {
+        $ip = get_client_ip();
+        $stmt = $pdo->prepare("INSERT INTO submission_attempts (ip_address, form_type) VALUES (:ip, :form_type)");
+        $stmt->execute([':ip' => $ip, ':form_type' => $formType]);
 
-    // Opportunistic cleanup instead of a dedicated cron job -- this table
-    // only needs to hold a rolling window, so on roughly 1 in 20 attempts
-    // just sweep anything older than a day.
-    if (random_int(1, 20) === 1) {
-        $pdo->exec("DELETE FROM submission_attempts WHERE created_at < NOW() - INTERVAL '1 day'");
+        // Opportunistic cleanup instead of a dedicated cron job -- this
+        // table only needs to hold a rolling window, so on roughly 1 in 20
+        // attempts just sweep anything older than a day.
+        if (random_int(1, 20) === 1) {
+            $pdo->exec("DELETE FROM submission_attempts WHERE created_at < NOW() - INTERVAL '1 day'");
+        }
+    } catch (PDOException $e) {
+        // Same reasoning as is_rate_limited -- not being able to log this
+        // one attempt is not a reason to block a real submission.
+        error_log("record_submission_attempt failed, continuing anyway: " . $e->getMessage());
     }
 }
