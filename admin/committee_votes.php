@@ -133,6 +133,8 @@ foreach ($tally as $t) {
         </div>
     <?php endif; ?>
 
+    <hr style="border-color: rgb(241,242,243); margin: 0 0 24px;">
+
     <div class="standings-label">Committee Members</div>
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <?php if (empty($memberVotes)): ?>
