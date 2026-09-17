@@ -38,6 +38,19 @@ $stmt->execute([':id' => $appId]);
 $application = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($application) {
+    // Same ordering as the Final Review list (review.php), so Prev/Next
+    // here steps through applicants in the order the member sees them
+    // there rather than some unrelated order.
+    $orderStmt = $pdo->query("
+        SELECT id FROM scholarship_applications
+        WHERE application_status = 'final_review' AND archived_at IS NULL
+        ORDER BY last_name, first_name
+    ");
+    $finalReviewIds = $orderStmt->fetchAll(PDO::FETCH_COLUMN);
+    $currentIdx = array_search($application['id'], $finalReviewIds, true);
+    $prevAppId = ($currentIdx !== false && $currentIdx > 0) ? $finalReviewIds[$currentIdx - 1] : null;
+    $nextAppId = ($currentIdx !== false && $currentIdx < count($finalReviewIds) - 1) ? $finalReviewIds[$currentIdx + 1] : null;
+
     $recommendationStmt = $pdo->prepare("
         SELECT
             r.id,
@@ -96,6 +109,10 @@ $myPickId = (int) $voteStmt->fetchColumn();
         .pick-btn.unpicked { background: rgb(233,236,255); color: rgb(7,5,55); }
         .pick-btn.picked { background: #C5A059; color: #3a2f14; }
         .pick-btn:disabled { opacity: 0.6; }
+        .nav-arrow-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid #e2e2e8; border-radius: 8px; color: #495057; background: #fff; text-decoration: none; }
+        .nav-arrow-btn:hover { background: #f8f8fa; color: #212529; }
+        .nav-arrow-btn.disabled { color: #ced4da; pointer-events: none; }
+        .nav-position { font-size: 12.5px; color: #9a9aa5; font-weight: 600; white-space: nowrap; }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -124,9 +141,27 @@ $myPickId = (int) $voteStmt->fetchColumn();
   <div class="case-accent"></div>
 
   <div style="padding: 28px 32px 24px;">
-    <a href="review.php?token=<?= urlencode($token) ?>" class="text-decoration-none back-link d-inline-flex align-items-center mb-3">
-        <i class="bi bi-arrow-left me-1"></i> Back to Final Review list
-    </a>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <a href="review.php?token=<?= urlencode($token) ?>" class="text-decoration-none back-link d-inline-flex align-items-center">
+            <i class="bi bi-arrow-left me-1"></i> Back to Final Review list
+        </a>
+
+        <?php if ($currentIdx !== false): ?>
+            <div class="d-flex align-items-center gap-2">
+                <?php if ($prevAppId): ?>
+                    <a href="review_application.php?token=<?= urlencode($token) ?>&id=<?= (int) $prevAppId ?>" class="nav-arrow-btn" title="Previous applicant"><i class="bi bi-chevron-left"></i></a>
+                <?php else: ?>
+                    <span class="nav-arrow-btn disabled"><i class="bi bi-chevron-left"></i></span>
+                <?php endif; ?>
+                <span class="nav-position"><?= $currentIdx + 1 ?> of <?= count($finalReviewIds) ?></span>
+                <?php if ($nextAppId): ?>
+                    <a href="review_application.php?token=<?= urlencode($token) ?>&id=<?= (int) $nextAppId ?>" class="nav-arrow-btn" title="Next applicant"><i class="bi bi-chevron-right"></i></a>
+                <?php else: ?>
+                    <span class="nav-arrow-btn disabled"><i class="bi bi-chevron-right"></i></span>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 
     <div class="row align-items-start">
         <div class="col-md-6">
