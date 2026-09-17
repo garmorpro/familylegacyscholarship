@@ -36,7 +36,7 @@ try {
         <div class="card-body">
 
             <h2>
-                <i class="bi bi-award me-2 text-primary"></i>Scholarship Recipients
+                <i class="bi bi-award me-2" style="color: rgb(7,5,55);"></i>Scholarship Recipients
             </h2>
 
             <?php if (empty($recipients)): ?>

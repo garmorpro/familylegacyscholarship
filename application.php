@@ -167,7 +167,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
   <!-- Step / Feature 1 -->
   <div class="col-12 d-flex align-items-start mb-3">
     <!-- Number Circle -->
-    <div class=" me-3"><i class="bi bi-person text-primary" style="font-size: 22px !important;"></i></div>
+    <div class=" me-3"><i class="bi bi-person" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
 
     <!-- Text Content -->
     <div>
@@ -180,7 +180,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
 
   <!-- Step / Feature 2 -->
   <div class="col-12 d-flex align-items-start mb-3">
-    <div class="me-3"><i class="bi bi-check2-circle text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-check2-circle" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
     <div>
       <h6 class="mb-1">Holistic, Criteria-Based Evaluation</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
@@ -191,7 +191,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
 
   <!-- Step / Feature 3 -->
   <div class="col-12 d-flex align-items-start mb-3">
-    <div class="me-3"><i class="bi bi-file-earmark-text text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-file-earmark-text" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
     <div>
       <h6 class="mb-1">Recipient Notification</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
@@ -212,7 +212,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
   <!-- Step / Feature 1 -->
   <div class="col-12 d-flex align-items-start mb-3">
     <!-- Number Circle -->
-    <div class="me-3"><i class="bi bi-calendar2 text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-calendar2" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
 
     <!-- Text Content -->
     <div>
@@ -225,7 +225,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
 
   <!-- Step / Feature 2 -->
   <div class="col-12 d-flex align-items-start mb-3">
-    <div class="me-3"><i class="bi bi-calendar2 text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-calendar2" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
     <div>
       <h6 class="mb-1">Application Deadline</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
@@ -236,7 +236,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
 
   <!-- Step / Feature 3 -->
   <div class="col-12 d-flex align-items-start mb-3">
-    <div class="me-3"><i class="bi bi-calendar2 text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-calendar2" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
     <div>
       <h6 class="mb-1">Estimated Review Period</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
@@ -247,7 +247,7 @@ if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
 
   <!-- Step / Feature 4 -->
   <div class="col-12 d-flex align-items-start mb-3">
-    <div class="me-3"><i class="bi bi-calendar2 text-primary" style="font-size: 22px !important;"></i></div>
+    <div class="me-3"><i class="bi bi-calendar2" style="font-size: 22px !important; color: rgb(7,5,55);"></i></div>
     <div>
       <h6 class="mb-1">Recipient Announcement</h6>
       <p class="mb-0" style="font-size: 14px; color: #555;">
