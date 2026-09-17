@@ -57,6 +57,13 @@ function member_initials(string $name): string {
     }
     return $initials !== '' ? $initials : '?';
 }
+
+$totalMembers = count($memberVotes);
+$votedMembers = count(array_filter($memberVotes, fn($mv) => (bool) $mv['picked_app_id']));
+$maxVotes = 0;
+foreach ($tally as $t) {
+    $maxVotes = max($maxVotes, (int) $t['vote_count']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,9 +78,12 @@ function member_initials(string $name): string {
     <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title>Committee Votes - Morgan Legacy Scholarship</title>
     <style>
-        .tally-card { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-        .tally-name { font-weight: 600; font-size: 14.5px; color: #212529; }
-        .tally-count { background: rgb(7,5,55); color: #C5A059; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 20px; }
+        .standings-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; margin-bottom: 14px; }
+        .standings-row { display: flex; align-items: center; gap: 16px; }
+        .standings-name { width: 170px; font-size: 15px; font-weight: 700; color: #16151f; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .standings-track { flex-grow: 1; height: 26px; background: rgb(241,242,243); border-radius: 13px; overflow: hidden; }
+        .standings-fill { height: 100%; background: linear-gradient(90deg, #C5A059, #d9b876); border-radius: 13px; }
+        .standings-count { width: 80px; text-align: right; font-size: 14.5px; font-weight: 700; color: rgb(7,5,55); flex-shrink: 0; }
         .ballot-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid #f0f0f3; border-radius: 12px; }
         .ballot-row.has-pick { background: rgba(197,160,89,0.04); }
         .ballot-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(233,236,255); color: rgb(7,5,55); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
@@ -104,15 +114,22 @@ function member_initials(string $name): string {
     <?php if (empty($tally)): ?>
         <div class="text-muted mb-4" style="font-size: 14px;">No votes have been cast yet.</div>
     <?php else: ?>
-        <div class="row g-2 mb-4">
-            <?php foreach ($tally as $t): ?>
-                <div class="col-md-4">
-                    <div class="tally-card">
-                        <div class="tally-name"><?= htmlspecialchars($t['first_name'] . ' ' . $t['last_name']) ?></div>
-                        <div class="tally-count"><?= (int) $t['vote_count'] ?> vote<?= ((int) $t['vote_count'] === 1) ? '' : 's' ?></div>
+        <div class="mb-4">
+            <div class="standings-label">
+                <?= $votedMembers ?> of <?= $totalMembers ?> member<?= $totalMembers === 1 ? '' : 's' ?> <?= $votedMembers === 1 ? 'has' : 'have' ?> voted
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <?php foreach ($tally as $t): ?>
+                    <?php $pct = $maxVotes > 0 ? round(((int) $t['vote_count'] / $maxVotes) * 100) : 0; ?>
+                    <div class="standings-row">
+                        <div class="standings-name"><?= htmlspecialchars($t['first_name'] . ' ' . $t['last_name']) ?></div>
+                        <div class="standings-track">
+                            <div class="standings-fill" style="width: <?= $pct ?>%;"></div>
+                        </div>
+                        <div class="standings-count"><?= (int) $t['vote_count'] ?> vote<?= ((int) $t['vote_count'] === 1) ? '' : 's' ?></div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php endif; ?>
 
