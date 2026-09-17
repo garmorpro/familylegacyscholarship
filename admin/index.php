@@ -288,6 +288,18 @@ try {
     background: rgb(20,16,80);
 }
 
+.row-action-btn.revert {
+    background: transparent;
+    color: #9a9aa5;
+    border: 1px solid #e2e2e8;
+    padding: 6px 9px;
+}
+
+.row-action-btn.revert:hover {
+    background: #f8f8fa;
+    color: #495057;
+}
+
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -481,24 +493,44 @@ if ($statusCounts['final_recipient'] > 0) {
                                 <button type="submit" class="row-action-btn review">Mark Reviewed</button>
                             </form>
                         <?php elseif ($app['application_status'] === 'reviewed'): ?>
-                            <?php if ($finalReviewAtCapacity): ?>
-                                <span class="text-muted" style="font-size: 12.5px;">Final review limit reached</span>
-                            <?php else: ?>
-                                <form method="POST" action="mark_final_review.php" class="d-inline">
+                            <div class="d-flex align-items-center gap-1">
+                                <form method="POST" action="revert_status.php" class="d-inline">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= $app['id'] ?>">
                                     <input type="hidden" name="return" value="index">
-                                    <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                                    <button type="submit" class="row-action-btn revert" title="Move back to Submitted">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
                                 </form>
-                            <?php endif; ?>
+                                <?php if ($finalReviewAtCapacity): ?>
+                                    <span class="text-muted" style="font-size: 12.5px;">Final review limit reached</span>
+                                <?php else: ?>
+                                    <form method="POST" action="mark_final_review.php" class="d-inline">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                        <input type="hidden" name="return" value="index">
+                                        <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
                         <?php elseif ($app['application_status'] === 'final_review'): ?>
-                            <?php if ($statusCounts['final_recipient'] > 0): ?>
-                                <span class="text-muted" style="font-size: 12.5px;">Recipient already chosen</span>
-                            <?php else: ?>
-                                <a href="application_view.php?id=<?= $app['id'] ?>" class="row-action-btn recipient text-decoration-none d-inline-block">
-                                    Designate Recipient
-                                </a>
-                            <?php endif; ?>
+                            <div class="d-flex align-items-center gap-1">
+                                <form method="POST" action="revert_status.php" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                    <input type="hidden" name="return" value="index">
+                                    <button type="submit" class="row-action-btn revert" title="Move back to Reviewed">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
+                                </form>
+                                <?php if ($statusCounts['final_recipient'] > 0): ?>
+                                    <span class="text-muted" style="font-size: 12.5px;">Recipient already chosen</span>
+                                <?php else: ?>
+                                    <a href="application_view.php?id=<?= $app['id'] ?>" class="row-action-btn recipient text-decoration-none d-inline-block">
+                                        Designate Recipient
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         <?php elseif ($app['application_status'] === 'final_recipient'): ?>
                             <span class="text-success" style="font-size: 12.5px; font-weight: 600;">
                                 <i class="bi bi-check-circle-fill me-1"></i>Selected

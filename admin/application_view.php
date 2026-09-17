@@ -124,6 +124,9 @@ try {
         .btn-stage-cta.final:hover { background: rgba(197,160,89,0.3); }
         .btn-stage-cta.recipient { background: rgb(7,5,55); color:#fff; }
         .btn-stage-cta.recipient:hover { background: rgb(20,16,80); }
+
+        .btn-stage-cta-secondary { background: transparent; border: 1.5px solid #e2e2e8; color: #8a8a94; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+        .btn-stage-cta-secondary:hover { background: #f8f8fa; color: #495057; }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -275,22 +278,36 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
             </form>
         </div>
     <?php elseif ($application['application_status'] === 'reviewed'): ?>
-        <?php if ($finalReviewAtCapacity): ?>
-            <div class="text-center text-muted mt-3" style="font-size: 13.5px;">
-                Final review is full (<?= $finalReviewCount ?>/<?= $finalReviewLimit ?>) for this cycle.
-            </div>
-        <?php else: ?>
-            <div class="text-center mt-2">
+        <div class="text-center mt-2 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+            <form method="POST" action="revert_status.php" class="d-inline">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                <button type="submit" class="btn-stage-cta-secondary">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Move back to Submitted
+                </button>
+            </form>
+            <?php if ($finalReviewAtCapacity): ?>
+                <span class="text-muted" style="font-size: 13.5px;">
+                    Final review is full (<?= $finalReviewCount ?>/<?= $finalReviewLimit ?>) for this cycle.
+                </span>
+            <?php else: ?>
                 <form method="POST" action="mark_final_review.php" class="d-inline">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
                     <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
                 </form>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     <?php elseif ($application['application_status'] === 'final_review'): ?>
         <?php if ($finalCount === 0): ?>
-            <div class="text-center mt-2">
+            <div class="text-center mt-2 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                <form method="POST" action="revert_status.php" class="d-inline">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                    <button type="submit" class="btn-stage-cta-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Move back to Reviewed
+                    </button>
+                </form>
                 <form method="POST" action="mark_final_selected.php" id="designateForm" class="d-inline">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
