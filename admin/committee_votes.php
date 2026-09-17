@@ -133,6 +133,7 @@ foreach ($tally as $t) {
         </div>
     <?php endif; ?>
 
+    <div class="standings-label">Committee Members</div>
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <?php if (empty($memberVotes)): ?>
             <div class="text-center text-muted py-4">No committee members have been added yet.</div>
