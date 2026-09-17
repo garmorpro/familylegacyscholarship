@@ -2,16 +2,16 @@
 // Shared gate for the public committee-review pages (committee/review.php,
 // committee/review_application.php). Include this after db.php and after
 // $token has been set from $_GET['token'] -- it either falls through
-// silently (access granted, $committeeAccess holds the active row) or
-// renders the blocked/code-entry page itself and exits.
+// silently (access granted, $committeeAccess/$committeeMemberId/
+// $committeeMemberName are set) or renders the blocked/code-entry page
+// itself and exits.
 //
-// There is only ever one active committee_access row at a time: sending a
-// new invite deletes the old row and inserts a fresh token+code, and
-// designating a final recipient deletes the row outright. So a visitor's
-// session is only ever valid for the row that existed when they last
-// entered the code correctly -- if the code has rotated or the row is
-// gone, the stored session value simply won't match anymore and they're
-// asked again (or told the review has ended).
+// Each committee member gets their own token+code tied to their
+// committee_member_id (see admin/send_committee_review.php), so identity
+// comes from the link they clicked -- no self-ID step needed. Sending a
+// new round of invites deletes all old rows and inserts fresh ones, and
+// designating a final recipient deletes them outright, so a stale link
+// or code simply stops matching anything once that happens.
 
 session_start();
 
@@ -19,7 +19,13 @@ if (empty($token)) {
     committee_gate_blocked("This link isn't valid.");
 }
 
-$accessStmt = $pdo->prepare("SELECT * FROM committee_access WHERE token = :token LIMIT 1");
+$accessStmt = $pdo->prepare("
+    SELECT committee_access.*, committee_members.name AS member_name
+    FROM committee_access
+    JOIN committee_members ON committee_members.id = committee_access.committee_member_id
+    WHERE committee_access.token = :token
+    LIMIT 1
+");
 $accessStmt->execute([':token' => $token]);
 $committeeAccess = $accessStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -27,12 +33,15 @@ if (!$committeeAccess) {
     committee_gate_blocked("This review is no longer available. A final recipient may already have been selected, or a newer invitation was sent since this link went out -- check your email for the most recent one.");
 }
 
-$codeVerified = isset($_SESSION['committee_code_verified'])
-    && hash_equals((string) $committeeAccess['code'], (string) $_SESSION['committee_code_verified']);
+// Verification state is keyed by token, not just a bare session flag --
+// this link is one specific person's, so there's no shared code to mix up
+// across members the way a single global code would.
+$codeVerified = isset($_SESSION['committee_code_verified'][$token])
+    && hash_equals((string) $committeeAccess['code'], (string) $_SESSION['committee_code_verified'][$token]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['code'])) {
     if (hash_equals((string) $committeeAccess['code'], trim((string) $_POST['code']))) {
-        $_SESSION['committee_code_verified'] = $committeeAccess['code'];
+        $_SESSION['committee_code_verified'][$token] = $committeeAccess['code'];
         $codeVerified = true;
     } else {
         committee_gate_code_form($token, "That code doesn't match. Double-check the email and try again.");
@@ -43,50 +52,10 @@ if (!$codeVerified) {
     committee_gate_code_form($token);
 }
 
-// Code verified. Now establish *who* this visitor is -- the shared
-// link/code alone doesn't distinguish committee members from each other,
-// so votes need a self-identification step. Supports switching identity
-// (e.g. wrong person clicked) via ?switch_identity=1.
+$committeeMemberId = (int) $committeeAccess['committee_member_id'];
+$committeeMemberName = $committeeAccess['member_name'];
 
-if (isset($_GET['switch_identity'])) {
-    unset($_SESSION['committee_member_id']);
-}
-
-$membersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
-$committeeMemberRoster = $membersStmt->fetchAll(PDO::FETCH_ASSOC);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['member_id'])) {
-    $chosenId = (int) $_POST['member_id'];
-    $matches = array_filter($committeeMemberRoster, fn($m) => (int) $m['id'] === $chosenId);
-    if ($matches) {
-        $_SESSION['committee_member_id'] = $chosenId;
-    } else {
-        committee_gate_identity_form($token, $committeeMemberRoster, "Please choose a name from the list.");
-    }
-}
-
-$committeeMemberId = $_SESSION['committee_member_id'] ?? null;
-
-// Guards against a stale session pointing at a member who's since been
-// removed from the roster.
-if ($committeeMemberId !== null && !array_filter($committeeMemberRoster, fn($m) => (int) $m['id'] === (int) $committeeMemberId)) {
-    unset($_SESSION['committee_member_id']);
-    $committeeMemberId = null;
-}
-
-if ($committeeMemberId === null) {
-    committee_gate_identity_form($token, $committeeMemberRoster);
-}
-
-$committeeMemberName = '';
-foreach ($committeeMemberRoster as $m) {
-    if ((int) $m['id'] === (int) $committeeMemberId) {
-        $committeeMemberName = $m['name'];
-        break;
-    }
-}
-
-// Falls through here only when access is fully verified and identity is known.
+// Falls through here only when access is fully verified.
 
 function committee_gate_page_start(string $title): void {
 ?>
@@ -154,33 +123,6 @@ function committee_gate_code_form(string $token, ?string $error = null): void {
             <input type="text" name="code" class="gate-code-input" maxlength="6" inputmode="numeric" autocomplete="off" autofocus placeholder="000000">
             <button type="submit" class="gate-btn">Continue</button>
         </form>
-    <?php
-    committee_gate_page_end();
-}
-
-function committee_gate_identity_form(string $token, array $roster, ?string $error = null): void {
-    committee_gate_page_start('Who Are You?');
-    ?>
-        <div class="gate-title">Which of these are you?</div>
-        <div class="gate-text">This is how your pick gets attributed once you select a candidate. You can switch this later if needed.</div>
-        <?php if ($error): ?>
-            <div class="gate-error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        <?php if (empty($roster)): ?>
-            <div class="gate-text">No committee roster has been set up yet -- check back once one has.</div>
-        <?php else: ?>
-            <form method="POST" action="?token=<?= urlencode($token) ?>">
-                <div class="text-start" style="max-height: 260px; overflow-y: auto; margin-bottom: 8px;">
-                    <?php foreach ($roster as $m): ?>
-                        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #e9e9ee; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14.5px;">
-                            <input type="radio" name="member_id" value="<?= (int) $m['id'] ?>" required>
-                            <?= htmlspecialchars($m['name']) ?>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-                <button type="submit" class="gate-btn">Continue</button>
-            </form>
-        <?php endif; ?>
     <?php
     committee_gate_page_end();
 }

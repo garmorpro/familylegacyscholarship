@@ -35,26 +35,43 @@ try {
         throw new Exception('No matching committee members were found.');
     }
 
-    // Every send fully replaces the previously active token+code -- only one
-    // review link/code is ever valid at a time, and anyone still holding an
-    // older one is locked out until they get the new email.
-    $newToken = bin2hex(random_bytes(32));
-    $newCode = (string) random_int(100000, 999999);
-
+    // Every send fully replaces whatever access rows exist -- anyone still
+    // holding a link from an older send is locked out until they get a new
+    // email, same as before. The difference now is each member gets their
+    // own token+code tied to their committee_member_id, so a visitor's
+    // identity comes from the link they clicked instead of a self-ID step.
     $pdo->beginTransaction();
     $pdo->exec("DELETE FROM committee_access");
-    $insert = $pdo->prepare("INSERT INTO committee_access (token, code, created_at) VALUES (:token, :code, NOW())");
-    $insert->execute([':token' => $newToken, ':code' => $newCode]);
+    $insert = $pdo->prepare("
+        INSERT INTO committee_access (token, code, committee_member_id, created_at)
+        VALUES (:token, :code, :member_id, NOW())
+    ");
+
+    $credentials = [];
+    foreach ($members as $member) {
+        $memberToken = bin2hex(random_bytes(32));
+        $memberCode = (string) random_int(100000, 999999);
+
+        $insert->execute([
+            ':token' => $memberToken,
+            ':code' => $memberCode,
+            ':member_id' => $member['id'],
+        ]);
+
+        $credentials[] = ['member' => $member, 'token' => $memberToken, 'code' => $memberCode];
+    }
     $pdo->commit();
 
+    // Emails are sent after the transaction commits -- a slow/failed send
+    // shouldn't leave the access rows themselves uncommitted.
     $sentCount = 0;
     $failedNames = [];
-    foreach ($members as $member) {
-        $ok = send_committee_review_email($config, $member['email'], $member['name'], $newToken, $newCode);
+    foreach ($credentials as $c) {
+        $ok = send_committee_review_email($config, $c['member']['email'], $c['member']['name'], $c['token'], $c['code']);
         if ($ok) {
             $sentCount++;
         } else {
-            $failedNames[] = $member['name'];
+            $failedNames[] = $c['member']['name'];
         }
     }
 

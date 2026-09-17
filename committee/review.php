@@ -77,7 +77,6 @@ $myPickId = (int) $voteStmt->fetchColumn();
         </div>
         <div class="top-bar-who">
             Reviewing as <strong><?= htmlspecialchars($committeeMemberName) ?></strong>
-            &bull; <a href="?token=<?= urlencode($token) ?>&switch_identity=1">Not you?</a>
         </div>
     </div>
 </div>
