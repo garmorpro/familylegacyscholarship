@@ -415,10 +415,10 @@ if ($statusCounts['final_recipient'] > 0) {
                     <input type="checkbox" class="form-check-input" id="selectAllCheckbox" title="Select all">
                 </th>
                 <th>Applicant</th>
-                <th style="width: 260px;">Intended School</th>
+                <th style="width: 235px;">Intended School</th>
                 <th style="width: 115px;">Submitted</th>
                 <th style="width: 105px;">Progress</th>
-                <th style="width: 195px;">Action</th>
+                <th style="width: 235px;">Action</th>
             </tr>
         </thead>
 
