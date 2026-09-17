@@ -432,11 +432,11 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                     onclick="openEditMemberModal(this)">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <form method="POST" action="delete_committee_member.php" class="d-inline"
-                                  onsubmit="return confirm('Remove <?= htmlspecialchars(addslashes($member['name'])) ?> from the committee roster?');">
+                            <form method="POST" action="delete_committee_member.php" class="d-inline">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="id" value="<?= (int) $member['id'] ?>">
-                                <button type="submit" class="roster-delete">
+                                <button type="button" class="roster-delete"
+                                        onclick="confirmRemoveMember(this, <?= json_encode($member['name'], JSON_HEX_APOS | JSON_HEX_QUOT) ?>)">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -552,12 +552,12 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                     <button type="submit" class="roster-action-btn">Resend Invite</button>
                                 </form>
                             <?php elseif ($admin['is_active']): ?>
-                                <form method="POST" action="toggle_admin_user.php" class="d-inline"
-                                      onsubmit="return confirm('Disable admin access for <?= htmlspecialchars(addslashes($displayName)) ?>?');">
+                                <form method="POST" action="toggle_admin_user.php" class="d-inline">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= (int) $admin['id'] ?>">
                                     <input type="hidden" name="action" value="disable">
-                                    <button type="submit" class="roster-action-btn danger">Disable</button>
+                                    <button type="button" class="roster-action-btn danger"
+                                            onclick="confirmDisableAdmin(this, <?= json_encode($displayName, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)">Disable</button>
                                 </form>
                             <?php else: ?>
                                 <form method="POST" action="toggle_admin_user.php" class="d-inline">
@@ -704,6 +704,40 @@ function openEditAdminModal(btn) {
         : '';
 
     editAdminModal.show();
+}
+
+function confirmRemoveMember(btn, name) {
+    var form = btn.closest('form');
+    Swal.fire({
+        icon: 'warning',
+        title: 'Remove ' + name + '?',
+        html: 'They will no longer receive the Final Review link when you send it to the committee.',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove',
+        cancelButtonText: 'Cancel',
+        focusConfirm: false
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
+
+function confirmDisableAdmin(btn, name) {
+    var form = btn.closest('form');
+    Swal.fire({
+        icon: 'warning',
+        title: 'Disable admin access for ' + name + '?',
+        html: 'They will immediately lose access to the admin portal. You can re-enable it later.',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, disable',
+        cancelButtonText: 'Cancel',
+        focusConfirm: false
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
 }
 
 // Deleting an admin is permanent -- only ever reachable once the account
