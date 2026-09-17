@@ -436,7 +436,8 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="id" value="<?= (int) $member['id'] ?>">
                                 <button type="button" class="roster-delete"
-                                        onclick="confirmRemoveMember(this, <?= json_encode($member['name'], JSON_HEX_APOS | JSON_HEX_QUOT) ?>)">
+                                        data-member-name="<?= htmlspecialchars($member['name'], ENT_QUOTES, 'UTF-8') ?>"
+                                        onclick="confirmRemoveMember(this)">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -557,7 +558,8 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                                     <input type="hidden" name="id" value="<?= (int) $admin['id'] ?>">
                                     <input type="hidden" name="action" value="disable">
                                     <button type="button" class="roster-action-btn danger"
-                                            onclick="confirmDisableAdmin(this, <?= json_encode($displayName, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)">Disable</button>
+                                            data-admin-name="<?= htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8') ?>"
+                                            onclick="confirmDisableAdmin(this)">Disable</button>
                                 </form>
                             <?php else: ?>
                                 <form method="POST" action="toggle_admin_user.php" class="d-inline">
@@ -706,8 +708,9 @@ function openEditAdminModal(btn) {
     editAdminModal.show();
 }
 
-function confirmRemoveMember(btn, name) {
+function confirmRemoveMember(btn) {
     var form = btn.closest('form');
+    var name = btn.getAttribute('data-member-name');
     Swal.fire({
         icon: 'warning',
         title: 'Remove ' + name + '?',
@@ -723,8 +726,9 @@ function confirmRemoveMember(btn, name) {
     });
 }
 
-function confirmDisableAdmin(btn, name) {
+function confirmDisableAdmin(btn) {
     var form = btn.closest('form');
+    var name = btn.getAttribute('data-admin-name');
     Swal.fire({
         icon: 'warning',
         title: 'Disable admin access for ' + name + '?',
