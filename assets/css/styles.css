@@ -220,3 +220,18 @@ header .navbar-toggler {
     .sidebar-col { position: static; border-right: none; border-bottom: 1px solid #f3f3f6; padding-right: 0; padding-bottom: 20px; margin-bottom: 20px; }
     .detail-doc-grid { grid-template-columns: 1fr; }
   }
+
+  /* Branded SweetAlert2 popups -- match the navy/gold system used
+     everywhere else instead of SweetAlert2's plain default purple/rounded
+     look. Confirm buttons that pass their own confirmButtonColor (the
+     red destructive delete confirms) set an inline background-color, so
+     the :not([style*="background"]) guard below leaves those alone. */
+  .swal2-popup { border-radius: 16px; }
+  .swal2-title { color: #16151f; font-weight: 700; }
+  .swal2-html-container { color: #495057; }
+  .swal2-confirm:not([style*="background"]) { background: rgb(7,5,55) !important; }
+  .swal2-confirm:not([style*="background"]):hover { background: rgb(20,16,80) !important; }
+  .swal2-confirm { border-radius: 8px !important; font-weight: 600 !important; padding: 10px 24px !important; box-shadow: none !important; }
+  .swal2-confirm:focus { box-shadow: 0 0 0 3px rgba(7,5,55,0.25) !important; }
+  .swal2-cancel { background: #f1f1f4 !important; color: #495057 !important; border-radius: 8px !important; font-weight: 600 !important; padding: 10px 24px !important; box-shadow: none !important; }
+  .swal2-cancel:hover { background: #e4e4ea !important; }
