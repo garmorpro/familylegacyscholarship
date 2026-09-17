@@ -71,7 +71,8 @@ foreach ($tally as $t) {
     <style>
         .standings-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #9a9aa5; margin-bottom: 14px; }
         .standings-row { display: flex; align-items: center; gap: 16px; }
-        .standings-name { width: 170px; font-size: 15px; font-weight: 700; color: #16151f; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .standings-name { width: 170px; font-size: 15px; font-weight: 700; color: #16151f; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; display: block; }
+        .standings-name:hover { text-decoration: underline; color: rgb(7,5,55); }
         .standings-track { flex-grow: 1; height: 26px; background: rgb(241,242,243); border-radius: 13px; overflow: hidden; }
         .standings-fill { height: 100%; background: linear-gradient(90deg, #C5A059, #d9b876); border-radius: 13px; }
         .standings-count { width: 80px; text-align: right; font-size: 14.5px; font-weight: 700; color: rgb(7,5,55); flex-shrink: 0; }
@@ -113,7 +114,7 @@ foreach ($tally as $t) {
                 <?php foreach ($tally as $t): ?>
                     <?php $pct = $maxVotes > 0 ? round(((int) $t['vote_count'] / $maxVotes) * 100) : 0; ?>
                     <div class="standings-row">
-                        <div class="standings-name"><?= htmlspecialchars($t['first_name'] . ' ' . $t['last_name']) ?></div>
+                        <a href="application_view.php?id=<?= (int) $t['id'] ?>" class="standings-name"><?= htmlspecialchars($t['first_name'] . ' ' . $t['last_name']) ?></a>
                         <div class="standings-track">
                             <div class="standings-fill" style="width: <?= $pct ?>%;"></div>
                         </div>
