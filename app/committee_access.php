@@ -15,6 +15,15 @@
 
 session_start();
 
+// Before this per-member rewrite, committee_code_verified held a single
+// scalar code, not a token-keyed array -- a browser session still carrying
+// that old shape would fail every array lookup below (silently, since
+// array access on a string just returns null) and get asked for the code
+// forever. Reset it back to an array if it's ever anything else.
+if (!isset($_SESSION['committee_code_verified']) || !is_array($_SESSION['committee_code_verified'])) {
+    $_SESSION['committee_code_verified'] = [];
+}
+
 if (empty($token)) {
     committee_gate_blocked("This link isn't valid.");
 }
