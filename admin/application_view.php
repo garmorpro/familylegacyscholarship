@@ -278,26 +278,32 @@ $finalReviewAtCapacity = $finalReviewCount >= $finalReviewLimit;
             </form>
         </div>
     <?php elseif ($application['application_status'] === 'reviewed'): ?>
-        <div class="text-center mt-2 d-flex justify-content-center align-items-center gap-3 flex-wrap">
-            <form method="POST" action="revert_status.php" class="d-inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                <button type="submit" class="btn-stage-cta-secondary">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Move back to Submitted
-                </button>
-            </form>
-            <?php if ($finalReviewAtCapacity): ?>
-                <span class="text-muted" style="font-size: 13.5px;">
-                    Final review is full (<?= $finalReviewCount ?>/<?= $finalReviewLimit ?>) for this cycle.
-                </span>
-            <?php else: ?>
-                <form method="POST" action="mark_final_review.php" class="d-inline">
+        <?php if ($finalCount > 0): ?>
+            <div class="text-center text-muted mt-3" style="font-size: 13.5px;">
+                A final recipient has already been selected for this cycle.
+            </div>
+        <?php else: ?>
+            <div class="text-center mt-2 d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                <form method="POST" action="revert_status.php" class="d-inline">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= $application['id'] ?>">
-                    <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
+                    <button type="submit" class="btn-stage-cta-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Move back to Submitted
+                    </button>
                 </form>
-            <?php endif; ?>
-        </div>
+                <?php if ($finalReviewAtCapacity): ?>
+                    <span class="text-muted" style="font-size: 13.5px;">
+                        Final review is full (<?= $finalReviewCount ?>/<?= $finalReviewLimit ?>) for this cycle.
+                    </span>
+                <?php else: ?>
+                    <form method="POST" action="mark_final_review.php" class="d-inline">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id" value="<?= $application['id'] ?>">
+                        <button type="submit" class="btn-stage-cta final">Advance to Final Review</button>
+                    </form>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     <?php elseif ($application['application_status'] === 'final_review'): ?>
         <?php if ($finalCount === 0): ?>
             <div class="text-center mt-2 d-flex justify-content-center align-items-center gap-3 flex-wrap">

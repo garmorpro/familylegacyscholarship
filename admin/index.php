@@ -493,26 +493,30 @@ if ($statusCounts['final_recipient'] > 0) {
                                 <button type="submit" class="row-action-btn review">Mark Reviewed</button>
                             </form>
                         <?php elseif ($app['application_status'] === 'reviewed'): ?>
-                            <div class="d-flex align-items-center gap-1">
-                                <form method="POST" action="revert_status.php" class="d-inline">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="id" value="<?= $app['id'] ?>">
-                                    <input type="hidden" name="return" value="index">
-                                    <button type="submit" class="row-action-btn revert" title="Move back to Submitted">
-                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                    </button>
-                                </form>
-                                <?php if ($finalReviewAtCapacity): ?>
-                                    <span class="text-muted" style="font-size: 12.5px;">Final review limit reached</span>
-                                <?php else: ?>
-                                    <form method="POST" action="mark_final_review.php" class="d-inline">
+                            <?php if ($statusCounts['final_recipient'] > 0): ?>
+                                <span class="text-muted" style="font-size: 12.5px;">Recipient chosen</span>
+                            <?php else: ?>
+                                <div class="d-flex align-items-center gap-1">
+                                    <form method="POST" action="revert_status.php" class="d-inline">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="id" value="<?= $app['id'] ?>">
                                         <input type="hidden" name="return" value="index">
-                                        <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                                        <button type="submit" class="row-action-btn revert" title="Move back to Submitted">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                        </button>
                                     </form>
-                                <?php endif; ?>
-                            </div>
+                                    <?php if ($finalReviewAtCapacity): ?>
+                                        <span class="text-muted" style="font-size: 12.5px;">Final review limit reached</span>
+                                    <?php else: ?>
+                                        <form method="POST" action="mark_final_review.php" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="id" value="<?= $app['id'] ?>">
+                                            <input type="hidden" name="return" value="index">
+                                            <button type="submit" class="row-action-btn final">Advance to Final Review</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         <?php elseif ($app['application_status'] === 'final_review'): ?>
                             <?php if ($statusCounts['final_recipient'] > 0): ?>
                                 <span class="text-muted" style="font-size: 12.5px;">Recipient chosen</span>

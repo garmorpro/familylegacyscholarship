@@ -19,17 +19,20 @@ try {
     $finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
 
     // Only advance applications that are actually still 'reviewed' and
-    // active, and only while final review is under its cap.
+    // active, only while final review is under its cap, and only while
+    // this cycle hasn't already been decided -- once a final recipient
+    // exists there's nothing left to advance anyone toward.
     $stmt = $pdo->prepare("
         UPDATE scholarship_applications
         SET application_status = 'final_review'
         WHERE id = :id AND application_status = 'reviewed' AND archived_at IS NULL
           AND (SELECT COUNT(*) FROM scholarship_applications WHERE application_status = 'final_review' AND archived_at IS NULL) < :limit
+          AND NOT EXISTS (SELECT 1 FROM scholarship_applications WHERE application_status = 'final_recipient' AND archived_at IS NULL)
     ");
     $stmt->execute([':id' => $appId, ':limit' => $finalReviewLimit]);
 
     if ($stmt->rowCount() === 0) {
-        error_log("mark_final_review.php: no-op for id={$appId}, not in 'reviewed' status or final review limit reached");
+        error_log("mark_final_review.php: no-op for id={$appId}, not in 'reviewed' status, final review limit reached, or a recipient is already chosen");
     }
 
     // The row-level quick action in the applications table wants to stay on
