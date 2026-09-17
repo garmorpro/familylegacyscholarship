@@ -32,6 +32,31 @@ try {
     $memberVotes = [];
     $tally = [];
 }
+
+// Each distinct picked candidate gets a color from a small rotating
+// palette (not one color per member) so who-picked-whom reads at a
+// glance without hardcoding a color per applicant.
+$pickPalette = [
+    ['bg' => 'rgba(197,160,89,0.16)', 'color' => '#8a6d2e'],
+    ['bg' => 'rgba(7,5,55,0.08)',     'color' => 'rgb(7,5,55)'],
+    ['bg' => 'rgba(25,135,84,0.12)',  'color' => '#198754'],
+    ['bg' => 'rgba(13,110,253,0.12)', 'color' => '#0d6efd'],
+];
+$candidateColors = [];
+foreach ($memberVotes as $mv) {
+    if ($mv['picked_app_id'] && !isset($candidateColors[$mv['picked_app_id']])) {
+        $candidateColors[$mv['picked_app_id']] = $pickPalette[count($candidateColors) % count($pickPalette)];
+    }
+}
+
+function member_initials(string $name): string {
+    $parts = preg_split('/\s+/', trim($name));
+    $initials = '';
+    foreach (array_slice($parts, 0, 2) as $p) {
+        $initials .= mb_strtoupper(mb_substr($p, 0, 1));
+    }
+    return $initials !== '' ? $initials : '?';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,10 +74,11 @@ try {
         .tally-card { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
         .tally-name { font-weight: 600; font-size: 14.5px; color: #212529; }
         .tally-count { background: rgb(7,5,55); color: #C5A059; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 20px; }
-        .vote-table { width: 100%; border-collapse: collapse; }
-        .vote-table th { text-align: left; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; padding: 12px 20px; border-bottom: 1px solid #f3f3f6; }
-        .vote-table td { padding: 14px 20px; border-bottom: 1px solid #f6f6f8; vertical-align: middle; }
-        .vote-table tr:last-child td { border-bottom: none; }
+        .ballot-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid #f0f0f3; border-radius: 12px; }
+        .ballot-row.has-pick { background: rgba(197,160,89,0.04); }
+        .ballot-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(233,236,255); color: rgb(7,5,55); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+        .ballot-pick-pill { text-decoration: none; display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+        .ballot-voted-at { width: 130px; text-align: right; font-size: 12px; color: #9a9aa5; flex-shrink: 0; }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -90,44 +116,32 @@ try {
         </div>
     <?php endif; ?>
 
-    <div class="bg-white" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
-        <table class="vote-table">
-            <thead>
-                <tr>
-                    <th>Committee Member</th>
-                    <th>Their Pick</th>
-                    <th>Voted</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($memberVotes)): ?>
-                    <tr>
-                        <td colspan="3" class="text-center text-muted py-4">No committee members have been added yet.</td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($memberVotes as $mv): ?>
-                        <tr>
-                            <td>
-                                <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($mv['member_name']) ?></div>
-                                <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($mv['member_email']) ?></div>
-                            </td>
-                            <td>
-                                <?php if ($mv['picked_app_id']): ?>
-                                    <a href="application_view.php?id=<?= (int) $mv['picked_app_id'] ?>" class="text-decoration-none" style="color: rgb(7,5,55); font-weight: 600;">
-                                        <?= htmlspecialchars($mv['first_name'] . ' ' . $mv['last_name']) ?>
-                                    </a>
-                                <?php else: ?>
-                                    <span class="text-muted">No pick yet</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-muted" style="font-size: 13.5px;">
-                                <?= $mv['voted_at'] ? date('M j, Y g:i A', strtotime($mv['voted_at'])) : '&mdash;' ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <?php if (empty($memberVotes)): ?>
+            <div class="text-center text-muted py-4">No committee members have been added yet.</div>
+        <?php else: ?>
+            <?php foreach ($memberVotes as $mv): ?>
+                <?php
+                    $hasPick = (bool) $mv['picked_app_id'];
+                    $pickColor = $hasPick ? ($candidateColors[$mv['picked_app_id']] ?? $pickPalette[0]) : null;
+                ?>
+                <div class="ballot-row <?= $hasPick ? 'has-pick' : '' ?>">
+                    <div class="ballot-avatar"><?= htmlspecialchars(member_initials($mv['member_name'])) ?></div>
+                    <div style="flex-grow: 1;">
+                        <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($mv['member_name']) ?></div>
+                        <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($mv['member_email']) ?></div>
+                    </div>
+                    <?php if ($hasPick): ?>
+                        <a href="application_view.php?id=<?= (int) $mv['picked_app_id'] ?>" class="ballot-pick-pill" style="background: <?= $pickColor['bg'] ?>; color: <?= $pickColor['color'] ?>;">
+                            <?= htmlspecialchars($mv['first_name'] . ' ' . $mv['last_name']) ?>
+                        </a>
+                        <div class="ballot-voted-at"><?= $mv['voted_at'] ? date('M j, g:i A', strtotime($mv['voted_at'])) : '&mdash;' ?></div>
+                    <?php else: ?>
+                        <div style="font-size: 13px; color: #ced4da; font-style: italic;">No pick yet</div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
   </div>
