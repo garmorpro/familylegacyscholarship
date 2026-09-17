@@ -41,6 +41,23 @@ $applicationOpenDate  = formatTimelineDate($settings['application_open'] ?? null
 $applicationCloseDate = formatTimelineDate($settings['application_closed'] ?? null);
 $reviewPeriodRange    = formatTimelineRange($settings['review_start'] ?? null, $settings['review_end'] ?? null);
 $announcementDate     = formatTimelineDate($settings['announcement_date'] ?? null);
+
+// Same open/not_open/closed/unset logic index.php already uses for its
+// own "Start Your Application" button -- this page had the button
+// showing unconditionally regardless of the actual Timeline dates.
+$rawApplicationOpen = $settings['application_open'] ?? '';
+$rawApplicationClose = $settings['application_closed'] ?? '';
+$today = date('Y-m-d');
+
+if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
+    $cycleState = 'unset';
+} elseif ($today < $rawApplicationOpen) {
+    $cycleState = 'not_open';
+} elseif ($today > $rawApplicationClose) {
+    $cycleState = 'closed';
+} else {
+    $cycleState = 'open';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -243,9 +260,11 @@ $announcementDate     = formatTimelineDate($settings['announcement_date'] ?? nul
 
 <hr>
 
+<?php if ($cycleState === 'open'): ?>
 <div class="d-flex justify-content-center">
 <a href="<?= BASE_URL ?>/application-form.php" class="btn mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>Start Your Application</a>
 </div>
+<?php endif; ?>
 
 
 
