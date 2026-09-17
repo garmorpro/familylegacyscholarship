@@ -5,31 +5,41 @@ require_once '../app/require_admin.php';
 require_once '../path.php';
 
 /**
- * Archived applications, most recently archived first
+ * Cycles, most recently archived first. A single archive action sets
+ * archived_at = NOW() for every application in one UPDATE statement, so
+ * all rows from the same cycle share the exact same archived_at value --
+ * that's what groups them here, no separate "cycle" table needed.
  */
 try {
-    $archivedStmt = $pdo->query("
+    $cyclesStmt = $pdo->query("
         SELECT
-            id,
-            first_name,
-            last_name,
-            gpa,
-            email,
-            phone,
-            intended_school,
-            intended_major,
-            application_status,
-            submitted_at,
-            archived_at
+            archived_at,
+            COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE application_status = 'final_recipient') AS recipient_count,
+            COUNT(*) FILTER (WHERE application_status = 'final_review') AS final_review_count,
+            COUNT(*) FILTER (WHERE application_status = 'reviewed') AS reviewed_count,
+            COUNT(*) FILTER (WHERE application_status = 'submitted') AS submitted_count,
+            MIN(submitted_at) AS earliest_submitted,
+            MAX(submitted_at) AS latest_submitted
         FROM scholarship_applications
         WHERE archived_at IS NOT NULL
-        ORDER BY archived_at DESC, submitted_at DESC
+        GROUP BY archived_at
+        ORDER BY archived_at DESC
     ");
+    $cycles = $cyclesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $archivedApplications = $archivedStmt->fetchAll(PDO::FETCH_ASSOC);
-
+    $recipientsStmt = $pdo->query("
+        SELECT archived_at, id, first_name, last_name, intended_school
+        FROM scholarship_applications
+        WHERE archived_at IS NOT NULL AND application_status = 'final_recipient'
+    ");
+    $recipientsByCycle = [];
+    foreach ($recipientsStmt->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $recipientsByCycle[$r['archived_at']] = $r;
+    }
 } catch (Exception $e) {
-    $archivedApplications = [];
+    $cycles = [];
+    $recipientsByCycle = [];
 }
 ?>
 
@@ -48,20 +58,12 @@ try {
     <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title>Archives - Morgan Legacy Scholarship</title>
     <style>
-        .archive-table { width: 100%; border-collapse: collapse; }
-        .archive-table th { text-align: left; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; padding: 14px 20px; border-bottom: 1px solid #f3f3f6; background: rgb(249,250,251); }
-        .archive-table td { padding: 14px 20px; border-bottom: 1px solid #f6f6f8; vertical-align: middle; }
-        .archive-table tr:last-child td { border-bottom: none; }
-        .archive-table tr.archive-row:hover td { background: #fafbff; }
-        .archive-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
-        .applicant-name { font-weight: 600; font-size: 14.5px; color: #212529; }
-        .applicant-sub { font-size: 12.5px; color: #8a8a94; }
-        .status-pill { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: capitalize; }
-        .status-pill.submitted { background: rgba(108,117,125,0.12); color: #6c757d; }
-        .status-pill.reviewed { background: rgba(13,110,253,0.1); color: #0d6efd; }
-        .status-pill.final_review { background: rgba(25,135,84,0.12); color: #198754; }
-        .status-pill.final_recipient { background: rgba(197,160,89,0.16); color: #8a6d2e; }
         .archive-search { padding: 8px 16px !important; border-radius: 20px !important; }
+        .cycle-card { text-decoration: none; display: block; border: 1px solid rgb(241,242,243); border-radius: 14px; overflow: hidden; color: inherit; }
+        .cycle-card:hover { border-color: #d8d8e0; }
+        .cycle-avatar { width: 46px; height: 46px; border-radius: 50%; background: rgb(7,5,55); color: #C5A059; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; flex-shrink: 0; }
+        .cycle-badge { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: rgba(7,5,55,0.06); color: rgb(7,5,55); }
+        .cycle-stat-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -83,80 +85,96 @@ try {
 
     <h3 class="mt-3 mb-1" style="font-weight: 700; font-size: 1.5rem; color: #212529;">Archives</h3>
     <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Past cycles, kept on file for historical record</h5>
+
+    <div class="mt-3">
+        <input type="text" id="cycleSearchInput" class="form-control form-control-sm archive-search"
+               placeholder="Search archived cycles..." style="width: 300px;">
+    </div>
   </div>
 
   <div style="padding: 0 32px 32px;">
 
-    <div class="mb-3">
-        <input type="text" id="archiveSearchInput" class="form-control form-control-sm archive-search"
-               placeholder="Search archived applicants..." style="width: 280px;">
-    </div>
+    <?php if (empty($cycles)): ?>
+        <div class="text-center text-muted py-5">
+            No archived cycles yet &mdash; a cycle appears here once you archive it from the dashboard.
+        </div>
+    <?php else: ?>
+        <div id="cyclesList" class="d-flex flex-column gap-3">
+            <?php foreach ($cycles as $i => $cycle): ?>
+                <?php
+                    $recipient = $recipientsByCycle[$cycle['archived_at']] ?? null;
+                    $cycleYear = date('Y', strtotime($cycle['archived_at']));
+                    $cycleLabel = "{$cycleYear} Cycle";
+                    $searchText = strtolower($cycleLabel . ' ' . ($recipient ? $recipient['first_name'] . ' ' . $recipient['last_name'] . ' ' . $recipient['intended_school'] : ''));
+                ?>
+                <a href="archive_cycle.php?archived_at=<?= urlencode($cycle['archived_at']) ?>" class="cycle-card cycle-row" data-search="<?= htmlspecialchars($searchText) ?>">
+                    <div style="padding: 20px 24px; display: flex; align-items: center; gap: 20px;">
+                        <div class="cycle-avatar">
+                            <?= $recipient ? htmlspecialchars(strtoupper(substr($recipient['first_name'], 0, 1) . substr($recipient['last_name'], 0, 1))) : '<i class="bi bi-archive"></i>' ?>
+                        </div>
 
-    <div class="bg-white" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
-        <table class="archive-table" id="archivesTable">
-            <thead>
-                <tr>
-                    <th>Applicant</th>
-                    <th>Contact</th>
-                    <th>Intended School</th>
-                    <th>Submitted</th>
-                    <th>Final Status</th>
-                    <th>Archived</th>
-                    <th style="width: 40px;"></th>
-                </tr>
-            </thead>
-
-            <tbody>
-            <?php if (empty($archivedApplications)): ?>
-                <tr>
-                    <td colspan="7" class="text-center text-muted py-5">
-                        No archived applications yet &mdash; applications will appear here once a cycle is archived from the dashboard.
-                    </td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($archivedApplications as $app): ?>
-                    <tr class="archive-row" style="cursor: pointer;"
-                        onclick="window.location.href='application_view.php?id=<?= $app['id'] ?>'">
-
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="archive-avatar"><?= htmlspecialchars(strtoupper(substr($app['first_name'], 0, 1))) ?></div>
-                                <div>
-                                    <div class="applicant-name"><?= htmlspecialchars($app['first_name'] . ' ' . $app['last_name']) ?></div>
-                                    <div class="applicant-sub">GPA: <?= htmlspecialchars($app['gpa']) ?></div>
-                                </div>
+                        <div style="flex-grow: 1; min-width: 0;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="font-size: 18px; font-weight: 800; color: #16151f;"><?= htmlspecialchars($cycleLabel) ?></div>
+                                <?php if ($i === 0): ?>
+                                    <span class="cycle-badge">Most recent</span>
+                                <?php endif; ?>
                             </div>
-                        </td>
+                            <div style="font-size: 13.5px; color: #6c757d; margin-top: 3px;">
+                                <?php if ($recipient): ?>
+                                    Recipient: <strong style="color: #16151f;"><?= htmlspecialchars($recipient['first_name'] . ' ' . $recipient['last_name']) ?></strong> &bull; <?= htmlspecialchars($recipient['intended_school']) ?>
+                                <?php else: ?>
+                                    No final recipient was designated this cycle
+                                <?php endif; ?>
+                            </div>
+                        </div>
 
-                        <td>
-                            <div><?= htmlspecialchars($app['email']) ?></div>
-                            <div class="applicant-sub"><?= htmlspecialchars($app['phone']) ?></div>
-                        </td>
+                        <div style="text-align: right; flex-shrink: 0; padding-right: 4px;">
+                            <div style="font-size: 20px; font-weight: 800; color: #16151f;"><?= (int) $cycle['total'] ?></div>
+                            <div style="font-size: 11px; color: #9a9aa5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Applicant<?= (int) $cycle['total'] === 1 ? '' : 's' ?></div>
+                        </div>
 
-                        <td>
-                            <div><?= htmlspecialchars($app['intended_school']) ?></div>
-                            <div class="applicant-sub"><?= htmlspecialchars($app['intended_major']) ?></div>
-                        </td>
+                        <div style="text-align: right; flex-shrink: 0; width: 110px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #212529;"><?= date('M j, Y', strtotime($cycle['archived_at'])) ?></div>
+                            <div style="font-size: 11px; color: #9a9aa5;">Archived</div>
+                        </div>
 
-                        <td><?= date('M j, Y', strtotime($app['submitted_at'])) ?></td>
+                        <div style="color: #ced4da; font-size: 20px; flex-shrink: 0;"><i class="bi bi-chevron-right"></i></div>
+                    </div>
 
-                        <td>
-                            <span class="status-pill <?= htmlspecialchars($app['application_status']) ?>">
-                                <?= ucwords(str_replace('_', ' ', $app['application_status'])) ?>
-                            </span>
-                        </td>
-
-                        <td class="applicant-sub"><?= date('M j, Y', strtotime($app['archived_at'])) ?></td>
-
-                        <td class="text-end text-muted">
-                            <i class="bi bi-chevron-right"></i>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                    <div style="padding: 12px 24px 16px; border-top: 1px solid #f3f3f6; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
+                        <?php if ((int) $cycle['recipient_count'] > 0): ?>
+                            <div class="d-flex align-items-center gap-2" style="font-size: 12px; color: #6c757d;">
+                                <span class="cycle-stat-dot" style="background: #C5A059;"></span> <?= (int) $cycle['recipient_count'] ?> Final Recipient
+                            </div>
+                        <?php endif; ?>
+                        <?php if ((int) $cycle['final_review_count'] > 0): ?>
+                            <div class="d-flex align-items-center gap-2" style="font-size: 12px; color: #6c757d;">
+                                <span class="cycle-stat-dot" style="background: #198754;"></span> <?= (int) $cycle['final_review_count'] ?> reached Final Review
+                            </div>
+                        <?php endif; ?>
+                        <?php if ((int) $cycle['reviewed_count'] > 0): ?>
+                            <div class="d-flex align-items-center gap-2" style="font-size: 12px; color: #6c757d;">
+                                <span class="cycle-stat-dot" style="background: #0d6efd;"></span> <?= (int) $cycle['reviewed_count'] ?> reached Reviewed
+                            </div>
+                        <?php endif; ?>
+                        <?php if ((int) $cycle['submitted_count'] > 0): ?>
+                            <div class="d-flex align-items-center gap-2" style="font-size: 12px; color: #6c757d;">
+                                <span class="cycle-stat-dot" style="background: #9a9aa5;"></span> <?= (int) $cycle['submitted_count'] ?> still Submitted
+                            </div>
+                        <?php endif; ?>
+                        <div class="ms-auto" style="font-size: 12px; color: #9a9aa5;">
+                            <?php if ($cycle['earliest_submitted'] && $cycle['latest_submitted'] && date('Y-m-d', strtotime($cycle['earliest_submitted'])) !== date('Y-m-d', strtotime($cycle['latest_submitted']))): ?>
+                                Submitted <?= date('M j', strtotime($cycle['earliest_submitted'])) ?> &ndash; <?= date('M j, Y', strtotime($cycle['latest_submitted'])) ?>
+                            <?php else: ?>
+                                Submitted <?= date('M j, Y', strtotime($cycle['latest_submitted'])) ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
   </div>
 </div>
@@ -170,13 +188,10 @@ try {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.getElementById('archiveSearchInput').addEventListener('keyup', function() {
+document.getElementById('cycleSearchInput').addEventListener('keyup', function() {
     const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#archivesTable tbody tr.archive-row');
-
-    rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
+    document.querySelectorAll('#cyclesList .cycle-row').forEach(row => {
+        row.style.display = row.dataset.search.includes(filter) ? '' : 'none';
     });
 });
 </script>
