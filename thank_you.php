@@ -14,7 +14,7 @@ require_once 'path.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="assets/css/styles.css?v=11.2.0">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Thank You - Morgan Legacy Scholarship</title>
     <style>
         .thankyou-card { background: #fff; border-radius: 16px; border: 1px solid rgb(241,242,243); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); max-width: 560px; margin: 0 auto; }

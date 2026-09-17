@@ -43,7 +43,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title>Committee Votes - Morgan Legacy Scholarship</title>
     <style>
         .tally-card { background: #fff; border: 1px solid rgb(241,242,243); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }

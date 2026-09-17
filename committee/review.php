@@ -35,7 +35,7 @@ $myPickId = (int) $voteStmt->fetchColumn();
     <title>Final Review - Morgan Legacy Scholarship</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <style>
         body { background: rgb(249,250,251); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         .top-bar { background: rgb(7,5,55); padding: 18px 0; margin-bottom: 28px; }

@@ -108,7 +108,7 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title>Settings - Morgan Legacy Scholarship</title>
     <style>
         .settings-body { display: flex; align-items: flex-start; }

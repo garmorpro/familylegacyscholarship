@@ -101,7 +101,7 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/styles.css?v=11.2.0">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title>Application Portal - Morgan Legacy Scholarship</title>
     <style>
         /* Admin-only chrome not shared with the read-only committee view */
