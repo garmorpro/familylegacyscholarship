@@ -33,21 +33,12 @@ try {
     $tally = [];
 }
 
-// Each distinct picked candidate gets a color from a small rotating
-// palette (not one color per member) so who-picked-whom reads at a
-// glance without hardcoding a color per applicant.
-$pickPalette = [
-    ['bg' => 'rgba(197,160,89,0.16)', 'color' => '#8a6d2e'],
-    ['bg' => 'rgba(7,5,55,0.08)',     'color' => 'rgb(7,5,55)'],
-    ['bg' => 'rgba(25,135,84,0.12)',  'color' => '#198754'],
-    ['bg' => 'rgba(13,110,253,0.12)', 'color' => '#0d6efd'],
-];
-$candidateColors = [];
-foreach ($memberVotes as $mv) {
-    if ($mv['picked_app_id'] && !isset($candidateColors[$mv['picked_app_id']])) {
-        $candidateColors[$mv['picked_app_id']] = $pickPalette[count($candidateColors) % count($pickPalette)];
-    }
-}
+// One consistent pill color for every pick, rather than a color per
+// candidate -- with more than a handful of distinct candidates picked,
+// a rotating palette would eventually reuse a color across two different
+// people, which reads as "these two picked the same person" when they
+// didn't. The name text is what actually distinguishes picks.
+$pickPillStyle = ['bg' => 'rgba(7,5,55,0.08)', 'color' => 'rgb(7,5,55)'];
 
 function member_initials(string $name): string {
     $parts = preg_split('/\s+/', trim($name));
@@ -141,10 +132,7 @@ foreach ($tally as $t) {
             <div class="text-center text-muted py-4">No committee members have been added yet.</div>
         <?php else: ?>
             <?php foreach ($memberVotes as $mv): ?>
-                <?php
-                    $hasPick = (bool) $mv['picked_app_id'];
-                    $pickColor = $hasPick ? ($candidateColors[$mv['picked_app_id']] ?? $pickPalette[0]) : null;
-                ?>
+                <?php $hasPick = (bool) $mv['picked_app_id']; ?>
                 <div class="ballot-row <?= $hasPick ? 'has-pick' : '' ?>">
                     <div class="ballot-avatar"><?= htmlspecialchars(member_initials($mv['member_name'])) ?></div>
                     <div style="flex-grow: 1;">
@@ -152,7 +140,7 @@ foreach ($tally as $t) {
                         <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($mv['member_email']) ?></div>
                     </div>
                     <?php if ($hasPick): ?>
-                        <a href="application_view.php?id=<?= (int) $mv['picked_app_id'] ?>" class="ballot-pick-pill" style="background: <?= $pickColor['bg'] ?>; color: <?= $pickColor['color'] ?>;">
+                        <a href="application_view.php?id=<?= (int) $mv['picked_app_id'] ?>" class="ballot-pick-pill" style="background: <?= $pickPillStyle['bg'] ?>; color: <?= $pickPillStyle['color'] ?>;">
                             <?= htmlspecialchars($mv['first_name'] . ' ' . $mv['last_name']) ?>
                         </a>
                         <div class="ballot-voted-at"><?= $mv['voted_at'] ? date('M j, g:i A', strtotime($mv['voted_at'])) : '&mdash;' ?></div>
