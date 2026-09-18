@@ -26,13 +26,18 @@ try {
         throw new Exception('Select at least one committee member to send to.');
     }
 
+    // Server-side gate, not just the modal hiding unconfirmed members --
+    // Final Review can't go to an email that was never verified as
+    // actually belonging to that person.
     $placeholders = implode(',', array_fill(0, count($memberIds), '?'));
-    $stmt = $pdo->prepare("SELECT id, name, email FROM committee_members WHERE id IN ($placeholders)");
+    $stmt = $pdo->prepare("SELECT id, name, email FROM committee_members WHERE id IN ($placeholders) AND confirmed_at IS NOT NULL");
     $stmt->execute($memberIds);
     $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $skippedCount = count($memberIds) - count($members);
+
     if (empty($members)) {
-        throw new Exception('No matching committee members were found.');
+        throw new Exception('None of the selected committee members have confirmed their email yet -- Final Review can only be sent once they have.');
     }
 
     // Every send fully replaces whatever access rows exist -- anyone still
@@ -78,6 +83,9 @@ try {
     $message = $sentCount . " committee member(s) emailed successfully.";
     if ($failedNames) {
         $message .= " Failed to send to: " . implode(', ', $failedNames) . ".";
+    }
+    if ($skippedCount > 0) {
+        $message .= " {$skippedCount} selected member(s) were skipped because they haven't confirmed their email yet.";
     }
 
     echo json_encode(['success' => true, 'message' => $message]);

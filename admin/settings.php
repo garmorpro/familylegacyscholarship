@@ -18,7 +18,7 @@ try {
         $settings[$row['setting_key']] = $row['setting_value'];
     }
 
-    $committeeMembersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
+    $committeeMembersStmt = $pdo->query("SELECT id, name, email, confirmed_at FROM committee_members ORDER BY name");
     $committeeMembers = $committeeMembersStmt->fetchAll(PDO::FETCH_ASSOC);
 
     $adminUsersStmt = $pdo->query("
@@ -48,6 +48,15 @@ function adminUserStatus(array $admin): array {
         return ['label' => 'Locked', 'class' => 'no'];
     }
     return ['label' => 'Disabled', 'class' => 'no'];
+}
+
+// Mirrors adminUserStatus() -- confirmed_at is only ever set by the member
+// themselves clicking their confirmation link (committee/confirm.php).
+function committeeMemberStatus(array $member): array {
+    if (!empty($member['confirmed_at'])) {
+        return ['label' => 'Confirmed', 'class' => 'yes'];
+    }
+    return ['label' => 'Pending confirmation', 'class' => 'scheduled'];
 }
 
 // Helper function to safely get a setting
@@ -427,12 +436,21 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
             <?php else: ?>
                 <div class="roster-list">
                     <?php foreach ($committeeMembers as $member): ?>
+                        <?php $memberStatus = committeeMemberStatus($member); ?>
                         <div class="roster-item">
                             <div class="roster-avatar"><?= htmlspecialchars(strtoupper(substr($member['name'], 0, 1))) ?></div>
                             <div class="roster-info">
                                 <div class="roster-name"><?= htmlspecialchars($member['name']) ?></div>
                                 <div class="roster-email"><?= htmlspecialchars($member['email']) ?></div>
                             </div>
+                            <span class="status-badge <?= $memberStatus['class'] ?>"><?= $memberStatus['label'] ?></span>
+                            <?php if (empty($member['confirmed_at'])): ?>
+                                <form method="POST" action="resend_committee_confirmation.php" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $member['id'] ?>">
+                                    <button type="submit" class="roster-action-btn">Resend confirmation</button>
+                                </form>
+                            <?php endif; ?>
                             <button type="button" class="roster-edit" title="Edit"
                                     data-member-id="<?= (int) $member['id'] ?>"
                                     data-member-name="<?= htmlspecialchars($member['name'], ENT_QUOTES, 'UTF-8') ?>"

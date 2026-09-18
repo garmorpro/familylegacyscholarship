@@ -6,7 +6,7 @@ require_once '../app/csrf.php';
 require_once '../path.php';
 
 try {
-    $committeeMembersStmt = $pdo->query("SELECT id, name, email FROM committee_members ORDER BY name");
+    $committeeMembersStmt = $pdo->query("SELECT id, name, email, confirmed_at FROM committee_members ORDER BY name");
     $committeeMembers = $committeeMembersStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $committeeMembers = [];
@@ -581,12 +581,18 @@ if ($statusCounts['final_recipient'] > 0) {
             </p>
             <div style="max-height: 260px; overflow-y: auto;">
                 <?php foreach ($committeeMembers as $member): ?>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input committee-member-checkbox" type="checkbox" value="<?= (int) $member['id'] ?>" id="committeeMember<?= (int) $member['id'] ?>">
-                        <label class="form-check-label" for="committeeMember<?= (int) $member['id'] ?>">
-                            <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($member['name']) ?></div>
-                            <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($member['email']) ?></div>
-                        </label>
+                    <?php $memberConfirmed = !empty($member['confirmed_at']); ?>
+                    <div class="form-check mb-2 d-flex align-items-start justify-content-between gap-2<?= $memberConfirmed ? '' : ' opacity-50' ?>">
+                        <div class="d-flex align-items-start gap-2">
+                            <input class="form-check-input committee-member-checkbox" type="checkbox" value="<?= (int) $member['id'] ?>" id="committeeMember<?= (int) $member['id'] ?>" <?= $memberConfirmed ? '' : 'disabled title="Awaiting email confirmation"' ?>>
+                            <label class="form-check-label" for="committeeMember<?= (int) $member['id'] ?>">
+                                <div class="fw-semibold" style="font-size: 14.5px;"><?= htmlspecialchars($member['name']) ?></div>
+                                <div class="text-muted" style="font-size: 12.5px;"><?= htmlspecialchars($member['email']) ?></div>
+                            </label>
+                        </div>
+                        <?php if (!$memberConfirmed): ?>
+                            <span class="text-muted" style="font-size: 11px; font-weight: 700; white-space: nowrap;">Pending confirmation</span>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
