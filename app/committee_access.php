@@ -13,7 +13,8 @@
 // designating a final recipient deletes them outright, so a stale link
 // or code simply stops matching anything once that happens.
 
-session_start();
+require_once __DIR__ . '/session_bootstrap.php';
+require_once __DIR__ . '/spam_protection.php';
 
 // Before this per-member rewrite, committee_code_verified held a single
 // scalar code, not a token-keyed array -- a browser session still carrying
@@ -49,6 +50,17 @@ $codeVerified = isset($_SESSION['committee_code_verified'][$token])
     && hash_equals((string) $committeeAccess['code'], (string) $_SESSION['committee_code_verified'][$token]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['code'])) {
+    // A 6-digit code is only ~1M combinations -- without this, someone who
+    // got hold of just the link (forwarded email, shared screen, browser
+    // history) but not the code could script their way through all of them.
+    // Same per-IP limiter the public forms use, keyed separately so it
+    // doesn't share a budget with anything else.
+    if (is_rate_limited($pdo, 'committee_code', 8, 15)) {
+        committee_gate_code_form($token, "Too many attempts. Please wait a while before trying again.");
+    }
+
+    record_submission_attempt($pdo, 'committee_code');
+
     if (hash_equals((string) $committeeAccess['code'], trim((string) $_POST['code']))) {
         $_SESSION['committee_code_verified'][$token] = $committeeAccess['code'];
         $codeVerified = true;

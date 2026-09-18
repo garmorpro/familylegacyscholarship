@@ -1,0 +1,32 @@
+# Security response headers, applied site-wide. Wrapped in <IfModule> so
+# this is a no-op (not a fatal error) if mod_headers isn't enabled.
+<IfModule mod_headers.c>
+    # This site is never meant to be framed by anyone, including itself.
+    Header always set X-Frame-Options "DENY"
+
+    # Stops the browser from guessing content types (e.g. treating an
+    # uploaded image as HTML/JS based on sniffed content).
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Sends the full referring URL only to our own origin; cross-origin
+    # requests (the CDN assets below) get just the origin, not the path or
+    # query string -- relevant since several pages carry one-time tokens in
+    # the URL (password reset, committee review links, etc.).
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # The app is HTTPS-only in production (see BASE_URL in path.php) --
+    # tells returning browsers to skip the plain-HTTP hop entirely next
+    # time. (Cloudflare has its own HSTS toggle too, under SSL/TLS > Edge
+    # Certificates -- worth turning on there as well.)
+    Header always set Strict-Transport-Security "max-age=31536000"
+
+    # Restricts script/style/font/frame sources to this site plus the exact
+    # third-party CDNs the app actually loads (Bootstrap/Bootstrap Icons/
+    # SweetAlert2 via jsDelivr, TinyMCE, Google Fonts). 'unsafe-inline' is
+    # needed because the app relies heavily on inline <script>/<style> --
+    # this isn't a substitute for escaping user input (already handled via
+    # htmlspecialchars() throughout), but it does stop injected markup from
+    # pulling in a script or making a request to an attacker-controlled
+    # domain, and blocks this site from ever being framed by another one.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tiny.cloud; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cdn.tiny.cloud; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>

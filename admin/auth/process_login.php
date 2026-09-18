@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../../app/session_bootstrap.php';
 
 require_once '../../app/db.php';
 require_once '../../app/csrf.php';

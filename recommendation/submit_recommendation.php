@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../app/session_bootstrap.php';
 require '../app/db.php';
 require_once '../app/functions.php';
 require_once '../app/spam_protection.php';

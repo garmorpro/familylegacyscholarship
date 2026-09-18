@@ -4,7 +4,7 @@ ini_set('display_errors', 0);
 error_reporting(0);
 header('Content-Type: application/json');
 
-session_start();
+require_once __DIR__ . '/session_bootstrap.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/spam_protection.php';
