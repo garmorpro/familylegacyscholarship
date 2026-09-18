@@ -37,9 +37,31 @@ $lastUpdated = 'September 18, 2026';
             <p class="text-center text-muted" style="font-size: 14px;">Last updated: <?= htmlspecialchars($lastUpdated, ENT_QUOTES, 'UTF-8') ?></p>
 
             <p>
-                The Morgan Family Legacy Scholarship ("we," "us," or "our") respects your privacy. This page explains
-                what information we collect through this website, why we collect it, and how it's handled. By using
-                this site or submitting an application, you agree to the practices described below.
+                This Privacy Policy describes the information the Morgan Family Legacy Scholarship ("we," "us," or
+                "our") collects through this website, and how we use it.
+            </p>
+
+            <h4 class="pt-3">
+                Summary
+            </h4>
+            <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+            <ul>
+                <li class="mb-2">We only ask for the information we need to review your scholarship application.</li>
+                <li class="mb-2">We use reasonable security measures to protect your information.</li>
+                <li class="mb-2">We do not sell, trade, or share your personal information with third parties.</li>
+                <li class="mb-2">We do not use advertising trackers or analytics cookies.</li>
+                <li class="mb-2">If you're selected as a recipient, we'll ask before publishing your name or photo publicly.</li>
+            </ul>
+
+            <h4 class="pt-3">
+                Your Consent
+            </h4>
+            <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+            <p>
+                By submitting an application or otherwise providing information through this website, you agree to
+                the terms of this Privacy Policy and consent to the collection and use of your information as
+                described here. If you do not agree with these practices, please do not submit an application or
+                otherwise provide information through this website.
             </p>
 
             <h4 class="pt-3">
@@ -95,10 +117,7 @@ $lastUpdated = 'September 18, 2026';
                 information to third parties.
             </p>
 
-            <h4 class="pt-3">
-                If You Are Selected as a Recipient
-            </h4>
-            <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+            <h5>If You Are Selected as a Recipient</h5>
             <p>
                 If you are chosen as a scholarship recipient, your first name, last name, school, and intended major
                 may be published on the public <a href="recipients.php">Recipients</a> page of this website to
@@ -119,15 +138,28 @@ $lastUpdated = 'September 18, 2026';
             </p>
 
             <h4 class="pt-3">
-                Your Choices
+                Your Choices Regarding Your Information
             </h4>
             <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
-            <ul class="mb-5">
+            <ul>
                 <li class="mb-2">You can ask us what information we have about you</li>
                 <li class="mb-2">You can ask us to correct inaccurate information</li>
                 <li class="mb-2">You can ask us to delete your information, including a saved but unsubmitted application</li>
                 <li class="mb-2">You can ask us not to publish your name or photo if you're selected as a recipient</li>
             </ul>
+            <p>
+                To exercise any of these choices, contact us using the information below.
+            </p>
+
+            <h4 class="pt-3">
+                Third-Party Links
+            </h4>
+            <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
+            <p class="mb-5">
+                This website may contain links to other websites. If you click one of those links, you'll leave our
+                site and be subject to that site's own privacy practices. We aren't responsible for the content or
+                privacy practices of any third-party site.
+            </p>
 
             <hr>
 
