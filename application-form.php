@@ -770,7 +770,15 @@ phoneInput.addEventListener('input', function(e) {
         const email = emailField.value.trim();
 
         if (!email || !emailField.checkValidity()) {
-            emailField.reportValidity();
+            Swal.fire({
+                icon: 'info',
+                title: 'Email required',
+                html: email
+                    ? 'That doesn&rsquo;t look like a valid email address. Please double-check it and try again.'
+                    : 'Enter your email address before saving, so we know where to send your resume link.'
+            }).then(function () {
+                emailField.focus();
+            });
             return;
         }
 
