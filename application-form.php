@@ -39,6 +39,48 @@ function getSetting($key, $default = '') {
 
 const DEFAULT_ESSAY_PROMPT = 'In 500–750 words, please tell us about yourself, your goals, and what makes you a strong candidate for this scholarship.';
 
+// Same open/not_open/closed/unset logic index.php and application.php use.
+// Saved drafts intentionally aren't usable past this: "Save & Finish Later"
+// is hidden once the cycle isn't open, and a resume link for a closed
+// cycle shows a message instead of the form -- there would be nothing to
+// submit it into otherwise.
+$rawApplicationOpen = $settings['application_open'] ?? '';
+$rawApplicationClose = $settings['application_closed'] ?? '';
+$today = date('Y-m-d');
+
+if (empty($rawApplicationOpen) || empty($rawApplicationClose)) {
+    $cycleState = 'unset';
+} elseif ($today < $rawApplicationOpen) {
+    $cycleState = 'not_open';
+} elseif ($today > $rawApplicationClose) {
+    $cycleState = 'closed';
+} else {
+    $cycleState = 'open';
+}
+
+// Resuming a previously saved draft (see app/save_draft.php) -- only on a
+// fresh GET, and only while the cycle is still open.
+$draft = null;
+$resumeToken = trim($_GET['resume'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $resumeToken !== '' && $cycleState === 'open') {
+    try {
+        $draftStmt = $pdo->prepare("SELECT * FROM application_drafts WHERE token = :token");
+        $draftStmt->execute([':token' => $resumeToken]);
+        $draft = $draftStmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    } catch (Exception $e) {
+        $draft = null;
+    }
+}
+
+// Pulls a saved draft value back into the form -- htmlspecialchars'd for
+// safe use in both value="" attributes and textarea content.
+function draftValue(?array $draft, string $key): string {
+    if (!$draft || !isset($draft[$key])) {
+        return '';
+    }
+    return htmlspecialchars($draft[$key], ENT_QUOTES, 'UTF-8');
+}
+
 // Handles this form's own submission -- this used to live in app/functions.php
 // as an unconditional top-level "if POST" block, which meant it fired on
 // *any* POST to *any* page that happened to require that file (the
@@ -148,6 +190,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $result = insert_application_with_recommendation($pdo, $data);
 
+        // If this submission was resumed from a saved draft, it's done its
+        // job -- remove it rather than leaving a stale duplicate copy of
+        // now-submitted data sitting in the drafts table.
+        $draftToken = trim($_POST['draft_token'] ?? '');
+        if ($draftToken !== '') {
+            try {
+                $pdo->prepare("DELETE FROM application_drafts WHERE token = :token")->execute([':token' => $draftToken]);
+            } catch (PDOException $e) {
+                error_log("Failed to clean up draft after submission: " . $e->getMessage());
+            }
+        }
+
         // Best-effort: email the recommender immediately. If this fails
         // (bad address, SMTP hiccup), the recommendation stays 'not_sent'
         // and gets picked up later by the send_not_sent_recommendations.php
@@ -194,6 +248,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Application Form - Morgan Legacy Scholarship</title>
@@ -335,15 +392,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Scholarship Application
     </h4>
 
-    <div class="alert alert-warning d-flex align-items-start gap-2" role="alert">
-        <i class="bi bi-exclamation-triangle-fill mt-1"></i>
-        <div>
-            <strong>Heads up:</strong> this form does not save your progress. If you navigate away or close this page before submitting, your responses will be lost. We recommend drafting your essay(s) in a separate document first, then pasting them in here before you submit.
+    <?php if ($resumeToken !== '' && !$draft): ?>
+        <div class="alert alert-warning d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div>
+                <strong>This link isn't valid.</strong>
+                <?= $cycleState !== 'open' ? "The application cycle has closed, so saved links can no longer be resumed or submitted." : "It may have already been submitted, or the link was copied incorrectly. Check your email for the most recent one, or start a new application below." ?>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
+
+    <?php if ($draft): ?>
+        <div class="alert alert-success d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-check-circle-fill mt-1"></i>
+            <div>
+                <strong>Welcome back!</strong> Your saved progress has been loaded below. Feel free to make changes before submitting.
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-warning d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div>
+                <strong>Heads up:</strong> this form doesn't save your progress automatically. If you're not able to finish in one sitting, enter your email and click <strong>Save &amp; Finish Later</strong> at the bottom to get a unique link that picks up right where you left off.
+            </div>
+        </div>
+    <?php endif; ?>
 
     <form method="POST" action="" class="container py-4" id="applicationForm">
   <?= csrf_field() ?>
+  <input type="hidden" name="draft_token" id="draftToken" value="<?= htmlspecialchars($resumeToken, ENT_QUOTES, 'UTF-8') ?>">
 
   <!-- Honeypot -- left blank by real visitors, invisible to them; a bot
        that fills every field trips it. Not display:none, since some
@@ -363,22 +440,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" id="firstName" name="first_name" placeholder="John" required>
+      <input type="text" class="form-control" id="firstName" name="first_name" placeholder="John" value="<?= draftValue($draft, 'first_name') ?>" required>
     </div>
     <div class="col-md-6">
       <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Doe" required>
+      <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Doe" value="<?= draftValue($draft, 'last_name') ?>" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+      <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" value="<?= draftValue($draft, 'email') ?>" required>
     </div>
     <div class="col-md-6">
   <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-  <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890" maxlength="14" required>
+  <input type="tel" class="form-control" id="phone" name="phone" placeholder="(123) 456-7890" maxlength="14" value="<?= draftValue($draft, 'phone') ?>" required>
 </div>
 
 <script>
@@ -412,11 +489,11 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="gradYear" class="form-label">Expected Graduation Year <span class="text-danger">*</span></label>
-      <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" placeholder="<?php echo date('Y')+3; ?>" required>
+      <input type="number" class="form-control" id="gradYear" name="expected_graduation_year" placeholder="<?php echo date('Y')+3; ?>" value="<?= draftValue($draft, 'expected_graduation_year') ?>" required>
     </div>
     <div class="col-md-6">
       <label for="gpa" class="form-label">Current Weighted GPA <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" id="gpa" name="gpa" placeholder="4.0" required>
+      <input type="text" class="form-control" id="gpa" name="gpa" placeholder="4.0" value="<?= draftValue($draft, 'gpa') ?>" required>
     </div>
   </div>
 
@@ -424,29 +501,30 @@ phoneInput.addEventListener('input', function(e) {
   <h5>Post-Secondary Education Plans</h5>
   <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
 
+  <?php $draftInstitutionType = $draft['institution_type'] ?? ''; ?>
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="institutionType" class="form-label">Type of Institution <span class="text-danger">*</span></label>
       <select class="form-select" id="institutionType" name="institution_type" required>
         <option value="">Select...</option>
-        <option value="4-Year College/University">4-Year College/University</option>
-        <option value="2-Year College/Community College">2-Year College/Community College</option>
-        <option value="Trade School">Trade School</option>
-        <option value="Technical College">Technical College</option>
-        <option value="Vocational Training Program">Vocational Training Program</option>
-        <option value="Other">Other</option>
+        <option value="4-Year College/University" <?= $draftInstitutionType === '4-Year College/University' ? 'selected' : '' ?>>4-Year College/University</option>
+        <option value="2-Year College/Community College" <?= $draftInstitutionType === '2-Year College/Community College' ? 'selected' : '' ?>>2-Year College/Community College</option>
+        <option value="Trade School" <?= $draftInstitutionType === 'Trade School' ? 'selected' : '' ?>>Trade School</option>
+        <option value="Technical College" <?= $draftInstitutionType === 'Technical College' ? 'selected' : '' ?>>Technical College</option>
+        <option value="Vocational Training Program" <?= $draftInstitutionType === 'Vocational Training Program' ? 'selected' : '' ?>>Vocational Training Program</option>
+        <option value="Other" <?= $draftInstitutionType === 'Other' ? 'selected' : '' ?>>Other</option>
       </select>
     </div>
     <div class="col-md-6">
       <label for="intendedSchool" class="form-label">Intended School/Institution Name <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" id="intendedSchool" name="intended_school" placeholder="School Name" required>
+      <input type="text" class="form-control" id="intendedSchool" name="intended_school" placeholder="School Name" value="<?= draftValue($draft, 'intended_school') ?>" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="intendedMajor" class="form-label">Intended Major/Program of Study <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" id="intendedMajor" name="intended_major" placeholder="Major/Program" required>
+      <input type="text" class="form-control" id="intendedMajor" name="intended_major" placeholder="Major/Program" value="<?= draftValue($draft, 'intended_major') ?>" required>
     </div>
   </div>
 
@@ -457,21 +535,21 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="extracurricular" class="form-label">Extracurricular Activities, Clubs, Sports <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="extracurricular" name="extracurricular" rows="2" required></textarea>
+      <textarea class="form-control" id="extracurricular" name="extracurricular" rows="2" required><?= draftValue($draft, 'extracurricular') ?></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="leadership" class="form-label">Leadership Roles & Responsibilities <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="leadership" name="leadership" rows="2" required></textarea>
+      <textarea class="form-control" id="leadership" name="leadership" rows="2" required><?= draftValue($draft, 'leadership') ?></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="communityService" class="form-label">Community Service & Volunteer Work <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="communityService" name="community_service" rows="2" required></textarea>
+      <textarea class="form-control" id="communityService" name="community_service" rows="2" required><?= draftValue($draft, 'community_service') ?></textarea>
     </div>
   </div>
 
@@ -482,7 +560,7 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="essay" class="form-label"><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?> <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="essay" rows="6" name="essay" required></textarea>
+      <textarea class="form-control" id="essay" rows="6" name="essay" required><?= draftValue($draft, 'essay') ?></textarea>
       <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0 / 500</span></div>
     </div>
   </div>
@@ -496,18 +574,18 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <label for="recommenderName" class="form-label">Recommender's Name <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" name="recommender_name" id="recommenderName" required>
+      <input type="text" class="form-control" name="recommender_name" id="recommenderName" value="<?= draftValue($draft, 'recommender_name') ?>" required>
     </div>
     <div class="col-md-6">
       <label for="recommenderEmail" class="form-label">Recommender's Email <span class="text-danger">*</span></label>
-      <input type="email" class="form-control" name="recommender_email" id="recommenderEmail" required>
+      <input type="email" class="form-control" name="recommender_email" id="recommenderEmail" value="<?= draftValue($draft, 'recommender_email') ?>" required>
     </div>
   </div>
 
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="relationship" class="form-label">Relationship to You <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" name="recommender_relationship" id="relationship" required>
+      <input type="text" class="form-control" name="recommender_relationship" id="relationship" value="<?= draftValue($draft, 'recommender_relationship') ?>" required>
     </div>
   </div>
 
@@ -518,14 +596,14 @@ phoneInput.addEventListener('input', function(e) {
   <div class="row g-3 mb-3">
     <div class="col-12">
       <label for="financialNeed" class="form-label">Financial Need</label>
-      <textarea class="form-control" name="financial_need" id="financialNeed" rows="2"></textarea>
+      <textarea class="form-control" name="financial_need" id="financialNeed" rows="2"><?= draftValue($draft, 'financial_need') ?></textarea>
     </div>
   </div>
 
   <div class="row g-3 mb-5">
     <div class="col-12">
       <label for="additionalInfo" class="form-label">Anything Else We Should Know?</label>
-      <textarea class="form-control" name="additional_information" id="additionalInfo" rows="2"></textarea>
+      <textarea class="form-control" name="additional_information" id="additionalInfo" rows="2"><?= draftValue($draft, 'additional_information') ?></textarea>
     </div>
   </div>
 
@@ -533,6 +611,9 @@ phoneInput.addEventListener('input', function(e) {
 
   <div class="mt-5 mx-auto">
     <button type="submit" class="btn btn-lg mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>&nbsp;Submit Application</button>
+    <?php if ($cycleState === 'open'): ?>
+        <button type="button" id="saveDraftBtn" class="btn btn-lg mt-4" style="background: #fff; border: 1.5px solid rgb(7,5,55); color: rgb(7,5,55); font-size: 16px !important;"><i class="bi bi-bookmark-plus me-2"></i>&nbsp;Save &amp; Finish Later</button>
+    <?php endif; ?>
     <p class="mt-4 text-muted" style="font-size: 12px;">By submitting this application, you confirm that all information provided is accurate and complete.</p>
   </div>
 
@@ -661,7 +742,7 @@ phoneInput.addEventListener('input', function(e) {
   const wordCount = document.getElementById('wordCount');
   const ESSAY_WORD_LIMIT = 500;
 
-  essay.addEventListener('input', () => {
+  function updateEssayWordCount() {
     let words = essay.value.trim().split(/\s+/).filter(Boolean);
 
     if (words.length > ESSAY_WORD_LIMIT) {
@@ -671,7 +752,69 @@ phoneInput.addEventListener('input', function(e) {
 
     wordCount.textContent = words.length + ' / ' + ESSAY_WORD_LIMIT;
     wordCount.style.color = words.length >= ESSAY_WORD_LIMIT ? '#dc3545' : '';
-  });
+  }
+
+  essay.addEventListener('input', updateEssayWordCount);
+  updateEssayWordCount(); // reflects a resumed draft's already-saved essay text
+</script>
+
+<script>
+  // "Save & Finish Later" -- requires just the email field, saves whatever
+  // else is currently filled in (partial is fine), and emails a unique
+  // link back to resume from. Separate from the real submit flow above,
+  // which is untouched.
+  const saveDraftBtn = document.getElementById('saveDraftBtn');
+  if (saveDraftBtn) {
+    saveDraftBtn.addEventListener('click', function () {
+        const emailField = document.getElementById('email');
+        const email = emailField.value.trim();
+
+        if (!email || !emailField.checkValidity()) {
+            emailField.reportValidity();
+            return;
+        }
+
+        const originalText = saveDraftBtn.innerHTML;
+        saveDraftBtn.disabled = true;
+        saveDraftBtn.innerHTML = 'Saving&hellip;';
+
+        fetch('app/save_draft.php', {
+            method: 'POST',
+            body: new FormData(document.getElementById('applicationForm'))
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            saveDraftBtn.disabled = false;
+            saveDraftBtn.innerHTML = originalText;
+
+            if (data.success) {
+                if (data.token) {
+                    document.getElementById('draftToken').value = data.token;
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Progress saved',
+                    html: data.message
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Couldn\'t save',
+                    html: data.message || 'Something went wrong saving your progress. Please try again.'
+                });
+            }
+        })
+        .catch(function () {
+            saveDraftBtn.disabled = false;
+            saveDraftBtn.innerHTML = originalText;
+            Swal.fire({
+                icon: 'error',
+                title: 'Couldn\'t save',
+                text: 'Something went wrong saving your progress. Please check your connection and try again.'
+            });
+        });
+    });
+  }
 </script>
 
     
