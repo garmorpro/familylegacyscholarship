@@ -1,5 +1,7 @@
 <?php
+require_once '../../app/session_bootstrap.php';
 require_once '../../app/db.php';
+require_once '../../app/csrf.php';
 require_once '../../path.php';
 
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
@@ -34,7 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['password_confirm'] ?? '';
 
-    if (strlen($password) < 12) {
+    if (!csrf_verify($_POST['csrf_token'] ?? null)) {
+        $error = 'Security check failed. Please refresh the page and try again.';
+    } elseif (strlen($password) < 12) {
         $error = 'Password must be at least 12 characters.';
     } elseif ($password !== $confirm) {
         $error = 'Passwords do not match.';
@@ -131,6 +135,7 @@ button:hover { background: var(--primary-hover); }
     <?php endif; ?>
 
     <form method="POST">
+        <?= csrf_field() ?>
         <input type="hidden" name="token" value="<?= htmlspecialchars($token, ENT_QUOTES, 'UTF-8') ?>">
         <div class="field">
             <label for="password">New Password</label>

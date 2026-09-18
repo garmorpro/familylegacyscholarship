@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 
 require_once '../app/db.php';
+require_once '../app/csrf.php';
 require_once '../path.php';
 
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
@@ -16,6 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
+
+if (!csrf_verify($input['csrf_token'] ?? null)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Security check failed (invalid or expired token). Please refresh the page and try again.']);
+    exit;
+}
+
 $applicationId = (int) ($input['application_id'] ?? 0);
 
 if ($applicationId <= 0) {

@@ -1,5 +1,6 @@
 <?php
 require_once '../app/db.php';
+require_once '../app/csrf.php';
 require_once '../path.php';
 
 $token = $_GET['token'] ?? '';
@@ -32,6 +33,7 @@ $myPickId = (int) $voteStmt->fetchColumn();
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon-16.png">
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
     <title>Final Review - Morgan Legacy Scholarship</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -150,10 +152,12 @@ function castVote(btn) {
     const appId = btn.dataset.appId;
     btn.disabled = true;
 
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
     fetch('vote.php?token=<?= urlencode($token) ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ application_id: appId })
+        body: JSON.stringify({ application_id: appId, csrf_token: csrfToken })
     })
     .then(res => res.json())
     .then(data => {
