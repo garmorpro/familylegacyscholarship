@@ -67,7 +67,7 @@ try {
                                         <img src="uploads/recipients/<?= htmlspecialchars($rec['recipient_picture']) ?>"
                                              alt="<?= htmlspecialchars($recName) ?>"
                                              loading="lazy"
-                                             style="width: 100%; height: 100%; object-fit: cover; display: block; border: 4px solid #fff; box-sizing: border-box;">
+                                             style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 14px;">
                                     <?php else: ?>
                                         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                                             <span style="color: #fff; font-size: 56px; font-weight: 600; letter-spacing: 1px;">
