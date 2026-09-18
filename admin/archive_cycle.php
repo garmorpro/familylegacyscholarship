@@ -59,10 +59,15 @@ $cycleLabel = $cycleYear ? "{$cycleYear} Cycle" : null;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="../assets/css/styles.css?v=<?= time() ?>">
     <title><?= $cycleLabel ? htmlspecialchars($cycleLabel) : 'Cycle' ?> - Archives - Morgan Legacy Scholarship</title>
     <style>
         .archive-search { padding: 8px 16px !important; border-radius: 20px !important; }
+        .btn-danger-soft { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 999px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; transition: all 0.2s ease; }
+        .btn-danger-soft:hover { background: #fecaca; }
         .recipient-hero { border: 1.5px solid rgba(197,160,89,0.4); border-radius: 14px; padding: 22px 26px; display: flex; align-items: center; gap: 20px; background: rgba(197,160,89,0.06); }
         .roster-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgb(233,236,255); color: rgb(7,5,55); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
         .roster-row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border: 1px solid #f0f0f3; border-radius: 12px; text-decoration: none; color: inherit; }
@@ -110,10 +115,20 @@ $cycleLabel = $cycleYear ? "{$cycleYear} Cycle" : null;
                 Archived <?= date('M j, Y', strtotime($archivedAt)) ?> &bull; <?= count($cycleApplications) ?> applicant<?= count($cycleApplications) === 1 ? '' : 's' ?> archived
             </h5>
         </div>
-        <input type="text" id="rosterSearchInput" class="form-control form-control-sm archive-search"
-               placeholder="Search this cycle..." style="width: 260px;">
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" id="rosterSearchInput" class="form-control form-control-sm archive-search"
+                   placeholder="Search this cycle..." style="width: 260px;">
+            <button type="button" class="btn-danger-soft" onclick="confirmDeleteCycle()">
+                <i class="bi bi-trash me-1"></i>Delete Cycle
+            </button>
+        </div>
     </div>
   </div>
+
+  <form id="deleteCycleForm" method="POST" action="delete_cycle.php" class="d-none">
+      <?= csrf_field() ?>
+      <input type="hidden" name="archived_at" value="<?= htmlspecialchars($archivedAt, ENT_QUOTES, 'UTF-8') ?>">
+  </form>
 
     <?php if ($recipient): ?>
     <div style="padding: 0 32px 8px;">
@@ -177,6 +192,30 @@ $cycleLabel = $cycleYear ? "{$cycleYear} Cycle" : null;
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+const deleteCycleTitle = <?= json_encode($cycleLabel ? "Delete {$cycleLabel}?" : 'Delete this cycle?') ?>;
+const deleteCycleHtml = <?= json_encode(
+    '<p>This permanently deletes all ' . count($cycleApplications) . ' archived application(s) from this cycle'
+    . ($recipient ? ', including <strong>' . htmlspecialchars($recipient['first_name'] . ' ' . $recipient['last_name'], ENT_QUOTES) . "</strong>'s recipient record" : '')
+    . '.</p><p style="color: #dc3545; font-weight: bold;">This action cannot be undone.</p>'
+) ?>;
+
+function confirmDeleteCycle() {
+    Swal.fire({
+        icon: 'warning',
+        title: deleteCycleTitle,
+        html: deleteCycleHtml,
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete this cycle',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc3545',
+        focusConfirm: false
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            document.getElementById('deleteCycleForm').submit();
+        }
+    });
+}
+
 const rosterSearchInput = document.getElementById('rosterSearchInput');
 if (rosterSearchInput) {
     rosterSearchInput.addEventListener('keyup', function() {

@@ -94,6 +94,18 @@ try {
 
   <div style="padding: 0 32px 32px;">
 
+    <?php if (!empty($_GET['cycle_error'])): ?>
+        <div class="alert alert-danger d-flex align-items-start gap-2 mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+            <div><?= htmlspecialchars($_GET['cycle_error'], ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+    <?php elseif (!empty($_GET['cycle_success'])): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2 mb-3" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <div><?= htmlspecialchars($_GET['cycle_success'], ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+    <?php endif; ?>
+
     <?php if (empty($cycles)): ?>
         <div class="text-center text-muted py-5">
             No archived cycles yet &mdash; a cycle appears here once you archive it from the dashboard.
