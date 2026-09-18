@@ -54,6 +54,70 @@ $limitValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key 
 $finalReviewLimit = ($limitValue !== false && ctype_digit((string) $limitValue)) ? (int) $limitValue : 10;
 $finalReviewAtCapacity = $statusCounts['final_review'] >= $finalReviewLimit;
 
+// Same open/not_open/closed/unset logic the homepage and Settings use, so
+// this banner reflects the real Timeline dates.
+$applicationOpenDate = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'application_open'")->fetchColumn() ?: null;
+$applicationCloseDate = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'application_closed'")->fetchColumn() ?: null;
+$today = date('Y-m-d');
+
+if (empty($applicationOpenDate) || empty($applicationCloseDate)) {
+    $cycleState = 'unset';
+} elseif ($today < $applicationOpenDate) {
+    $cycleState = 'not_open';
+} elseif ($today > $applicationCloseDate) {
+    $cycleState = 'closed';
+} else {
+    $cycleState = 'open';
+}
+
+// A cycle isn't over just because the close date passed -- review, Final
+// Review, and committee voting all happen after applications close, and the
+// cycle only actually ends once its applications get archived (Bulk Actions
+// > Archive). So "in cycle" means either the dates say open, or there's
+// still at least one unarchived application being worked.
+$inCycle = $cycleState === 'open' || $totalApplications > 0;
+
+if ($inCycle && $cycleState === 'open') {
+    $dashboardCycleBanner = [
+        'border' => 'rgb(62,163,45)', 'bg' => 'rgb(242,253,244)', 'icon_color' => 'rgb(62,163,75)',
+        'title_color' => 'rgb(38,82,47)', 'text_color' => 'rgb(51,128,63)', 'icon' => 'bi-check-circle',
+        'title' => 'In cycle &mdash; accepting applications',
+        'text' => 'Open through ' . date('M j, Y', strtotime($applicationCloseDate)) . ($totalApplications === 0 ? '. No applications yet.' : '.'),
+    ];
+} elseif ($inCycle) {
+    // Dates say not_open/closed/unset, but unarchived applications remain --
+    // still mid-review on this cycle.
+    $dashboardCycleBanner = [
+        'border' => '#C5A059', 'bg' => '#FBF7EE', 'icon_color' => '#8a6d2e',
+        'title_color' => '#6b5321', 'text_color' => '#8a6d2e', 'icon' => 'bi-hourglass-split',
+        'title' => 'In cycle &mdash; reviewing applications',
+        'text' => $cycleState === 'closed'
+            ? 'Applications closed ' . date('M j, Y', strtotime($applicationCloseDate)) . ' &mdash; archive once this cycle is decided.'
+            : 'Archive from Bulk Actions once this cycle is decided.',
+    ];
+} elseif ($cycleState === 'not_open') {
+    $dashboardCycleBanner = [
+        'border' => '#C5A059', 'bg' => '#FBF7EE', 'icon_color' => '#8a6d2e',
+        'title_color' => '#6b5321', 'text_color' => '#8a6d2e', 'icon' => 'bi-calendar2-week',
+        'title' => 'Upcoming cycle',
+        'text' => 'Opens ' . date('M j, Y', strtotime($applicationOpenDate)) . '.',
+    ];
+} elseif ($cycleState === 'closed') {
+    $dashboardCycleBanner = [
+        'border' => '#9a9aa5', 'bg' => '#f6f6f8', 'icon_color' => '#6c757d',
+        'title_color' => '#495057', 'text_color' => '#6c757d', 'icon' => 'bi-calendar2-check',
+        'title' => 'No active cycle',
+        'text' => 'Last cycle closed ' . date('M j, Y', strtotime($applicationCloseDate)) . ' &mdash; set the next cycle\'s dates in Settings.',
+    ];
+} else {
+    $dashboardCycleBanner = [
+        'border' => '#9a9aa5', 'bg' => '#f6f6f8', 'icon_color' => '#6c757d',
+        'title_color' => '#495057', 'text_color' => '#6c757d', 'icon' => 'bi-calendar2',
+        'title' => 'No cycle scheduled',
+        'text' => 'Set Timeline dates in Settings to schedule the next cycle.',
+    ];
+}
+
 /**
  * Fetch applications for table
  */
@@ -316,11 +380,32 @@ try {
 
   <!-- Text with padding preserved -->
   <div class="card-body">
-    <div class="d-flex align-items-center justify-content-between mb-4" style="padding: 15px 20px;">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3" style="padding: 15px 20px;">
     <!-- Left: Titles -->
     <div>
         <h3 class="mb-1" style="font-weight: 600; font-size: 1.5rem; color: #212529;">Application Portal</h3>
         <h5 class="mb-0" style="font-weight: 400; font-size: 1rem; color: #6c757d;">Review and manage scholarship applications</h5>
+    </div>
+
+    <!-- Right: Cycle status -->
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid <?= $dashboardCycleBanner['border'] ?>;
+        background-color: <?= $dashboardCycleBanner['bg'] ?>;
+        padding: 10px 16px;
+        border-radius: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    ">
+        <div style="flex-shrink: 0; font-size: 18px; color: <?= $dashboardCycleBanner['icon_color'] ?>; line-height: 1;">
+            <i class="bi <?= $dashboardCycleBanner['icon'] ?>"></i>
+        </div>
+        <div>
+            <div style="font-weight: 600; font-size: 13.5px; color: <?= $dashboardCycleBanner['title_color'] ?> !important;"><?= $dashboardCycleBanner['title'] ?></div>
+            <div style="font-weight: 400; font-size: 12px; color: <?= $dashboardCycleBanner['text_color'] ?> !important;"><?= $dashboardCycleBanner['text'] ?></div>
+        </div>
     </div>
 </div>
 
