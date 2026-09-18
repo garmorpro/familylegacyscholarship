@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['password_confirm'] ?? '';
 
-    if (strlen($password) < 8) {
-        $error = 'Password must be at least 8 characters.';
+    if (strlen($password) < 12) {
+        $error = 'Password must be at least 12 characters.';
     } elseif ($password !== $confirm) {
         $error = 'Passwords do not match.';
     } else {
@@ -134,11 +134,11 @@ button:hover { background: var(--primary-hover); }
         <input type="hidden" name="token" value="<?= htmlspecialchars($token, ENT_QUOTES, 'UTF-8') ?>">
         <div class="field">
             <label for="password">New Password</label>
-            <input type="password" id="password" name="password" minlength="8" required autofocus>
+            <input type="password" id="password" name="password" minlength="12" required autofocus>
         </div>
         <div class="field">
             <label for="password_confirm">Confirm Password</label>
-            <input type="password" id="password_confirm" name="password_confirm" minlength="8" required>
+            <input type="password" id="password_confirm" name="password_confirm" minlength="12" required>
         </div>
         <button type="submit">Set Password</button>
     </form>

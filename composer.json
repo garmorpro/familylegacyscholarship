@@ -1,0 +1,8 @@
+{
+    "name": "morgan-legacy/scholarship",
+    "description": "The Morgan Family Legacy Scholarship application site.",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

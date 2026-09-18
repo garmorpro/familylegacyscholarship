@@ -3,6 +3,7 @@ require_once '../../app/session_bootstrap.php';
 require_once '../../app/db.php';
 require_once '../../app/csrf.php';
 require_once '../../app/admin_mailer.php';
+require_once '../../app/spam_protection.php';
 
 $submitted = false;
 $error = '';
@@ -15,7 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Please enter a valid email address.';
+        } elseif (is_rate_limited($pdo, 'admin_forgot_password', 5, 15)) {
+            // Same response as a normal submission -- still never confirms
+            // or denies whether the email belongs to an account, just adds
+            // a delay instead of actually sending another email.
+            $submitted = true;
         } else {
+            record_submission_attempt($pdo, 'admin_forgot_password');
             try {
                 $stmt = $pdo->prepare("SELECT id, name, email, is_active, failed_login_attempts, unlock_token FROM admin_users WHERE email = :email LIMIT 1");
                 $stmt->execute([':email' => $email]);

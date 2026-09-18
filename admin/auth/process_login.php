@@ -3,6 +3,7 @@ require_once '../../app/session_bootstrap.php';
 
 require_once '../../app/db.php';
 require_once '../../app/csrf.php';
+require_once '../../app/spam_protection.php';
 require_once '../../path.php';
 require_once '../../vendor/autoload.php'; // PHPMailer autoload
 
@@ -20,6 +21,16 @@ if (!csrf_verify($_POST['csrf_token'] ?? null)) {
     exit;
 }
 
+// Per-account lockout (below) already stops anyone from brute-forcing a
+// *known* admin email's password. This catches what that doesn't: an
+// attacker trying many different email addresses, since each one gets its
+// own fresh 3 attempts. Checked before the account lookup so it applies
+// whether or not the submitted email even belongs to a real admin.
+if (is_rate_limited($pdo, 'admin_login', 10, 15)) {
+    header('Location: ' . BASE_URL . '/admin/auth/?error=ratelimited');
+    exit;
+}
+
 // Input sanitation
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -28,6 +39,8 @@ if ($email === '' || $password === '') {
     header('Location: ' . BASE_URL . '/admin/auth/?error=missing');
     exit;
 }
+
+record_submission_attempt($pdo, 'admin_login');
 
 try {
     // Fetch admin user

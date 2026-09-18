@@ -15,6 +15,9 @@ if (isset($_GET['error'])) {
         case 'server':
             $errorMessage = 'Something went wrong. Please try again.';
             break;
+        case 'ratelimited':
+            $errorMessage = 'Too many login attempts from your network. Please wait a while before trying again.';
+            break;
     }
 }
 ?>
