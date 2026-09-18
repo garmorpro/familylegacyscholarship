@@ -2,6 +2,7 @@
 session_start();
 require_once '../app/db.php';
 require_once '../app/require_admin.php';
+require_once '../app/csrf.php';
 require_once '../path.php';
 
 // archived_at is the exact timestamp a whole cycle was archived under (see
