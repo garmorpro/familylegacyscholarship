@@ -22,7 +22,7 @@
 
     <!-- Privacy & Copyright -->
      <div style="font-size: 13px;">
-      <a href="#" class="text-decoration-none text-dark me-3 footer-link">Privacy Policy</a>
+      <a href="<?= BASE_URL ?>/privacy.php" class="text-decoration-none text-dark me-3 footer-link">Privacy Policy</a>
       &copy; 2026 Morgan Family Legacy Scholarship
     </div>
 
