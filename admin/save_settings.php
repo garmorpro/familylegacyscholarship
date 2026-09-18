@@ -24,7 +24,8 @@ $allowedSettings = [
     'announcement_date',
     'notification_email',
     'essay_prompt',
-    'final_review_limit'
+    'final_review_limit',
+    'cycle_retention_limit'
 ];
 
 // Each field is validated and saved independently, so one bad field
@@ -63,6 +64,16 @@ try {
         if ($key === 'final_review_limit') {
             if (!ctype_digit($value) || (int) $value < 1) {
                 $fieldErrors[] = "Final review limit must be a whole number of 1 or more -- that field was left unchanged.";
+                continue;
+            }
+        }
+
+        // Cycle retention is allowed to be blank (meaning "keep every
+        // cycle, never auto-delete") -- only reject it if something was
+        // actually typed and it isn't a valid positive whole number.
+        if ($key === 'cycle_retention_limit' && $value !== '') {
+            if (!ctype_digit($value) || (int) $value < 1) {
+                $fieldErrors[] = "Cycle retention must be blank or a whole number of 1 or more -- that field was left unchanged.";
                 continue;
             }
         }

@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 require_once '../app/db.php'; // make sure $pdo is initialized
 require_once '../app/require_admin.php'; // this endpoint performs destructive DB writes — must be admin-only
 require_once '../app/csrf.php';
+require_once '../app/cycle_cleanup.php';
 
 try {
     $input = json_decode(file_get_contents('php://input'), true);
@@ -61,6 +62,35 @@ try {
         $archivedCount = $stmt->rowCount();
 
         $message = $archivedCount . " application(s) archived. They're kept on file and no longer appear on the active dashboard.";
+
+        // Cycle retention: if a limit is configured (Settings > Review
+        // Limits), permanently delete the oldest cycles beyond that count
+        // now that a new one has just been added, so at most that many
+        // cycles are ever kept.
+        $retentionValue = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'cycle_retention_limit'")->fetchColumn();
+        $retentionLimit = ($retentionValue !== false && ctype_digit((string) $retentionValue) && (int) $retentionValue > 0)
+            ? (int) $retentionValue
+            : null;
+
+        if ($retentionLimit !== null) {
+            $allCyclesStmt = $pdo->query("
+                SELECT archived_at FROM scholarship_applications
+                WHERE archived_at IS NOT NULL
+                GROUP BY archived_at
+                ORDER BY archived_at DESC
+            ");
+            $cyclesToPrune = array_slice($allCyclesStmt->fetchAll(PDO::FETCH_COLUMN), $retentionLimit);
+
+            $prunedCount = 0;
+            foreach ($cyclesToPrune as $oldArchivedAt) {
+                delete_archived_cycle($pdo, $oldArchivedAt);
+                $prunedCount++;
+            }
+
+            if ($prunedCount > 0) {
+                $message .= " {$prunedCount} older cycle(s) beyond your retention limit of {$retentionLimit} were also permanently deleted.";
+            }
+        }
     } else {
         throw new Exception('Invalid action: ' . $action);
     }

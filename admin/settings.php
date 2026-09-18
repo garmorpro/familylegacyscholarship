@@ -388,6 +388,14 @@ if (!empty($_GET['admin_error']) || !empty($_GET['admin_success'])) {
                     Maximum number of applications that can be advanced to Final Review each cycle. Once this many are in Final Review, advancing more is blocked until the cycle is archived.
                 </div>
 
+                <label for="cycle_retention_limit" class="mt-4 d-block" style="font-weight: 600; margin-bottom: 5px; font-size: 14px;">Cycle Retention</label>
+                <input type="number" id="cycle_retention_limit" name="cycle_retention_limit" min="1" step="1"
+                       value="<?= getSetting('cycle_retention_limit', '') ?>" placeholder="Keep all cycles"
+                       style="width: 100%; max-width: 160px; padding: 8px 12px; border-radius: 6px; border: 1px solid #ced4da;">
+                <div class="text-muted mt-2" style="font-size: 13px;">
+                    How many archived cycles to keep. Once a new cycle is archived beyond this number, the oldest cycle -- every application, recommendation, and recipient record in it -- is <strong>permanently deleted</strong>. Leave blank to keep every cycle forever.
+                </div>
+
                 <div class="d-flex justify-content-end mt-4 pt-3" style="border-top: 1px solid #f3f3f6;">
                     <button type="submit" class="settings-save-btn">Save Settings</button>
                 </div>
