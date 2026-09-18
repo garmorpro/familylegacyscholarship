@@ -98,6 +98,17 @@ try {
         $stmt->execute(array_merge([':token' => $token, ':email' => $email], $values));
     }
 
+    // The resume link is tied to the token, not to any one save -- once
+    // it's been emailed the first time, updating the same draft again
+    // (e.g. after resuming and making more progress) only needs to update
+    // the saved data. Re-emailing every save would mean a fresh "here's
+    // your link" email each time, when the one they already have still
+    // points at the same (now newer) data.
+    if ($isUpdate) {
+        echo json_encode(['success' => true, 'message' => 'Your progress has been updated. The link already in your email still works to pick up from here.', 'token' => $token]);
+        exit;
+    }
+
     $resumeLink = BASE_URL . "/application-form.php?resume=" . urlencode($token);
     $firstName = trim($values[':first_name']) !== '' ? $values[':first_name'] : 'there';
 
