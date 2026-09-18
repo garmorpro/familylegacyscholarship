@@ -54,7 +54,7 @@ try {
                     </p>
                 </div>
             <?php else: ?>
-                <p class="text-muted" style="font-size: 14.5px; max-width: 620px;">
+                <p class="text-muted" style="font-size: 14.5px;">
                     Each year, the Morgan Family Selection Committee honors a Battery Creek High School senior whose character, leadership, and commitment to growth embody the legacy this scholarship was built to carry forward.
                 </p>
                 <div class="row g-4 mt-2 mb-4 justify-content-center">
