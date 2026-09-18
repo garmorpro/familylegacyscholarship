@@ -32,7 +32,7 @@ require_once 'path.php';
    <img src="assets/images/family_beach_photo.png"
      class="card-img-top home-main-img"
      alt="..."
-     style="display:block; width:100%; height:200px; object-fit: cover; object-position: 20% 60% !important; border-top-left-radius: 12px; border-top-right-radius: 12px; margin:0; padding:0;">
+     style="display:block; width:100%; height:200px; object-fit: cover; object-position: 20% 60% !important; margin:0; padding:0;">
   
 
 

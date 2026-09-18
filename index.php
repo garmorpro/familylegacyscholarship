@@ -54,8 +54,6 @@ function getSetting($key, $default = '') {
         height:200px;
         object-fit: cover;
         object-position: 20% 33% !important;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
         margin:0;
         padding:0;
      ">
