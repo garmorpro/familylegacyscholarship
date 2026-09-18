@@ -71,19 +71,12 @@ $lastUpdated = 'September 18, 2026';
                 content they submit along with the date it was received.
             </p>
 
-            <h5>Committee & Administrative Use</h5>
-            <p>
-                Committee members and site administrators provide their name and email address so we can send them
-                secure access links and manage their accounts. Reviewers' evaluations, scores, and internal notes
-                about an application are kept for scholarship administration purposes only.
-            </p>
-
             <h5>Automatically Collected Information</h5>
             <p>
-                Like most websites, our hosting and security provider (Cloudflare) automatically logs standard
-                technical information such as IP address and request timing for security purposes — for example,
-                to detect and block spam or automated form submissions. We do not use advertising trackers or
-                analytics cookies, and we do not sell or share your information with data brokers or advertisers.
+                Like most websites, we automatically log standard technical information such as IP address and
+                request timing for security purposes — for example, to detect and block spam or automated form
+                submissions. We do not use advertising trackers or analytics cookies, and we do not sell or share
+                your information with data brokers or advertisers.
             </p>
 
             <h4 class="pt-3">
@@ -112,22 +105,6 @@ $lastUpdated = 'September 18, 2026';
                 celebrate your achievement. We will only publish a photo of you if you provide one and agree to its
                 use. If you'd prefer not to be featured publicly, contact us at the email below and we'll accommodate
                 your request.
-            </p>
-
-            <h4 class="pt-3">
-                Third-Party Services
-            </h4>
-            <hr style="color: rgb(36,45,87) !important; border: 2px solid rgb(36,45,87) !important; opacity: 1;">
-            <p>We rely on a small number of service providers to operate this website:</p>
-            <ul>
-                <li class="mb-2"><strong>Cloudflare</strong> — content delivery and security/spam protection</li>
-                <li class="mb-2"><strong>Our email delivery provider</strong> — used only to send transactional emails related to your application (confirmations, save-and-resume links, decisions); we do not send marketing email</li>
-                <li class="mb-2"><strong>TinyMCE</strong> — a rich-text editor used on the recommendation letter form</li>
-                <li class="mb-2">Standard, publicly-hosted libraries (Bootstrap and related assets) used to style and run the site, which do not receive your personal information</li>
-            </ul>
-            <p>
-                These providers only process information as needed to provide their service to us and are not
-                permitted to use your data for their own purposes.
             </p>
 
             <h4 class="pt-3">
