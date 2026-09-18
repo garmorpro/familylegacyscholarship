@@ -609,11 +609,13 @@ phoneInput.addEventListener('input', function(e) {
 
   <hr>
 
-  <div class="mt-5 mx-auto">
-    <button type="submit" class="btn btn-lg mt-4" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>&nbsp;Submit Application</button>
-    <?php if ($cycleState === 'open'): ?>
-        <button type="button" id="saveDraftBtn" class="btn btn-lg mt-4" style="background: #fff; border: 1.5px solid rgb(7,5,55); color: rgb(7,5,55); font-size: 16px !important;"><i class="bi bi-bookmark-plus me-2"></i>&nbsp;Save &amp; Finish Later</button>
-    <?php endif; ?>
+  <div class="mt-5 mx-auto text-center">
+    <div class="d-flex flex-wrap justify-content-center align-items-center mt-4" style="gap: 12px;">
+        <button type="submit" class="btn btn-lg" style="background-color: rgb(7,5,55); color:white; font-size: 18px !important;"><i class="bi bi-file-earmark-text me-2"></i>&nbsp;Submit Application</button>
+        <?php if ($cycleState === 'open'): ?>
+            <button type="button" id="saveDraftBtn" class="btn btn-lg" style="background: #fff; border: 1.5px solid rgb(7,5,55); color: rgb(7,5,55); font-size: 16px !important;"><i class="bi bi-bookmark-plus me-2"></i>&nbsp;Save &amp; Finish Later</button>
+        <?php endif; ?>
+    </div>
     <p class="mt-4 text-muted" style="font-size: 12px;">By submitting this application, you confirm that all information provided is accurate and complete.</p>
   </div>
 
