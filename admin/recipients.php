@@ -126,7 +126,9 @@ function utc_to_iso(?string $utcNaive): ?string {
                         data-recipient-id="<?= $rec['id'] ?>"
                         data-recipient-picture="<?= htmlspecialchars($rec['recipient_picture']) ?>"
                         data-recipient-school="<?= htmlspecialchars($rec['intended_school'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-recipient-major="<?= htmlspecialchars($rec['intended_major'], ENT_QUOTES, 'UTF-8') ?>">
+                        data-recipient-major="<?= htmlspecialchars($rec['intended_major'], ENT_QUOTES, 'UTF-8') ?>"
+                        data-recipient-scheduled="<?= utc_to_iso($rec['selection_email_scheduled_at']) ?>"
+                        data-recipient-sent="<?= !empty($rec['selection_email_sent_at']) ? '1' : '0' ?>">
 
                         <td>
                             <div class="d-flex align-items-center gap-3">
@@ -190,46 +192,72 @@ function utc_to_iso(?string $utcNaive): ?string {
     <input type="hidden" name="id" id="deleteRecipientId">
 </form>
 
-<!-- Upload Picture Modal (single instance, reused for whichever row triggered it) -->
+<!-- Recipient Details Modal (single instance, reused for whichever row triggered it) -->
 <div class="modal fade" id="uploadPictureModal" tabindex="-1" aria-labelledby="uploadPictureLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php" style="display: contents;">
-      <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
-        <?= csrf_field() ?>
-        <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
-          <h5 class="modal-title text-white mb-0" id="uploadPictureLabel" style="font-weight: 600;">Recipient Details</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
-            <input type="hidden" name="recipient_id" id="recipient_id">
-
-            <!-- Intended school / major -- read-only, moved off the table to free up column width -->
-            <div class="mb-3" style="background: #fff; border: 1px solid #ececf1; border-radius: 8px; padding: 12px 16px;">
-                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 2px;">Intended School</div>
-                <div id="modalRecipientSchool" style="font-size: 14.5px; color: #212529; font-weight: 600;"></div>
-                <div id="modalRecipientMajor" style="font-size: 13px; color: #8a8a94;"></div>
-            </div>
-
-            <!-- Current picture preview -->
-            <div class="mb-3 d-none text-center" id="currentPictureContainer">
-                <img id="currentPictureImg" src="" alt="Current picture"
-                     style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-                <div class="text-muted mt-2" style="font-size: 12.5px;">Current picture</div>
-            </div>
-
-            <label for="recipient_picture" class="form-label" id="fileInputLabel" style="font-weight: 600; font-size: 14px;">Choose an image</label>
-            <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required
-                   style="border-radius: 6px; border: 1px solid #ced4da;">
-            <div class="text-muted d-none mt-2" id="replaceHint" style="font-size: 12.5px;">
-                Uploading a new image will replace the current one.
-            </div>
-        </div>
-        <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
-          <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn" style="background: rgb(7,5,55); color: #fff;" id="uploadButton">Upload</button>
-        </div>
+    <div class="modal-content" style="border-radius: 14px; border: none; overflow: hidden;">
+      <div class="modal-header" style="background: rgb(7,5,55); border: none; padding: 20px 24px;">
+        <h5 class="modal-title text-white mb-0" id="uploadPictureLabel" style="font-weight: 600;">Recipient Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </form>
+      <div class="modal-body" style="padding: 28px 30px; background: #fbfbfc;">
+
+          <!-- Intended school / major -- read-only, moved off the table to free up column width -->
+          <div class="mb-3" style="background: #fff; border: 1px solid #ececf1; border-radius: 8px; padding: 12px 16px;">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #9a9aa5; margin-bottom: 2px;">Intended School</div>
+              <div id="modalRecipientSchool" style="font-size: 14.5px; color: #212529; font-weight: 600;"></div>
+              <div id="modalRecipientMajor" style="font-size: 13px; color: #8a8a94;"></div>
+          </div>
+
+          <!-- Picture upload -- its own form (needs multipart, so it can't
+               nest inside the schedule section below; HTML forms can't nest
+               at all, which is why the two are siblings instead of one
+               shared form the way this modal used to be structured). -->
+          <form id="uploadPictureForm" method="POST" enctype="multipart/form-data" action="upload_recipient_picture.php">
+              <?= csrf_field() ?>
+              <input type="hidden" name="recipient_id" id="recipient_id">
+
+              <!-- Current picture preview -->
+              <div class="mb-3 d-none text-center" id="currentPictureContainer">
+                  <img id="currentPictureImg" src="" alt="Current picture"
+                       style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+                  <div class="text-muted mt-2" style="font-size: 12.5px;">Current picture</div>
+              </div>
+
+              <label for="recipient_picture" class="form-label" id="fileInputLabel" style="font-weight: 600; font-size: 14px;">Choose an image</label>
+              <input type="file" class="form-control" name="recipient_picture" id="recipient_picture" accept="image/*" required
+                     style="border-radius: 6px; border: 1px solid #ced4da;">
+              <div class="text-muted d-none mt-2" id="replaceHint" style="font-size: 12.5px;">
+                  Uploading a new image will replace the current one.
+              </div>
+              <div class="d-flex justify-content-end mt-2">
+                  <button type="submit" class="btn btn-sm" style="background: rgb(7,5,55); color: #fff;">Upload Picture</button>
+              </div>
+          </form>
+
+          <hr style="border-color: #ececf1; margin: 22px 0;">
+
+          <!-- Selection email schedule -- updated via fetch() rather than a
+               second <form>, since a form can't nest inside the one above. -->
+          <label class="form-label" style="font-weight: 600; font-size: 14px;">Selection Email</label>
+
+          <div id="scheduleSentNotice" class="d-none text-muted" style="font-size: 13px; background: #fff; border: 1px solid #ececf1; border-radius: 8px; padding: 10px 14px;"></div>
+
+          <div id="scheduleEditGroup">
+              <input type="datetime-local" id="scheduled_send_at_input" class="form-control"
+                     style="border-radius: 6px; border: 1px solid #ced4da;">
+              <div class="text-muted mt-1" style="font-size: 12px;">
+                  Your time zone (<span id="scheduleTzLabel"></span>). The email goes out automatically at this date and time.
+              </div>
+              <div class="d-flex justify-content-end mt-2">
+                  <button type="button" id="updateScheduleBtn" class="btn btn-sm" style="background: rgb(233,236,255); color: rgb(7,5,55);">Update Schedule</button>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid #ececf1; padding: 16px 24px;">
+        <button type="button" class="btn" style="background: #f1f1f4; color: #495057;" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -273,12 +301,25 @@ document.querySelectorAll('.recipient-row').forEach(function (row) {
             row.getAttribute('data-recipient-id'),
             row.getAttribute('data-recipient-picture'),
             row.getAttribute('data-recipient-school'),
-            row.getAttribute('data-recipient-major')
+            row.getAttribute('data-recipient-major'),
+            row.getAttribute('data-recipient-scheduled'),
+            row.getAttribute('data-recipient-sent') === '1'
         );
     });
 });
 
-function openUploadModal(recipientId, recipientPicture, recipientSchool, recipientMajor) {
+// Local <-> UTC for the schedule field follows the same convention as the
+// local-time pills above and mark_final_selected.php's own prompt: a
+// datetime-local input has no timezone of its own, so what's shown/sent is
+// always this browser's own local time, converted server-side using the
+// IANA zone name sent alongside it.
+function toDatetimeLocalValue(date) {
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate())
+        + 'T' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+}
+
+function openUploadModal(recipientId, recipientPicture, recipientSchool, recipientMajor, recipientScheduled, recipientSent) {
     document.getElementById('recipient_id').value = recipientId;
     document.getElementById('modalRecipientSchool').textContent = recipientSchool || '—';
     document.getElementById('modalRecipientMajor').textContent = recipientMajor || '';
@@ -305,8 +346,66 @@ function openUploadModal(recipientId, recipientPicture, recipientSchool, recipie
         replaceHint.classList.add('d-none');
     }
 
+    document.getElementById('scheduleTzLabel').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    var scheduleEditGroup = document.getElementById('scheduleEditGroup');
+    var scheduleSentNotice = document.getElementById('scheduleSentNotice');
+
+    if (recipientSent) {
+        // Already sent -- nothing left to reschedule.
+        scheduleEditGroup.classList.add('d-none');
+        scheduleSentNotice.classList.remove('d-none');
+        scheduleSentNotice.textContent = 'The selection email has already been sent to this recipient, so the schedule can no longer be changed.';
+    } else {
+        scheduleEditGroup.classList.remove('d-none');
+        scheduleSentNotice.classList.add('d-none');
+        var scheduledInput = document.getElementById('scheduled_send_at_input');
+        scheduledInput.value = recipientScheduled ? toDatetimeLocalValue(new Date(recipientScheduled)) : '';
+    }
+
     uploadModal.show();
 }
+
+document.getElementById('updateScheduleBtn').addEventListener('click', function () {
+    var btn = this;
+    var recipientId = document.getElementById('recipient_id').value;
+    var value = document.getElementById('scheduled_send_at_input').value;
+
+    if (!value) {
+        Swal.fire({ icon: 'info', title: 'Pick a date and time first.' });
+        return;
+    }
+
+    var browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    btn.disabled = true;
+
+    fetch('update_recipient_schedule.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recipient_id: recipientId,
+            scheduled_send_at: value,
+            scheduled_send_tz: browserTz,
+            csrf_token: csrfToken
+        })
+    })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+        btn.disabled = false;
+        if (data.success) {
+            Swal.fire({ icon: 'success', title: 'Updated', html: data.message }).then(function () {
+                location.reload();
+            });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Error', html: data.message });
+        }
+    })
+    .catch(function () {
+        btn.disabled = false;
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong updating the schedule.' });
+    });
+});
 
 // Deleting a recipient is permanent -- a styled, hard-to-miss confirmation
 // before anything actually gets submitted.
