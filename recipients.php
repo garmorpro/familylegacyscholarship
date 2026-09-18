@@ -29,16 +29,9 @@ try {
 <?php include_once ROOT_PATH . '/assets/includes/header.php'; ?>
 
 
-<?php
-// A single recipient reads better in a narrower, more centered card than
-// several do -- once there's more than one, the wider cap gives the grid
-// room to actually form rows instead of the container fighting it.
-$recipientsCardMaxWidth = count($recipients) <= 1 ? 780 : 1040;
-?>
-
 <main class="flex-fill">
 <div class="container py-3" style="background-color: rgb(249,250,251);">
-    <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important; max-width: <?= $recipientsCardMaxWidth ?>px; margin: 0 auto;">
+    <div class="card shadow-sm" style="border-radius: 12px; overflow: hidden; padding: 0 !important; border-color: rgb(241,242,243) !important;">
         <div class="case-accent"></div>
 
         <div class="card-body">
