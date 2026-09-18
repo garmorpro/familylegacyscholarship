@@ -137,6 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Please enter a valid email address for your recommender.";
         exit();
     }
+    // The essay field enforces this client-side too, but that's only ever
+    // a courtesy -- a non-browser client can still send more.
+    $essayWordCount = count(array_filter(preg_split('/\s+/', trim($data['essay']))));
+    if ($essayWordCount > 500) {
+        echo "Your essay is over the 500-word limit (currently {$essayWordCount} words). Please trim it down and try again.";
+        exit();
+    }
 
     try {
         $result = insert_application_with_recommendation($pdo, $data);
@@ -476,7 +483,7 @@ phoneInput.addEventListener('input', function(e) {
     <div class="col-12">
       <label for="essay" class="form-label"><?= getSetting('essay_prompt', DEFAULT_ESSAY_PROMPT) ?> <span class="text-danger">*</span></label>
       <textarea class="form-control" id="essay" rows="6" name="essay" required></textarea>
-      <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0</span> words</div>
+      <div class="text-end mt-1" style="font-size: 12px;">Word count: <span id="wordCount">0 / 500</span></div>
     </div>
   </div>
 
@@ -646,13 +653,24 @@ phoneInput.addEventListener('input', function(e) {
 </script>
 
 <script>
-  // Word count for essay
+  // Word count for essay -- hard-capped at the limit stated in the prompt
+  // above (500 words), not just displayed. Truncating in the 'input'
+  // handler catches typing AND pasting a whole essay in at once, since
+  // both fire that same event.
   const essay = document.getElementById('essay');
   const wordCount = document.getElementById('wordCount');
+  const ESSAY_WORD_LIMIT = 500;
 
   essay.addEventListener('input', () => {
-    const words = essay.value.trim().split(/\s+/).filter(Boolean).length;
-    wordCount.textContent = words;
+    let words = essay.value.trim().split(/\s+/).filter(Boolean);
+
+    if (words.length > ESSAY_WORD_LIMIT) {
+        words = words.slice(0, ESSAY_WORD_LIMIT);
+        essay.value = words.join(' ');
+    }
+
+    wordCount.textContent = words.length + ' / ' + ESSAY_WORD_LIMIT;
+    wordCount.style.color = words.length >= ESSAY_WORD_LIMIT ? '#dc3545' : '';
   });
 </script>
 
