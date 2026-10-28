@@ -131,7 +131,7 @@ $allowedEmailDomains = [
     'bellsouth.net', 'cox.net', 'charter.net',
 ];
 try {
-    $drafts = $pdo->query("SELECT id, first_name, last_name, email FROM application_drafts ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+    $drafts = $pdo->query("SELECT id, first_name, last_name, email, updated_at FROM application_drafts ORDER BY updated_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $drafts = [];
 }
@@ -681,6 +681,7 @@ if ($statusCounts['final_recipient'] > 0) {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th style="width: 130px;">Last Saved</th>
                 </tr>
             </thead>
             <tbody>
@@ -703,6 +704,9 @@ if ($statusCounts['final_recipient'] > 0) {
                         <?php if ($badEmail): ?>
                             <span class="ms-1" style="color: #dc3545; font-size: 12px; font-weight: 600;">⚠ Non-personal email</span>
                         <?php endif; ?>
+                    </td>
+                    <td style="white-space: nowrap; color: #6c757d; font-size: 13px;">
+                        <?= date('M j, Y', strtotime($draft['updated_at'])) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
