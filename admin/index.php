@@ -119,6 +119,24 @@ if ($inCycle && $cycleState === 'open') {
 }
 
 /**
+ * Saved drafts
+ */
+$allowedEmailDomains = [
+    'gmail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.ca', 'yahoo.com.au',
+    'outlook.com', 'hotmail.com', 'hotmail.co.uk', 'live.com', 'msn.com',
+    'icloud.com', 'me.com', 'mac.com',
+    'aol.com', 'protonmail.com', 'proton.me',
+    'zoho.com', 'mail.com', 'gmx.com', 'gmx.net',
+    'ymail.com', 'comcast.net', 'verizon.net', 'att.net', 'sbcglobal.net',
+    'bellsouth.net', 'cox.net', 'charter.net',
+];
+try {
+    $drafts = $pdo->query("SELECT id, first_name, last_name, email FROM application_drafts ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $drafts = [];
+}
+
+/**
  * Fetch applications for table
  */
 try {
@@ -638,6 +656,65 @@ if ($statusCounts['final_recipient'] > 0) {
 
 <!-- END TABLE -->
 
+<!-- SAVED DRAFTS -->
+<div class="mt-4" style="border-top: 1px solid rgb(241,242,243); padding-top: 28px;">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <div>
+            <h5 class="mb-0" style="font-weight: 600; font-size: 1.1rem; color: #212529;">
+                Saved Drafts
+                <span class="badge rounded-pill ms-2" style="background: #f1f1f4; color: #6c757d; font-size: 12px; font-weight: 600;"><?= count($drafts) ?></span>
+            </h5>
+            <p class="text-muted mb-0" style="font-size: 13px;">Applications saved but not yet submitted. Rows with a <span style="color:#dc3545; font-weight:600;">⚠ email error</span> used a non-personal address.</p>
+        </div>
+        <button class="btn btn-action" id="exportDraftsBtn" onclick="exportDraftsPDF()">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+        </button>
+    </div>
+
+    <?php if (empty($drafts)): ?>
+        <p class="text-muted" style="font-size: 14px;">No saved drafts.</p>
+    <?php else: ?>
+    <div class="bg-white shadow-sm" style="border-radius: 12px; border: 1px solid rgb(241,242,243); overflow: hidden;">
+        <table class="table table-hover mb-0 align-middle" id="draftsTable">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox" class="form-check-input" id="selectAllDrafts" title="Select all">
+                    </th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($drafts as $draft):
+                $domain = strtolower(substr(strrchr($draft['email'], '@'), 1));
+                $badEmail = !in_array($domain, $allowedEmailDomains);
+            ?>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input draft-checkbox"
+                               data-first="<?= htmlspecialchars($draft['first_name']) ?>"
+                               data-last="<?= htmlspecialchars($draft['last_name']) ?>"
+                               data-email="<?= htmlspecialchars($draft['email']) ?>"
+                               data-bad="<?= $badEmail ? '1' : '0' ?>">
+                    </td>
+                    <td><?= htmlspecialchars($draft['first_name'] ?: '—') ?></td>
+                    <td><?= htmlspecialchars($draft['last_name'] ?: '—') ?></td>
+                    <td>
+                        <?= htmlspecialchars($draft['email']) ?>
+                        <?php if ($badEmail): ?>
+                            <span class="ms-1" style="color: #dc3545; font-size: 12px; font-weight: 600;">⚠ Non-personal email</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+</div>
+<!-- END SAVED DRAFTS -->
 
   </div>
 </div>
@@ -943,5 +1020,78 @@ if (sendToCommitteeBtn) {
 
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// Drafts select-all
+const selectAllDrafts = document.getElementById('selectAllDrafts');
+if (selectAllDrafts) {
+    selectAllDrafts.addEventListener('change', function() {
+        document.querySelectorAll('.draft-checkbox').forEach(cb => cb.checked = this.checked);
+    });
+    document.getElementById('draftsTable')?.addEventListener('change', function(e) {
+        if (e.target.classList.contains('draft-checkbox')) {
+            const all = document.querySelectorAll('.draft-checkbox');
+            const checked = document.querySelectorAll('.draft-checkbox:checked');
+            selectAllDrafts.checked = all.length === checked.length;
+            selectAllDrafts.indeterminate = checked.length > 0 && checked.length < all.length;
+        }
+    });
+}
+
+function exportDraftsPDF() {
+    const selected = Array.from(document.querySelectorAll('.draft-checkbox:checked'));
+    if (selected.length === 0) {
+        Swal.fire({ icon: 'info', title: 'Nothing selected', text: 'Check at least one row to export.' });
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('Morgan Legacy Scholarship', 14, 18);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text('Saved Draft Applicants — Email Review', 14, 26);
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 14, 32);
+    doc.setTextColor(0);
+
+    // Table header
+    let y = 42;
+    doc.setFillColor(240, 240, 245);
+    doc.rect(14, y - 5, 182, 8, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('First Name', 16, y);
+    doc.text('Last Name', 60, y);
+    doc.text('Email', 104, y);
+    doc.text('Note', 160, y);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    y += 8;
+
+    selected.forEach((cb, i) => {
+        if (y > 270) { doc.addPage(); y = 20; }
+        if (i % 2 === 0) {
+            doc.setFillColor(250, 250, 252);
+            doc.rect(14, y - 5, 182, 8, 'F');
+        }
+        const bad = cb.dataset.bad === '1';
+        if (bad) doc.setTextColor(180, 0, 0);
+        doc.text(cb.dataset.first || '—', 16, y);
+        doc.text(cb.dataset.last || '—', 60, y);
+        doc.text(cb.dataset.email || '—', 104, y, { maxWidth: 54 });
+        doc.text(bad ? '⚠ Non-personal email' : '', 160, y);
+        doc.setTextColor(0);
+        y += 9;
+    });
+
+    doc.save('draft-applicants-email-review.pdf');
+}
+</script>
 </body>
 </html>
