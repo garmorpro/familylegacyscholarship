@@ -451,8 +451,10 @@ if ($statusCounts['final_recipient'] > 0) {
     <div class="status-tab" data-status="reviewed">Reviewed <span class="tab-count"><?= $statusCounts['reviewed'] ?></span></div>
     <div class="status-tab" data-status="final_review">Final Review <span class="tab-count"><?= $statusCounts['final_review'] ?>/<?= $finalReviewLimit ?></span></div>
     <div class="status-tab" data-status="final_recipient">Recipient <span class="tab-count"><?= $statusCounts['final_recipient'] ?></span></div>
+    <div class="status-tab" data-status="drafts">Saved Drafts <span class="tab-count"><?= count($drafts) ?></span></div>
 </div>
 
+<div id="applicationsSection">
 <!-- Bulk Actions Button -->
 <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
 
@@ -655,18 +657,13 @@ if ($statusCounts['final_recipient'] > 0) {
 
 
 <!-- END TABLE -->
+</div><!-- end #applicationsSection -->
 
 <!-- SAVED DRAFTS -->
-<div class="mt-4" style="border-top: 1px solid rgb(241,242,243); padding-top: 28px;">
+<div id="draftsSection" style="display:none;" class="mt-2">
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-        <div>
-            <h5 class="mb-0" style="font-weight: 600; font-size: 1.1rem; color: #212529;">
-                Saved Drafts
-                <span class="badge rounded-pill ms-2" style="background: #f1f1f4; color: #6c757d; font-size: 12px; font-weight: 600;"><?= count($drafts) ?></span>
-            </h5>
-            <p class="text-muted mb-0" style="font-size: 13px;">Applications saved but not yet submitted. Rows with a <span style="color:#dc3545; font-weight:600;">⚠ email error</span> used a non-personal address.</p>
-        </div>
-        <button class="btn btn-action" id="exportDraftsBtn" onclick="exportDraftsPDF()">
+        <p class="text-muted mb-0" style="font-size: 13px;">Applications saved but not yet submitted. Rows with a <span style="color:#dc3545; font-weight:600;">⚠ Non-personal email</span> used a school or work address.</p>
+        <button class="btn btn-action" onclick="exportDraftsPDF()">
             <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
         </button>
     </div>
@@ -715,6 +712,7 @@ if ($statusCounts['final_recipient'] > 0) {
     <?php endif; ?>
 </div>
 <!-- END SAVED DRAFTS -->
+</div><!-- end #draftsSection -->
 
   </div>
 </div>
@@ -806,8 +804,12 @@ document.querySelectorAll('.status-tab').forEach(tab => {
         document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
         currentStatusTab = this.dataset.status;
-        applyTableFilters();
 
+        const isDrafts = currentStatusTab === 'drafts';
+        document.getElementById('applicationsSection').style.display = isDrafts ? 'none' : '';
+        document.getElementById('draftsSection').style.display = isDrafts ? '' : 'none';
+
+        if (!isDrafts) applyTableFilters();
         document.getElementById('sendToCommitteeBtn').classList.toggle('d-none', currentStatusTab !== 'final_review');
     });
 });
