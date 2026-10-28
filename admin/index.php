@@ -663,9 +663,6 @@ if ($statusCounts['final_recipient'] > 0) {
 <div id="draftsSection" style="display:none;" class="mt-2">
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <p class="text-muted mb-0" style="font-size: 13px;">Applications saved but not yet submitted. Rows with a <span style="color:#dc3545; font-weight:600;">⚠ Non-personal email</span> used a school or work address.</p>
-        <button class="btn btn-action" onclick="exportDraftsPDF()">
-            <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
-        </button>
     </div>
 
     <?php if (empty($drafts)): ?>
@@ -675,9 +672,6 @@ if ($statusCounts['final_recipient'] > 0) {
         <table class="table table-hover mb-0 align-middle" id="draftsTable">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 40px;">
-                        <input type="checkbox" class="form-check-input" id="selectAllDrafts" title="Select all">
-                    </th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
@@ -690,13 +684,6 @@ if ($statusCounts['final_recipient'] > 0) {
                 $badEmail = !in_array($domain, $allowedEmailDomains);
             ?>
                 <tr>
-                    <td>
-                        <input type="checkbox" class="form-check-input draft-checkbox"
-                               data-first="<?= htmlspecialchars($draft['first_name']) ?>"
-                               data-last="<?= htmlspecialchars($draft['last_name']) ?>"
-                               data-email="<?= htmlspecialchars($draft['email']) ?>"
-                               data-bad="<?= $badEmail ? '1' : '0' ?>">
-                    </td>
                     <td><?= htmlspecialchars($draft['first_name'] ?: '—') ?></td>
                     <td><?= htmlspecialchars($draft['last_name'] ?: '—') ?></td>
                     <td>
@@ -1026,7 +1013,6 @@ if (sendToCommitteeBtn) {
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // Drafts select-all
 const selectAllDrafts = document.getElementById('selectAllDrafts');
@@ -1044,68 +1030,6 @@ if (selectAllDrafts) {
     });
 }
 
-function exportDraftsPDF() {
-    const selected = Array.from(document.querySelectorAll('.draft-checkbox:checked'));
-    if (selected.length === 0) {
-        Swal.fire({ icon: 'info', title: 'Nothing selected', text: 'Check at least one row to export.' });
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'landscape' });
-    const pageW = doc.internal.pageSize.getWidth();
-    const margin = 14;
-    const usable = pageW - margin * 2;
-
-    // Header
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('Morgan Legacy Scholarship', margin, 18);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.text('Saved Draft Applicants — Email Review', margin, 26);
-    doc.setFontSize(9);
-    doc.setTextColor(130, 130, 130);
-    doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, 33);
-    doc.setTextColor(0, 0, 0);
-
-    // Column x positions and widths (landscape: usable ~267px)
-    const col = { first: margin, last: margin + 50, email: margin + 105, note: margin + 195 };
-
-    // Table header row
-    let y = 44;
-    doc.setFillColor(230, 230, 238);
-    doc.rect(margin, y - 6, usable, 9, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.text('First Name', col.first + 2, y);
-    doc.text('Last Name',  col.last  + 2, y);
-    doc.text('Email',      col.email + 2, y);
-    doc.text('Note',       col.note  + 2, y);
-    y += 7;
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9.5);
-
-    selected.forEach((cb, i) => {
-        if (y > 190) { doc.addPage(); y = 20; }
-        if (i % 2 === 0) {
-            doc.setFillColor(248, 248, 252);
-            doc.rect(margin, y - 6, usable, 9, 'F');
-        }
-        const bad = cb.dataset.bad === '1';
-        const color = bad ? [180, 0, 0] : [0, 0, 0];
-        doc.setTextColor(...color);
-        doc.text(cb.dataset.first || '-', col.first + 2, y);
-        doc.text(cb.dataset.last  || '-', col.last  + 2, y);
-        doc.text(cb.dataset.email || '-', col.email + 2, y, { maxWidth: 88 });
-        doc.text(bad ? 'Non-personal email' : '', col.note + 2, y);
-        doc.setTextColor(0, 0, 0);
-        y += 9;
-    });
-
-    doc.save('draft-applicants-email-review.pdf');
-}
 </script>
 </body>
 </html>
