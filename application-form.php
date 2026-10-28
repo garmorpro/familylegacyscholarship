@@ -175,6 +175,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Please enter a valid email address.";
         exit();
     }
+    $allowedEmailDomains = [
+        'gmail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.ca', 'yahoo.com.au',
+        'outlook.com', 'hotmail.com', 'hotmail.co.uk', 'live.com', 'msn.com',
+        'icloud.com', 'me.com', 'mac.com',
+        'aol.com', 'protonmail.com', 'proton.me',
+        'zoho.com', 'mail.com', 'gmx.com', 'gmx.net',
+        'ymail.com', 'comcast.net', 'verizon.net', 'att.net', 'sbcglobal.net',
+        'bellsouth.net', 'cox.net', 'charter.net',
+    ];
+    $emailDomain = strtolower(substr(strrchr($data['email'], '@'), 1));
+    if (!in_array($emailDomain, $allowedEmailDomains)) {
+        echo "Please use a personal email address (such as Gmail, Yahoo, Outlook, or iCloud). School and work email addresses are not accepted.";
+        exit();
+    }
     if (!filter_var($data['recommender_email'], FILTER_VALIDATE_EMAIL)) {
         echo "Please enter a valid email address for your recommender.";
         exit();
@@ -452,6 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="col-md-6">
       <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
       <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" value="<?= draftValue($draft, 'email') ?>" required>
+      <div class="form-text">Use a personal email address (Gmail, Yahoo, Outlook, iCloud, etc.). School and work emails are not accepted.</div>
     </div>
     <div class="col-md-6">
   <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
