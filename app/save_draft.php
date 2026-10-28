@@ -60,6 +60,20 @@ try {
         echo json_encode(['success' => false, 'message' => 'Please enter a valid email address before saving.']);
         exit;
     }
+    $allowedEmailDomains = [
+        'gmail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.ca', 'yahoo.com.au',
+        'outlook.com', 'hotmail.com', 'hotmail.co.uk', 'live.com', 'msn.com',
+        'icloud.com', 'me.com', 'mac.com',
+        'aol.com', 'protonmail.com', 'proton.me',
+        'zoho.com', 'mail.com', 'gmx.com', 'gmx.net',
+        'ymail.com', 'comcast.net', 'verizon.net', 'att.net', 'sbcglobal.net',
+        'bellsouth.net', 'cox.net', 'charter.net',
+    ];
+    $emailDomain = strtolower(substr(strrchr($email, '@'), 1));
+    if (!in_array($emailDomain, $allowedEmailDomains)) {
+        echo json_encode(['success' => false, 'message' => 'Please use a personal email address (Gmail, Yahoo, Outlook, iCloud, etc.). School and work emails are not accepted.']);
+        exit;
+    }
 
     // Whitelisted, hardcoded column names -- never built from request data,
     // so interpolating them into the SQL below is safe.
