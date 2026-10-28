@@ -1048,47 +1048,55 @@ function exportDraftsPDF() {
     }
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 14;
+    const usable = pageW - margin * 2;
 
+    // Header
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Morgan Legacy Scholarship', 14, 18);
+    doc.setFontSize(18);
+    doc.text('Morgan Legacy Scholarship', margin, 18);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text('Saved Draft Applicants — Email Review', 14, 26);
+    doc.text('Saved Draft Applicants — Email Review', margin, 26);
     doc.setFontSize(9);
-    doc.setTextColor(120);
-    doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 14, 32);
-    doc.setTextColor(0);
+    doc.setTextColor(130, 130, 130);
+    doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, 33);
+    doc.setTextColor(0, 0, 0);
 
-    // Table header
-    let y = 42;
-    doc.setFillColor(240, 240, 245);
-    doc.rect(14, y - 5, 182, 8, 'F');
+    // Column x positions and widths (landscape: usable ~267px)
+    const col = { first: margin, last: margin + 50, email: margin + 105, note: margin + 195 };
+
+    // Table header row
+    let y = 44;
+    doc.setFillColor(230, 230, 238);
+    doc.rect(margin, y - 6, usable, 9, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
-    doc.text('First Name', 16, y);
-    doc.text('Last Name', 60, y);
-    doc.text('Email', 104, y);
-    doc.text('Note', 160, y);
+    doc.text('First Name', col.first + 2, y);
+    doc.text('Last Name',  col.last  + 2, y);
+    doc.text('Email',      col.email + 2, y);
+    doc.text('Note',       col.note  + 2, y);
+    y += 7;
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
-    y += 8;
 
     selected.forEach((cb, i) => {
-        if (y > 270) { doc.addPage(); y = 20; }
+        if (y > 190) { doc.addPage(); y = 20; }
         if (i % 2 === 0) {
-            doc.setFillColor(250, 250, 252);
-            doc.rect(14, y - 5, 182, 8, 'F');
+            doc.setFillColor(248, 248, 252);
+            doc.rect(margin, y - 6, usable, 9, 'F');
         }
         const bad = cb.dataset.bad === '1';
-        if (bad) doc.setTextColor(180, 0, 0);
-        doc.text(cb.dataset.first || '—', 16, y);
-        doc.text(cb.dataset.last || '—', 60, y);
-        doc.text(cb.dataset.email || '—', 104, y, { maxWidth: 54 });
-        doc.text(bad ? '⚠ Non-personal email' : '', 160, y);
-        doc.setTextColor(0);
+        const color = bad ? [180, 0, 0] : [0, 0, 0];
+        doc.setTextColor(...color);
+        doc.text(cb.dataset.first || '-', col.first + 2, y);
+        doc.text(cb.dataset.last  || '-', col.last  + 2, y);
+        doc.text(cb.dataset.email || '-', col.email + 2, y, { maxWidth: 88 });
+        doc.text(bad ? 'Non-personal email' : '', col.note + 2, y);
+        doc.setTextColor(0, 0, 0);
         y += 9;
     });
 
